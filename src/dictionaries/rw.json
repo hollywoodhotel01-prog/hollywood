@@ -1,0 +1,191 @@
+{
+  "navigation": {
+    "home": "Ahabanza",
+    "rooms": "Ibyumba",
+    "dining": "Amafunguro",
+    "wellness": "Kuruhuka",
+    "conference": "Inama",
+    "contact": "Twandikire",
+    "bookNow": "Saba Icyumba",
+    "dashboard": "Ubuyobozi"
+  },
+  "home": {
+    "welcome": "IKAZE MURI",
+    "heroTitle": "HOLLYWOOD HOTEL",
+    "heroSubtitle": "",
+    "bookSuite": "Saba Ubu",
+    "planEvent": "Twandikire",
+    "facilities": {
+      "luxurySuites": "Ibyumba byiza cyane",
+      "grandBallroom": "Salle Nini",
+      "fineDining": "Amafunguro Meza",
+      "rooftopLounge": "Ahantu ho kuruhukira hejuru",
+      "poolSpa": "Pisine & Spa",
+      "primeLocation": "Ahantu heza mu mujyi"
+    },
+    "why": {
+      "label": "Kuki Hitamo Hollywood Hotel",
+      "titleLine1": "Urubuga rwiza kuri",
+      "titleLine2": "Buri Gikorwa",
+      "description": "Hollywood Hotel ni ibirenze ahantu ho kuraramo gusa. Ni isi yayo yihariye — ifite ibyumba bisaga 100 n'ama-suite, ibyumba by'inama bitatu byakira abantu 350, ahantu ho kuruhukira hejuru (rooftop lounge bar), spa yuzuye, na pisine nini. Icyo waba uje gukora cyose, tugira icyo gihe icy'agaciro ntagereranywa.",
+      "features": [
+        "Ibyumba bisaga 100 n'ama-suite byiza byo mu byiciro 5",
+        "Ibyumba by'inama bitatu kuri buri gikorwa — kuva ku nama z'ubuyobozi kugeza ku birori binini",
+        "Rooftop Lounge & Bar ufite ishusho y'umujyi wose",
+        "Spa, Pisine & Ikigo cy'ubuzima bwiza (Wellness Centre) byuzuye",
+        "Imodoka itwara abantu n'ahantu heza rwagati mu mujyi"
+      ],
+      "exploreSuites": "Sura ibyumba byacu"
+    },
+    "accommodations": {
+      "label": "Aho Kurara Hacu",
+      "title": "Ibyumba Byihariye",
+      "description": "Kuva ku byumba bya deluxe byiza kugeza kuri Presidential Suite yacu iri ku rwego rw'isi, buri kurara ni igikorwa cyihariye.",
+      "perNight": "/ ijoro",
+      "reserveNow": "Saba Icyumba Ubu",
+      "featuredRooms": [
+        {
+          "name": "Icyumba cya Deluxe",
+          "description": "Ahantu hagutse heza heza ho kwicara n'ibindi byinshi byiza. Cyiza ku bashakanye n'abagenzi mu kazi.",
+          "amenities": [
+            "Ibyuma Bitanga Umwuka",
+            "Imashini Ikora Kawa",
+            "Wa-Fayi y'Ubuntu"
+          ]
+        },
+        {
+          "name": "Hollywood Suite",
+          "description": "Suite yacu yihariye ifite aho kwicarira hatandukanye, ukareba umujyi wose kandi ikagira ibyiza byinshi byerekana ubwiza.",
+          "amenities": [
+            "Amafunguro Yose Arimo",
+            "Kuringaniza Umwuka",
+            "Kaminibare"
+          ]
+        },
+        {
+          "name": "Presidential Suite",
+          "description": "Icyiza kuruta ibindi. Etaje yose ifite uwukwitaho wihariye, aho kurira hanini, n'icyumba cy'ikiraro kinini cyane.",
+          "amenities": [
+            "Uwukwitaho Wihariye",
+            "Terasi Yihariye",
+            "Piyano Nini"
+          ]
+        }
+      ]
+    },
+    "reviews": {
+      "label": "Uko Abashyitsi Babibona",
+      "title": "Icyo Abashyitsi Bacu Bavuga",
+      "description": "Inkuru zivuye mu bashyitsi babonye itandukaniro rya Hollywood Hotel.",
+      "testimonials": [
+        {
+          "quote": "Birashimishije cyane. Hollywood Hotel isobanura ubwiza bundi bushya — kuva mu nzu y'imbere nini kugeza ku hantu ho kuruhukira hejuru, buri kantu kanoze.",
+          "author": "Jean-Paul R.",
+          "role": "Umugenzi Mpuzamahanga mu Kazi"
+        },
+        {
+          "quote": "Twakoreye ibirori byacu bya buri mwaka mu cyumba cy'inama kinini. Ikipe yari idasanzwe kandi amafunguro yari ku rwego rw'isi. Tuzagaruka buri mwaka.",
+          "author": "Marie Claire U.",
+          "role": "Umuyobozi w'Ibirori, Inama Nyafurika"
+        },
+        {
+          "quote": "Presidential Suite yari itandukanye n'ibyo nigeze mbona byose. Spa na pisine mu gitondo cyakurikiyeho byabigize byiza cyane.",
+          "author": "David K.",
+          "role": "Umuhagarariye igihugu cye & Umushyitsi w'Icyubahiro"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Witeguye Kuba Muri Hollywood?",
+      "description": "Fata umwanya wawe uyu munsi winjire mu isi aho buri kantu gateguriwe kugushimisha.",
+      "button": "Saba Umwanya Wawe Ubu"
+    }
+  },
+  "dashboard": {
+    "adminOverview": "Incamake y'Ubuyobozi",
+    "allBookings": "Ibyasabwe Byose",
+    "roomsStatus": "Uko Ibyumba Bimeze",
+    "cashier": "Umubitsi",
+    "receptionist": "Uwakira Abashyitsi",
+    "accountant": "Umucungamari",
+    "dailyReport": "Raporo ya Buri Munsi",
+    "frontDesk": "Aho Kwakirira",
+    "revenueOverview": "Incamake y'Inyungu",
+    "signedInAs": "Uwinjiye nka",
+    "navigation": "Ibishakishwa",
+    "signOut": "Sohoka",
+    "checkingCredentials": "Kugenzura Umwirondoro...",
+    "welcomeBack": "Ikaze nanone",
+    "fullControl": "Ubuyobozi bwose bwa hoteli mu ncamake.",
+    "totalBookings": "Ibyasabwe Byose",
+    "confirmed": "Byemejwe",
+    "roomsOccupied": "Ibyumba Birimo Abantu",
+    "inHouseGuests": "Abashyitsi Bahari",
+    "revenueConfirmed": "Inyungu (Yemejwe)",
+    "conferenceBookings": "Inama Zasabwe",
+    "quickAccess": "Ibyihuse",
+    "cashierPosReport": "Raporo y'Umucungamari",
+    "uploadDailyReport": "Ohereza raporo ya buri munsi",
+    "receptionistDesk": "Aho Kwakirira",
+    "guestCheckIn": "Kwakira Abashyitsi",
+    "accountantOverview": "Incamake y'Imari",
+    "revenueBreakdown": "Incamake y'Inyungu",
+    "viewSearchReservations": "Reba kandi ushakishe ibyasabwe",
+    "staffAccounts": "Konti z'Abakozi",
+    "addStaff": "+ Ongera Umukozi",
+    "name": "Izina",
+    "role": "Umurimo",
+    "email": "Imeyili",
+    "view": "Reba",
+    "admin": "Umuyobozi",
+    "staffModuleComing": "Igice cy'imicungire y'abakozi — kizaza muri verisiyo itaha igihe umushinga wemejwe."
+  },
+  "login": {
+    "hotelControlSystem": "Sisitemu y'Ubuyobozi bwa Hoteli",
+    "staffAccessOnly": "Hollywood Hotel — Abakozi Gusa",
+    "emailAddress": "Imeyili",
+    "password": "Ijambo ry'Ibanga",
+    "invalidCredentials": "Imeyili cyangwa ijambo ry'ibanga sibyo. Reba konti z'igerageza hano hasi.",
+    "signIn": "Injira",
+    "demoAccounts": "Konti z'Igerageza — Kanda wuzuze",
+    "demoWarning": "Iyi ni sisitemu y'igerageza. Nta myirondoro y'ukuri ibikwa."
+  },
+  "rooms": {
+    "title": "Ibyumba & Suites",
+    "subtitle": "Amoko atanu y'ibyumba byiza cyane — kuva ku byumba bisanzwe byiza kugeza kuri Presidential Suite yacu yihariye.",
+    "night": "/ ijoro",
+    "amenities": "Ibyiza bihari",
+    "bookThisRoom": "Saba Iki Cyumba",
+    "photo": "Ifoto",
+    "standardRoom": "Icyumba Gisanzwe",
+    "standardDesc": "Cyiza ku muntu umwe cg kuraramo ijoro rimwe. Gikeye, gifite amahoro n'ibikenerwa byose.",
+    "deluxeRoom": "Icyumba cya Deluxe",
+    "deluxeDesc": "Kinini kandi cyiza kurushaho. Cyiza ku bashakanye cyangwa abanyemari bashaka ahantu hagutse ho kuruhukira.",
+    "executiveRoom": "Icyumba cya Executive",
+    "executiveDesc": "Kwiyakira byo ku rwego rwo hejuru harimo aho gukorera no kwidagadura ku munyamwuga ushaka ibirenzeho.",
+    "hollywoodSuite": "Hollywood Suite",
+    "hollywoodDesc": "Suite yacu yihariye ifite aho kwicarira hatandukanye, ukareba umujyi wose kandi ikagira ibyiza byinshi.",
+    "presidentialSuite": "Presidential Suite",
+    "presidentialDesc": "Icyiza kuruta ibindi muri Hollywood Hotel. Etaje yose, icyumba cy'ikiraro kinini, uwukwitaho wihariye, aho kurira wenyine, na terasi ureberaho.",
+    "tagPopular": "Ikunzwe",
+    "tagExclusive": "Yihariye",
+    "freeWifi": "Wa-Fayi y'Ubuntu",
+    "hotWater": "Amazi Ashyushye",
+    "tv": "TV",
+    "airConditioning": "Ibyuma Bitanga Umwuka",
+    "smartTv": "TV Zigezweho",
+    "coffeeMaker": "Imashini Ikora Kawa",
+    "highSpeedWifi": "Wa-Fayi Yihuta",
+    "breakfastIncluded": "Ifunguro rya Mu Gitondo ririmo",
+    "climateControl": "Kuringaniza Umwuka",
+    "allMealsIncluded": "Amafunguro Yose Arimo",
+    "minibar": "Kaminibare",
+    "dualSmartTvs": "TV ebyiri Zigezweho",
+    "butlerService": "Uwukwitaho Wihariye",
+    "fibreWifi": "Wa-Fayi y'insinga",
+    "smartClimate": "Umwuka Wigenzura",
+    "inSuiteChef": "Umutetsi Wihariye",
+    "fullMinibar": "Kaminibare Yuzuye",
+    "upTo4Guests": "Kugeza ku bantu 4"
+  }
+}

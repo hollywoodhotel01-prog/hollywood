@@ -1,0 +1,191 @@
+{
+  "navigation": {
+    "home": "Home",
+    "rooms": "Rooms & Suites",
+    "dining": "Dining",
+    "wellness": "Wellness",
+    "conference": "Conference",
+    "contact": "Contact",
+    "bookNow": "Book Now",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "welcome": "WELCOME TO",
+    "heroTitle": "HOLLYWOOD HOTEL",
+    "heroSubtitle": "",
+    "bookSuite": "Book Now",
+    "planEvent": "Contact Us",
+    "facilities": {
+      "luxurySuites": "Luxury Suites",
+      "grandBallroom": "Grand Ballroom",
+      "fineDining": "Fine Dining",
+      "rooftopLounge": "Rooftop Lounge",
+      "poolSpa": "Pool & Spa",
+      "primeLocation": "Prime Location"
+    },
+    "why": {
+      "label": "Why Hollywood Hotel",
+      "titleLine1": "A Grand Stage for",
+      "titleLine2": "Every Occasion",
+      "description": "Hollywood Hotel is more than just a place to stay. It is a world unto itself — with over 100 rooms and suites, three event halls seating up to 350 guests, a rooftop lounge bar, a full-service spa, and an Olympic-sized swimming pool. Whatever brings you here, we make it unforgettable.",
+      "features": [
+        "Over 100 luxury rooms and suites across 5 tiers",
+        "Three event halls for any occasion — from boardroom to grand gala",
+        "Rooftop Lounge & Bar with panoramic city views",
+        "Full-service Spa, Pool & Wellness Centre",
+        "Shuttle service and prime city-centre location"
+      ],
+      "exploreSuites": "Explore our suites"
+    },
+    "accommodations": {
+      "label": "Our Accommodations",
+      "title": "Featured Suites",
+      "description": "From elegant deluxe rooms to our world-class Presidential Suite, every stay is a statement.",
+      "perNight": "/night",
+      "reserveNow": "Reserve Now",
+      "featuredRooms": [
+        {
+          "name": "Deluxe Room",
+          "description": "Spacious comfort with premium seating and curated amenities. Perfect for couples and business travelers.",
+          "amenities": [
+            "Air Conditioning",
+            "Coffee Maker",
+            "Free Wi-Fi"
+          ]
+        },
+        {
+          "name": "Hollywood Suite",
+          "description": "Our signature suite with separate living areas, panoramic views, and luxury amenities that define glamour.",
+          "amenities": [
+            "All Meals Included",
+            "Climate Control",
+            "Minibar"
+          ]
+        },
+        {
+          "name": "Presidential Suite",
+          "description": "The pinnacle of luxury. A full private floor experience with butler service, grand dining, and an opulent master bedroom.",
+          "amenities": [
+            "Butler Service",
+            "Private Terrace",
+            "Grand Piano"
+          ]
+        }
+      ]
+    },
+    "reviews": {
+      "label": "Reviews",
+      "title": "What Our Guests Say",
+      "description": "Stories from guests who have experienced the Hollywood Hotel difference.",
+      "testimonials": [
+        {
+          "quote": "Simply breathtaking. Hollywood Hotel redefines luxury — from the grand lobby to the rooftop lounge, every detail is perfection.",
+          "author": "Jean-Paul R.",
+          "role": "International Business Traveler"
+        },
+        {
+          "quote": "We hosted our annual gala in the Grand Ballroom. The team was exceptional and the catering was world-class. We will be back every year.",
+          "author": "Marie Claire U.",
+          "role": "Event Director, Pan-African Summit"
+        },
+        {
+          "quote": "The Presidential Suite was unlike anything I have ever experienced. The spa and pool the next morning made it absolutely perfect.",
+          "author": "David K.",
+          "role": "Diplomat & VIP Guest"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Experience Hollywood?",
+      "description": "Book your stay today and step into a world where every detail is designed to impress.",
+      "button": "Book Your Stay Now"
+    }
+  },
+  "dashboard": {
+    "adminOverview": "Admin Overview",
+    "allBookings": "All Bookings",
+    "roomsStatus": "Rooms Status",
+    "cashier": "Cashier",
+    "receptionist": "Receptionist",
+    "accountant": "Accountant",
+    "dailyReport": "Daily Report",
+    "frontDesk": "Front Desk",
+    "revenueOverview": "Revenue Overview",
+    "signedInAs": "Signed in as",
+    "navigation": "Navigation",
+    "signOut": "Sign Out",
+    "checkingCredentials": "Checking credentials...",
+    "welcomeBack": "Welcome back",
+    "fullControl": "Full hotel control at a glance.",
+    "totalBookings": "Total Bookings",
+    "confirmed": "Confirmed",
+    "roomsOccupied": "Rooms Occupied",
+    "inHouseGuests": "In-House Guests",
+    "revenueConfirmed": "Revenue (Confirmed)",
+    "conferenceBookings": "Conference Bookings",
+    "quickAccess": "Quick Access",
+    "cashierPosReport": "Cashier / POS Report",
+    "uploadDailyReport": "Upload daily SimbaPOS report",
+    "receptionistDesk": "Receptionist Desk",
+    "guestCheckIn": "Guest check-in & room grid",
+    "accountantOverview": "Accountant Overview",
+    "revenueBreakdown": "Revenue breakdown & logs",
+    "viewSearchReservations": "View and search reservations",
+    "staffAccounts": "Staff Accounts",
+    "addStaff": "+ Add Staff",
+    "name": "Name",
+    "role": "Role",
+    "email": "Email",
+    "view": "View",
+    "admin": "Admin",
+    "staffModuleComing": "Staff management module — coming in the next release once project is confirmed."
+  },
+  "login": {
+    "hotelControlSystem": "Hotel Control System",
+    "staffAccessOnly": "Hollywood Hotel — Staff Access Only",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "invalidCredentials": "Invalid email or password. Please check the demo accounts below.",
+    "signIn": "Sign In",
+    "demoAccounts": "Demo Accounts — Click to Auto-fill",
+    "demoWarning": "This is a demo system. No real credentials are stored."
+  },
+  "rooms": {
+    "title": "Rooms & Suites",
+    "subtitle": "Five tiers of luxury accommodation — from comfortable standard rooms to our exclusive Presidential Suite.",
+    "night": "/ night",
+    "amenities": "Amenities",
+    "bookThisRoom": "Book This Room",
+    "photo": "Photo",
+    "standardRoom": "Standard Room",
+    "standardDesc": "Perfect for the solo traveler or a quick overnight stay. Clean, comfortable, and efficient with all the essentials.",
+    "deluxeRoom": "Deluxe Room",
+    "deluxeDesc": "Spacious comfort with extra amenities. Ideal for couples or business travelers needing more room to relax and unwind.",
+    "executiveRoom": "Executive Room",
+    "executiveDesc": "Premium comfort with a dedicated workspace and premium finishes for the traveling professional who demands more.",
+    "hollywoodSuite": "Hollywood Suite",
+    "hollywoodDesc": "Our signature suite offering a separate living area, premium city views, and luxury amenities that define glamour.",
+    "presidentialSuite": "Presidential Suite",
+    "presidentialDesc": "The pinnacle of Hollywood Hotel luxury. An entire private floor with a grand master bedroom, personal butler, private dining room, and a terrace with panoramic views.",
+    "tagPopular": "Popular",
+    "tagExclusive": "Exclusive",
+    "freeWifi": "Free Wi-Fi",
+    "hotWater": "Hot Water",
+    "tv": "TV",
+    "airConditioning": "Air Conditioning",
+    "smartTv": "Smart TV",
+    "coffeeMaker": "Coffee Maker",
+    "highSpeedWifi": "High-Speed Wi-Fi",
+    "breakfastIncluded": "Breakfast Included",
+    "climateControl": "Climate Control",
+    "allMealsIncluded": "All Meals Included",
+    "minibar": "Minibar",
+    "dualSmartTvs": "Dual Smart TVs",
+    "butlerService": "Butler Service",
+    "fibreWifi": "Fibre Wi-Fi",
+    "smartClimate": "Smart Climate",
+    "inSuiteChef": "In-Suite Chef",
+    "fullMinibar": "Full Minibar",
+    "upTo4Guests": "Up to 4 Guests"
+  }
+}
