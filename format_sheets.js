@@ -1,6 +1,6 @@
 /**
  * ============================================================
- *  Midland Hotel — Google Sheets Formatting Script
+ *  Hollywood Hotel — Google Sheets Formatting Script
  *  (Format-only — data already written by setup_sheets.js)
  * ============================================================
  */
@@ -52,10 +52,10 @@ const SHEET_SPECS = [
 ];
 
 const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-const SUB_BANNER = `Midland Hotel Kayonza  •  Hotel Management System  •  Last Updated: ${today}`;
+const SUB_BANNER = `Hollywood Hotel  •  Hotel Management System  •  Last Updated: ${today}`;
 
 async function main() {
-  console.log("\n🎨  Midland Hotel — Google Sheets Formatter");
+  console.log("\n🎨  Hollywood Hotel — Google Sheets Formatter");
   console.log("═".repeat(50));
 
   const auth = new google.auth.GoogleAuth({

@@ -128,7 +128,7 @@ export default function InvoiceModal({
       setPaymentInstructions(
         `Bank Transfer to ${vendorConfig.bank_name} A/C ${vendorConfig.account_number} or MTN MoMo: ${vendorConfig.momo_code}`
       );
-      setNotes("Thank you for choosing Midland Hotel Kayonza. We appreciate your business!");
+      setNotes("Thank you for choosing Hollywood Hotel. We appreciate your business!");
       setOrderId("");
       setGlobalDiscount(0);
       setShippingFee(0);
@@ -260,7 +260,7 @@ export default function InvoiceModal({
       customer: {
         customer_id: customerId || `CUST-${Math.floor(100 + Math.random() * 900)}`,
         name: customerName,
-        email: customerEmail || "guest@midlandhotel.rw",
+        email: customerEmail || "guest@hollywoodhotel.rw",
         phone: customerPhone,
         address: customerAddress,
         tax_id: customerTaxId,
@@ -365,7 +365,7 @@ export default function InvoiceModal({
                   onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold text-black focus:outline-none focus:border-gold"
                 >
-                  <option value="USD">USD ($)</option>
+                  <option value="USD">USD (RWF)</option>
                   <option value="RWF">RWF (Rwanda Francs)</option>
                   <option value="EUR">EUR (€)</option>
                   <option value="UGX">UGX (Uganda Shillings)</option>
@@ -561,7 +561,7 @@ export default function InvoiceModal({
                             </option>
                             {HOTEL_SERVICE_PRESETS.map((p) => (
                               <option key={p.id} value={p.id}>
-                                {p.name} (${p.unit_price})
+                                {p.name} (RWF {p.unit_price})
                               </option>
                             ))}
                           </select>

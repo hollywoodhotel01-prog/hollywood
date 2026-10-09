@@ -11,12 +11,14 @@ import {
   Calculator,
   Hotel,
   ShieldCheck,
+  Wallet,
+  PieChart,
 } from "lucide-react";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
 
-  const isAccountantView = pathname.includes("/dashboard/accountant");
+  const isAccountantView = pathname.includes("/dashboard/finance") || pathname.includes("/dashboard/invoices") || pathname.includes("/dashboard/receipts");
 
   const coreLinks = [
     { name: "Admin Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -27,7 +29,8 @@ export default function DashboardSidebar() {
   const financeLinks = [
     { name: "Invoices", href: "/dashboard/invoices", icon: FileText },
     { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
-    { name: "Accountant Portal", href: "/dashboard/accountant", icon: Calculator },
+    { name: "Finance Center", href: "/dashboard/finance", icon: Wallet },
+    { name: "Financial Reports", href: "/dashboard/reports", icon: PieChart },
   ];
 
   return (
@@ -40,7 +43,7 @@ export default function DashboardSidebar() {
           </div>
           <div>
             <span className="font-heading font-black text-lg text-black block leading-none">
-              Midland Portal
+              Hollywood Portal
             </span>
             <span className="text-[10px] font-bold text-gold-dark uppercase tracking-wider">
               {isAccountantView ? "Finance Dept" : "Administration"}
@@ -117,10 +120,10 @@ export default function DashboardSidebar() {
             </span>
           </div>
           <Link
-            href={isAccountantView ? "/dashboard" : "/dashboard/accountant"}
+            href={isAccountantView ? "/dashboard" : "/dashboard/finance"}
             className="block text-center w-full py-1.5 bg-gray-100 hover:bg-black hover:text-gold text-black rounded-lg text-xs font-bold transition-colors"
           >
-            Switch to {isAccountantView ? "Admin Dashboard" : "Accountant Portal"}
+            Switch to {isAccountantView ? "Admin Dashboard" : "Finance Center"}
           </Link>
         </div>
       </div>

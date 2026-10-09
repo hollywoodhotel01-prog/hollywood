@@ -6,74 +6,116 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Calendar, BedDouble, CheckCircle, DollarSign,
   ClipboardList, CreditCard, UserCog, ChevronRight,
-  KeyRound, Eye, EyeOff, X, AlertCircle, ShieldCheck,
+  TrendingUp, TrendingDown, BarChart3, X, FileText,
+  Hotel, ConciergeBell, ArrowUpRight, ArrowDownRight,
+  Layers, CalendarDays, Star,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export default function AdminDashboardPage() {
-  const { bookings, inHouseGuests, roomsData, conferenceBookings, currentUser, changePassword } = useHotel();
+  const { bookings, inHouseGuests, roomsData, conferenceBookings, currentUser, expenses, otherRevenues } = useHotel();
   const { lang, dict } = useLanguage();
   const d = dict.dashboard;
   const [addStaffMsg, setAddStaffMsg] = useState(false);
 
-  // ── Change Password Modal ────────────────────────────────────────
-  const [showChangePw, setShowChangePw] = useState(false);
-  const [currentPw, setCurrentPw] = useState("");
-  const [newPw, setNewPw] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
-  const [showCurrentPw, setShowCurrentPw] = useState(false);
-  const [showNewPw, setShowNewPw] = useState(false);
-  const [pwError, setPwError] = useState("");
-  const [pwSuccess, setPwSuccess] = useState(false);
-  const [pwLoading, setPwLoading] = useState(false);
+  // ── Reports Panel ────────────────────────────────────────────────
+  const [showReports, setShowReports] = useState(false);
+  const [reportTab, setReportTab] = useState<"daily" | "monthly" | "reception">("daily");
 
-  const openChangePw = () => {
-    setCurrentPw(""); setNewPw(""); setConfirmPw("");
-    setPwError(""); setPwSuccess(false); setPwLoading(false);
-    setShowChangePw(true);
-  };
-  const closeChangePw = () => setShowChangePw(false);
+  // ── Date Filtering (for stats) ───────────────────────────────────
+  const [selectedMonth, setSelectedMonth] = useState("all");
 
-  const handleChangePw = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwError("");
-    if (newPw.length < 8) { setPwError("New password must be at least 8 characters."); return; }
-    if (newPw !== confirmPw) { setPwError("Passwords do not match."); return; }
-    setPwLoading(true);
-    try {
-      await changePassword(currentPw, newPw);
-      setPwSuccess(true);
-      setTimeout(() => { setShowChangePw(false); }, 2000);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes("wrong-password") || msg.includes("invalid-credential")) {
-        setPwError("Current password is incorrect.");
-      } else {
-        setPwError("Failed to change password. Please try again.");
+  const filteredBookings = useMemo(() => {
+    if (selectedMonth === "all") return bookings;
+    return bookings.filter(b => b.checkIn.startsWith(selectedMonth));
+  }, [bookings, selectedMonth]);
+
+  const filteredConfBookings = useMemo(() => {
+    if (selectedMonth === "all") return conferenceBookings;
+    return conferenceBookings.filter(b => b.date.startsWith(selectedMonth));
+  }, [conferenceBookings, selectedMonth]);
+
+  // ── Monthly Financial Report ──────────────────────────────────────
+  const monthlyReport = useMemo(() => {
+    const reportMap: Record<string, number> = {};
+    bookings.forEach(b => {
+      if (b.status === "Confirmed" && b.checkIn) {
+        const month = b.checkIn.substring(0, 7);
+        reportMap[month] = (reportMap[month] || 0) + (b.amount || 0);
       }
-    } finally {
-      setPwLoading(false);
-    }
+    });
+    conferenceBookings.forEach(c => {
+      if (c.status === "Confirmed" && c.date) {
+        const month = c.date.substring(0, 7);
+        reportMap[month] = (reportMap[month] || 0) + (c.amount || 0);
+      }
+    });
+    return Object.entries(reportMap)
+      .map(([month, revenue]) => ({ month, revenue }))
+      .sort((a, b) => b.month.localeCompare(a.month));
+  }, [bookings, conferenceBookings]);
+
+  const maxMonthlyRevenue = Math.max(...monthlyReport.map(r => r.revenue), 1);
+
+  const formatMonth = (yyyyMm: string) => {
+    const [y, m] = yyyyMm.split('-');
+    const date = new Date(parseInt(y), parseInt(m) - 1);
+    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
   };
+
+  // ── Report Computations ───────────────────────────────────────────
+  const today = new Date().toISOString().split("T")[0];
+  const thisMonth = today.substring(0, 7);
+
+  // Daily
+  const todayBookings = bookings.filter(b => b.checkIn === today);
+  const todayConferences = conferenceBookings.filter(b => b.date === today);
+  const todayRevenue =
+    todayBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
+    todayConferences.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0);
+  const todayCheckouts = bookings.filter(b => b.checkOut === today);
+
+  // Monthly
+  const monthBookings = bookings.filter(b => b.checkIn.startsWith(thisMonth));
+  const monthRevenue = monthBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
+  const monthConfRevenue = conferenceBookings.filter(b => b.date.startsWith(thisMonth) && b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
+  const monthExpenses = expenses.filter(e => e.date.startsWith(thisMonth)).reduce((s, e) => s + (e.amount || 0), 0);
+  const monthOtherRevenue = otherRevenues.filter(r => r.date.startsWith(thisMonth)).reduce((s, r) => s + (r.amount || 0), 0);
+  const monthTotalRevenue = monthRevenue + monthConfRevenue + monthOtherRevenue;
+  const monthProfit = monthTotalRevenue - monthExpenses;
+
+  // Reception / Overall
+  const totalGuests = inHouseGuests.length;
+  const totalRooms = roomsData.length;
+  const occupiedRooms = roomsData.filter(r => r.status === "Occupied").length;
+  const availableRooms = roomsData.filter(r => r.status === "Available").length;
+  const bookedRooms = roomsData.filter(r => r.status === "Booked").length;
+  const maintenanceRooms = roomsData.filter(r => r.status === "Maintenance").length;
+  const totalConferences = conferenceBookings.length;
+  const confirmedConf = conferenceBookings.filter(b => b.status === "Confirmed").length;
+  const pendingConf = conferenceBookings.filter(b => b.status === "Pending").length;
+  const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
+
   // ────────────────────────────────────────────────────────────────
 
-  const totalRevenue = bookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + b.amount, 0);
-  const occupiedRooms = roomsData.filter(r => r.status === "Occupied").length;
+  const totalRevenue =
+    filteredBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
+    filteredConfBookings.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0);
 
   const stats = [
-    { label: d.totalBookings, value: bookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100" },
-    { label: d.confirmed, value: bookings.filter(b => b.status === "Confirmed").length, icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
+    { label: d.totalBookings, value: filteredBookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100" },
+    { label: d.confirmed, value: filteredBookings.filter(b => b.status === "Confirmed").length, icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
     { label: d.roomsOccupied, value: occupiedRooms, icon: BedDouble, color: "text-gold", bg: "bg-black" },
     { label: d.inHouseGuests, value: inHouseGuests.length, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { label: d.revenueConfirmed, value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, color: "text-purple-600", bg: "bg-purple-100" },
-    { label: d.conferenceBookings, value: conferenceBookings.length, icon: ClipboardList, color: "text-orange-600", bg: "bg-orange-100" },
+    { label: d.revenueConfirmed, value: `RWF ${totalRevenue.toLocaleString()}`, icon: DollarSign, color: "text-purple-600", bg: "bg-purple-100" },
+    { label: d.conferenceBookings, value: filteredConfBookings.length, icon: ClipboardList, color: "text-orange-600", bg: "bg-orange-100" },
   ];
 
   const shortcuts = [
     { label: d.cashierPosReport, href: `/${lang}/dashboard/cashier`, icon: CreditCard, desc: d.uploadDailyReport },
     { label: d.receptionistDesk, href: `/${lang}/dashboard/receptionist`, icon: ClipboardList, desc: d.guestCheckIn },
-    { label: d.accountantOverview, href: `/${lang}/dashboard/accountant`, icon: DollarSign, desc: d.revenueBreakdown },
+    { label: "Daily Finance", href: `/${lang}/dashboard/finance`, icon: DollarSign, desc: "Revenue & Expense Tracking" },
     { label: d.allBookings, href: `/${lang}/dashboard/bookings`, icon: Calendar, desc: d.viewSearchReservations },
   ];
 
@@ -81,24 +123,32 @@ export default function AdminDashboardPage() {
     { name: "Victor Adonis", roleKey: "admin", email: "admin@hollywoodhotel.rw", href: `/${lang}/dashboard` },
     { name: "Sandra Mbeki", roleKey: "cashier", email: "cashier@hollywoodhotel.rw", href: `/${lang}/dashboard/cashier` },
     { name: "James Osei", roleKey: "receptionist", email: "reception@hollywoodhotel.rw", href: `/${lang}/dashboard/receptionist` },
-    { name: "Grace Mutua", roleKey: "accountant", email: "accounts@hollywoodhotel.rw", href: `/${lang}/dashboard/accountant` },
+    { name: "Grace Mutua", roleKey: "accountant", email: "accounts@hollywoodhotel.rw", href: `/${lang}/dashboard/finance` },
   ];
+
+  const TABS = [
+    { key: "daily", label: (d as any).daily || "Daily", icon: CalendarDays },
+    { key: "monthly", label: (d as any).monthly || "Monthly", icon: BarChart3 },
+    { key: "reception", label: (d as any).reception || "Reception", icon: Hotel },
+  ] as const;
 
   return (
     <>
-      <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mb-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div>
           <h1 className="text-4xl font-heading font-black text-black mb-2">{d.adminOverview}</h1>
           <p className="text-gray-600 font-medium text-lg">{d.welcomeBack}, {currentUser?.name}. {d.fullControl}</p>
         </div>
-        {/* Change Password Button */}
+
+        {/* Reports Button */}
         <button
-          id="change-password-btn"
-          onClick={openChangePw}
-          className="flex items-center gap-2 px-5 py-3 bg-black text-gold rounded-2xl font-bold text-sm hover:bg-gray-900 transition-all shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_20px_rgba(251,191,36,0.25)] group"
+          id="open-reports-btn"
+          onClick={() => setShowReports(true)}
+          className="flex items-center gap-2.5 px-6 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:bg-gray-900 transition-all shadow-[0_8px_24px_rgba(0,0,0,0.18)] hover:shadow-[0_8px_24px_rgba(251,191,36,0.22)] group whitespace-nowrap self-start"
         >
-          <KeyRound size={16} className="group-hover:rotate-12 transition-transform" />
-          Change Password
+          <FileText size={17} className="text-gold group-hover:scale-110 transition-transform" />
+          <span>{(d as any).reportsBtn || "Reports"}</span>
+          <span className="ml-1 text-[10px] bg-gold text-black font-black px-1.5 py-0.5 rounded-full">3</span>
         </button>
       </div>
 
@@ -185,142 +235,411 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* ── Change Password Modal ── */}
+      {/* Monthly Financial Report Bar Chart */}
+      <div className="mt-12 mb-12 bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="p-6 md:p-8 border-b-2 border-gray-100 flex items-center gap-3 bg-gray-50/50">
+          <TrendingUp size={22} className="text-gold" />
+          <h2 className="text-2xl font-black text-black">Monthly Financial Report</h2>
+        </div>
+        <div className="p-6 md:p-8">
+          {monthlyReport.length === 0 ? (
+            <p className="text-gray-500 font-medium text-center py-10">No revenue data available.</p>
+          ) : (
+            <div className="space-y-6">
+              {monthlyReport.map((report, i) => {
+                const widthPercent = Math.max(10, (report.revenue / maxMonthlyRevenue) * 100);
+                return (
+                  <motion.div key={report.month} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="group">
+                    <div className="flex justify-between items-end mb-2">
+                      <p className="font-bold text-black">{formatMonth(report.month)}</p>
+                      <p className="font-black text-lg text-gold">RWF {report.revenue.toLocaleString()}</p>
+                    </div>
+                    <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden flex items-center">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${widthPercent}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="h-full bg-black rounded-full relative overflow-hidden"
+                      >
+                        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:20px_20px]" />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Reports Slide-Over Panel ── */}
       <AnimatePresence>
-        {showChangePw && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={(e) => { if (e.target === e.currentTarget) closeChangePw(); }}
-          >
+        {showReports && (
+          <>
+            {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-white rounded-3xl shadow-[0_40px_80px_rgba(0,0,0,0.25)] w-full max-w-md overflow-hidden"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setShowReports(false)}
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            />
+
+            {/* Panel */}
+            <motion.aside
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+              className="fixed top-0 right-0 z-50 h-screen w-full max-w-[480px] bg-white shadow-[−40px_0_80px_rgba(0,0,0,0.18)] flex flex-col"
             >
-              {/* Modal Header */}
-              <div className="relative bg-black px-8 py-6">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gold" />
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gold/20 rounded-xl flex items-center justify-center">
-                      <KeyRound size={20} className="text-gold" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-black text-white">Change Password</h3>
-                      <p className="text-xs text-gray-400 font-medium">{currentUser?.email}</p>
-                    </div>
+              {/* Panel Header */}
+              <div className="bg-black px-6 py-5 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="bg-gold p-2 rounded-xl">
+                    <FileText size={18} className="text-black" strokeWidth={2.5} />
                   </div>
-                  <button onClick={closeChangePw} className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
-                    <X size={16} />
-                  </button>
+                  <div>
+                    <h2 className="text-white font-black text-lg leading-tight">{(d as any).reports || "Reports"}</h2>
+                    <p className="text-gray-400 text-xs font-medium">{new Date().toLocaleDateString(lang === 'rw' ? "rw-RW" : "en-RW", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+                  </div>
                 </div>
+                <button
+                  id="close-reports-btn"
+                  onClick={() => setShowReports(false)}
+                  className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              {/* Modal Body */}
-              <div className="px-8 py-6">
-                {pwSuccess ? (
-                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-3 py-6 text-center">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                      <ShieldCheck size={32} className="text-green-600" />
-                    </div>
-                    <p className="font-black text-black text-lg">Password Changed!</p>
-                    <p className="text-sm text-gray-500">Your password has been updated successfully.</p>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleChangePw} className="space-y-5">
-                    {/* Current Password */}
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Current Password</label>
-                      <div className="relative">
-                        <input
-                          required
-                          type={showCurrentPw ? "text" : "password"}
-                          value={currentPw}
-                          onChange={e => setCurrentPw(e.target.value)}
-                          placeholder="Enter current password"
-                          className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-gray-200 bg-gray-50 text-black focus:bg-white focus:border-gold outline-none transition-all font-medium text-sm"
-                        />
-                        <button type="button" onClick={() => setShowCurrentPw(!showCurrentPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
-                          {showCurrentPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </div>
+              {/* Tab Switcher */}
+              <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex gap-2 shrink-0">
+                {TABS.map(tab => (
+                  <button
+                    key={tab.key}
+                    id={`report-tab-${tab.key}`}
+                    onClick={() => setReportTab(tab.key)}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                      reportTab === tab.key
+                        ? "bg-black text-gold shadow-sm"
+                        : "text-gray-500 hover:text-black hover:bg-gray-200"
+                    }`}
+                  >
+                    <tab.icon size={13} />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Panel Body */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+
+                {/* ── DAILY REPORT ── */}
+                {reportTab === "daily" && (
+                  <motion.div key="daily" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <CalendarDays size={15} className="text-gold" />
+                      <span className="text-xs font-black text-gray-500 uppercase tracking-wider">
+                        {(d as any).todaysSnapshot || "Today's Snapshot"} — {new Date().toLocaleDateString(lang === 'rw' ? "rw-RW" : "en-RW", { dateStyle: "medium" })}
+                      </span>
                     </div>
 
-                    {/* New Password */}
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">New Password</label>
-                      <div className="relative">
-                        <input
-                          required
-                          type={showNewPw ? "text" : "password"}
-                          value={newPw}
-                          onChange={e => setNewPw(e.target.value)}
-                          placeholder="Min. 8 characters"
-                          className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-gray-200 bg-gray-50 text-black focus:bg-white focus:border-gold outline-none transition-all font-medium text-sm"
-                        />
-                        <button type="button" onClick={() => setShowNewPw(!showNewPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
-                          {showNewPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
+                    {/* Key metrics */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: (d as any).newCheckIns || "New Check-ins", value: todayBookings.length, icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50" },
+                        { label: (d as any).checkOutsToday || "Check-outs Today", value: todayCheckouts.length, icon: ArrowDownRight, color: "text-red-500", bg: "bg-red-50" },
+                        { label: (d as any).conferences || "Conferences", value: todayConferences.length, icon: ConciergeBell, color: "text-purple-600", bg: "bg-purple-50" },
+                        { label: (d as any).revenueToday || "Revenue Today", value: `RWF ${todayRevenue.toLocaleString()}`, icon: DollarSign, color: "text-gold", bg: "bg-amber-50" },
+                      ].map((m, i) => (
+                        <div key={i} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                          <div className={`w-8 h-8 rounded-xl ${m.bg} flex items-center justify-center mb-2`}>
+                            <m.icon size={16} className={m.color} />
+                          </div>
+                          <p className="text-xl font-black text-black">{m.value}</p>
+                          <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wide mt-0.5">{m.label}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* In-house guests */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-xs font-black uppercase tracking-wider text-gray-500">{(d as any).currentlyInHouse || "Currently In-House"}</p>
+                        <span className="text-xs font-black text-white bg-black px-2.5 py-1 rounded-full">{inHouseGuests.length} {(d as any).guests || "guests"}</span>
                       </div>
-                      {/* Password strength indicator */}
-                      {newPw.length > 0 && (
-                        <div className="mt-2 flex gap-1">
-                          {[...Array(4)].map((_, i) => (
-                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${
-                              newPw.length >= (i + 1) * 2
-                                ? i < 2 ? "bg-red-400" : i < 3 ? "bg-yellow-400" : "bg-green-500"
-                                : "bg-gray-200"
-                            }`} />
+                      {inHouseGuests.length === 0 ? (
+                        <p className="text-sm text-gray-400 font-medium text-center py-4">{(d as any).noGuestsCheckedIn || "No guests currently checked in."}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {inHouseGuests.slice(0, 5).map((g, i) => (
+                            <div key={i} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-7 h-7 bg-black rounded-full flex items-center justify-center text-gold text-xs font-black">
+                                  {g.fullName.charAt(0)}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-bold text-black leading-tight">{g.fullName}</p>
+                                  <p className="text-[11px] text-gray-400">{g.roomAssigned}</p>
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-400 font-medium">{(d as any).out || "Out"}: {g.checkOut}</p>
+                            </div>
                           ))}
+                          {inHouseGuests.length > 5 && (
+                            <p className="text-xs text-center text-gray-400 font-medium pt-1">+{inHouseGuests.length - 5} {(d as any).moreGuests || "more guests"}</p>
+                          )}
                         </div>
                       )}
                     </div>
 
-                    {/* Confirm Password */}
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Confirm New Password</label>
-                      <input
-                        required
-                        type="password"
-                        value={confirmPw}
-                        onChange={e => setConfirmPw(e.target.value)}
-                        placeholder="Repeat new password"
-                        className={`w-full px-4 py-3 rounded-xl border-2 bg-gray-50 text-black focus:bg-white outline-none transition-all font-medium text-sm ${
-                          confirmPw && confirmPw !== newPw ? "border-red-300 focus:border-red-400" : "border-gray-200 focus:border-gold"
-                        }`}
-                      />
+                    {/* Room status quick view */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).roomStatusToday || "Room Status Today"}</p>
+                      <div className="grid grid-cols-4 gap-2 text-center">
+                        {[
+                          { label: (d as any).available || "Available", value: availableRooms, color: "text-emerald-600" },
+                          { label: (d as any).occupied || "Occupied", value: occupiedRooms, color: "text-red-500" },
+                          { label: (d as any).booked || "Booked", value: bookedRooms, color: "text-blue-600" },
+                          { label: (d as any).maintenance || "Maintenance", value: maintenanceRooms, color: "text-amber-500" },
+                        ].map((r, i) => (
+                          <div key={i}>
+                            <p className={`text-2xl font-black ${r.color}`}>{r.value}</p>
+                            <p className="text-[10px] text-gray-400 font-bold leading-tight mt-0.5">{r.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-3 h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                        {totalRooms > 0 && (
+                          <>
+                            <div style={{ width: `${(occupiedRooms / totalRooms) * 100}%` }} className="bg-red-400 h-full" />
+                            <div style={{ width: `${(bookedRooms / totalRooms) * 100}%` }} className="bg-blue-400 h-full" />
+                            <div style={{ width: `${(availableRooms / totalRooms) * 100}%` }} className="bg-emerald-400 h-full" />
+                            <div style={{ width: `${(maintenanceRooms / totalRooms) * 100}%` }} className="bg-amber-400 h-full" />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* ── MONTHLY REPORT ── */}
+                {reportTab === "monthly" && (
+                  <motion.div key="monthly" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <BarChart3 size={15} className="text-gold" />
+                      <span className="text-xs font-black text-gray-500 uppercase tracking-wider">
+                        {new Date().toLocaleString(lang === 'rw' ? "rw-RW" : "en-RW", { month: "long", year: "numeric" })} {(d as any).summary || "Summary"}
+                      </span>
                     </div>
 
-                    {pwError && (
-                      <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
-                        <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                        {pwError}
+                    {/* Revenue / Expenses / Profit cards */}
+                    <div className="space-y-3">
+                      <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-black uppercase tracking-wider text-emerald-700">{(d as any).totalRevenue || "Total Revenue"}</p>
+                          <TrendingUp size={16} className="text-emerald-600" />
+                        </div>
+                        <p className="text-3xl font-black text-emerald-700">RWF {monthTotalRevenue.toLocaleString()}</p>
+                        <div className="mt-3 space-y-1.5 text-xs font-medium text-emerald-600">
+                          <div className="flex justify-between">
+                            <span>{(d as any).roomBookings || "Room Bookings"}</span>
+                            <span className="font-black">RWF {monthRevenue.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>{(d as any).conferenceRevenue || "Conference Revenue"}</span>
+                            <span className="font-black">RWF {monthConfRevenue.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>{(d as any).otherRevenue || "Other Revenue"}</span>
+                            <span className="font-black">RWF {monthOtherRevenue.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-red-50 border border-red-100 rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-black uppercase tracking-wider text-red-700">{(d as any).totalExpenses || "Total Expenses"}</p>
+                          <TrendingDown size={16} className="text-red-500" />
+                        </div>
+                        <p className="text-3xl font-black text-red-600">RWF {monthExpenses.toLocaleString()}</p>
+                        {monthExpenses === 0 && (
+                          <p className="text-xs text-red-400 mt-1.5 font-medium">{(d as any).noExpensesLogged || "No expenses logged this month."}</p>
+                        )}
+                      </div>
+
+                      <div className={`border rounded-2xl p-5 ${monthProfit >= 0 ? "bg-blue-50 border-blue-100" : "bg-orange-50 border-orange-100"}`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className={`text-xs font-black uppercase tracking-wider ${monthProfit >= 0 ? "text-blue-700" : "text-orange-700"}`}>{(d as any).netProfit || "Net Profit"}</p>
+                          <Star size={16} className={monthProfit >= 0 ? "text-blue-500" : "text-orange-500"} />
+                        </div>
+                        <p className={`text-3xl font-black ${monthProfit >= 0 ? "text-blue-700" : "text-orange-600"}`}>
+                          {monthProfit < 0 ? "-" : ""}RWF {Math.abs(monthProfit).toLocaleString()}
+                        </p>
+                        {monthTotalRevenue > 0 && (
+                          <p className={`text-xs font-bold mt-1.5 ${monthProfit >= 0 ? "text-blue-500" : "text-orange-500"}`}>
+                            {(d as any).margin || "Margin"}: {Math.round((monthProfit / monthTotalRevenue) * 100)}%
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Monthly bookings breakdown */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).thisMonthsBookings || "This Month's Bookings"}</p>
+                      <div className="grid grid-cols-3 gap-3 text-center">
+                        {[
+                          { label: (d as any).total || "Total", value: monthBookings.length, color: "text-black" },
+                          { label: (d as any).confirmed || "Confirmed", value: monthBookings.filter(b => b.status === "Confirmed").length, color: "text-emerald-600" },
+                          { label: (d as any).pending || "Pending", value: monthBookings.filter(b => b.status === "Pending").length, color: "text-amber-500" },
+                        ].map((item, i) => (
+                          <div key={i} className="bg-gray-50 rounded-xl py-3">
+                            <p className={`text-2xl font-black ${item.color}`}>{item.value}</p>
+                            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide mt-0.5">{item.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Past months mini list */}
+                    {monthlyReport.length > 0 && (
+                      <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                        <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).revenuePastMonths || "Revenue — Past Months"}</p>
+                        <div className="space-y-2.5">
+                          {monthlyReport.slice(0, 6).map((r, i) => (
+                            <div key={r.month} className="flex items-center gap-3">
+                              <p className="text-xs font-bold text-gray-600 w-28 shrink-0">{formatMonth(r.month)}</p>
+                              <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${Math.max(5, (r.revenue / maxMonthlyRevenue) * 100)}%` }}
+                                  transition={{ duration: 0.8, delay: i * 0.05 }}
+                                  className="h-full bg-black rounded-full"
+                                />
+                              </div>
+                              <p className="text-xs font-black text-gold w-28 text-right shrink-0">RWF {r.revenue.toLocaleString()}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
+                  </motion.div>
+                )}
 
-                    <div className="flex gap-3 pt-2">
-                      <button type="button" onClick={closeChangePw} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors">
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={pwLoading}
-                        className="flex-1 py-3 rounded-xl bg-black text-gold font-bold text-sm hover:bg-gray-900 transition-all shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
-                      >
-                        {pwLoading
-                          ? <span className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                          : <><KeyRound size={14} /> Update Password</>
-                        }
-                      </button>
+                {/* ── RECEPTION REPORT ── */}
+                {reportTab === "reception" && (
+                  <motion.div key="reception" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Hotel size={15} className="text-gold" />
+                      <span className="text-xs font-black text-gray-500 uppercase tracking-wider">{(d as any).receptionOverview || "Reception & Operations Overview"}</span>
                     </div>
-                  </form>
+
+                    {/* Occupancy Rate */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-xs font-black uppercase tracking-wider text-gray-500">{(d as any).occupancyRate || "Occupancy Rate"}</p>
+                        <span className="text-xs font-black bg-black text-gold px-2.5 py-1 rounded-full">{totalRooms} {(d as any).totalRooms || "total rooms"}</span>
+                      </div>
+                      <div className="flex items-end gap-4">
+                        <p className="text-5xl font-black text-black">{occupancyRate}<span className="text-2xl text-gray-400">%</span></p>
+                        <div className="flex-1 mb-1.5">
+                          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${occupancyRate}%` }}
+                              transition={{ duration: 1, ease: "easeOut" }}
+                              className={`h-full rounded-full ${occupancyRate > 70 ? "bg-emerald-500" : occupancyRate > 40 ? "bg-amber-400" : "bg-red-400"}`}
+                            />
+                          </div>
+                          <p className="text-xs text-gray-400 font-medium mt-1">{occupiedRooms} {(d as any).occupiedOf || "occupied of"} {totalRooms} {(d as any).rooms || "rooms"}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Room breakdown */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).roomBreakdown || "Room Breakdown"}</p>
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {[
+                          { label: (d as any).available || "Available", value: availableRooms, color: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+                          { label: (d as any).occupied || "Occupied", value: occupiedRooms, color: "bg-red-50 text-red-700 border-red-100" },
+                          { label: (d as any).booked || "Booked", value: bookedRooms, color: "bg-blue-50 text-blue-700 border-blue-100" },
+                          { label: (d as any).maintenance || "Maintenance", value: maintenanceRooms, color: "bg-amber-50 text-amber-700 border-amber-100" },
+                        ].map((item, i) => (
+                          <div key={i} className={`border rounded-xl p-3 ${item.color}`}>
+                            <p className="text-2xl font-black">{item.value}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-wide opacity-70 mt-0.5">{item.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Guest Summary */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).guestSummary || "Guest Summary"}</p>
+                      <div className="space-y-2.5">
+                        {[
+                          { label: (d as any).currentlyInHouse || "Currently In-House", value: totalGuests, icon: Users },
+                          { label: (d as any).totalBookingsAllTime || "Total Bookings (All Time)", value: bookings.length, icon: Calendar },
+                          { label: (d as any).confirmedBookings || "Confirmed Bookings", value: bookings.filter(b => b.status === "Confirmed").length, icon: CheckCircle },
+                          { label: (d as any).pendingBookings || "Pending Bookings", value: bookings.filter(b => b.status === "Pending").length, icon: Layers },
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                            <div className="flex items-center gap-2">
+                              <item.icon size={14} className="text-gray-400" />
+                              <span className="text-sm font-medium text-gray-600">{item.label}</span>
+                            </div>
+                            <span className="text-sm font-black text-black">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Conference Summary */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <p className="text-xs font-black uppercase tracking-wider text-gray-500 mb-3">{(d as any).conferenceAndEvents || "Conference & Events"}</p>
+                      <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                        {[
+                          { label: (d as any).total || "Total", value: totalConferences, color: "text-black" },
+                          { label: (d as any).confirmed || "Confirmed", value: confirmedConf, color: "text-emerald-600" },
+                          { label: (d as any).pending || "Pending", value: pendingConf, color: "text-amber-500" },
+                        ].map((item, i) => (
+                          <div key={i} className="bg-gray-50 rounded-xl py-3">
+                            <p className={`text-2xl font-black ${item.color}`}>{item.value}</p>
+                            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide mt-0.5">{item.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {conferenceBookings.length === 0 && (
+                        <p className="text-xs text-gray-400 text-center font-medium py-1">{(d as any).noConferenceRecord || "No conference bookings on record."}</p>
+                      )}
+                      {conferenceBookings.slice(0, 3).map((c, i) => (
+                        <div key={i} className="flex items-center justify-between py-2 border-t border-gray-50">
+                          <div>
+                            <p className="text-sm font-bold text-black">{c.contactName}</p>
+                            <p className="text-[11px] text-gray-400">{c.eventType} · {c.date}</p>
+                          </div>
+                          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                            c.status === "Confirmed" ? "bg-emerald-100 text-emerald-700" :
+                            c.status === "Pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
+                          }`}>{c.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
                 )}
               </div>
-            </motion.div>
-          </motion.div>
+
+              {/* Panel Footer */}
+              <div className="shrink-0 px-5 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+                <p className="text-xs text-gray-400 font-medium">{(d as any).liveData || "Live data · Updated now"}</p>
+                <Link
+                  href={`/${lang}/dashboard/reports`}
+                  onClick={() => setShowReports(false)}
+                  className="flex items-center gap-1.5 text-xs font-black text-gold hover:underline"
+                >
+                  {(d as any).fullReports || "Full Reports"} <ChevronRight size={12} />
+                </Link>
+              </div>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </>

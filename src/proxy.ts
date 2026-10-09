@@ -7,6 +7,11 @@ let defaultLocale = "en";
 export function proxy(request: NextRequest) {
   // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
+
+  if (/\.(png|jpg|jpeg|svg|webp|gif|ico|avif)$/i.test(pathname)) {
+    return;
+  }
+
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -21,6 +26,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Skip all internal paths (_next) and api routes
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.webp|.*\\.gif|.*\\.ico|.*\\.avif).*)",
   ],
 };

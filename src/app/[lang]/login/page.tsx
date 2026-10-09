@@ -11,11 +11,11 @@ const roleDashboard: Record<string, string> = {
   admin: "/dashboard",
   cashier: "/dashboard/cashier",
   receptionist: "/dashboard/receptionist",
-  accountant: "/dashboard/accountant",
+  accountant: "/dashboard/finance",
 };
 
 export default function LoginPage() {
-  const { login, demoAccounts } = useHotel();
+  const { login } = useHotel();
   const { lang, dict } = useLanguage();
   const d = dict.login;
   const router = useRouter();
@@ -46,8 +46,6 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemo = (e: string, p: string) => { setEmail(e); setPassword(p); setError(""); };
-
   return (
     <div className="pt-20 min-h-screen bg-white flex items-center justify-center px-4 relative">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
@@ -63,7 +61,7 @@ export default function LoginPage() {
             <p className="text-gray-500 font-medium mt-2">{d.staffAccessOnly}</p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-2 border-gray-100 relative overflow-hidden mb-6">
+          <div className="bg-white rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-2 border-gray-100 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gold"></div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -102,25 +100,6 @@ export default function LoginPage() {
                 <div className="absolute inset-0 h-full w-full bg-gold/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out" />
               </button>
             </form>
-          </div>
-
-          {/* Staff accounts quick-fill */}
-          <div className="bg-white rounded-2xl p-6 border-2 border-gold/20 shadow-sm">
-            <p className="text-xs font-black text-gold uppercase tracking-widest mb-4">{d.demoAccounts}</p>
-            <div className="space-y-3">
-              {demoAccounts.map((acc) => (
-                <button key={acc.email} onClick={() => fillDemo(acc.email, acc.password)} className="w-full flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-gold hover:bg-gold/5 transition-all text-left group">
-                  <div>
-                    <p className="text-sm font-bold text-black capitalize group-hover:text-gold transition-colors">{(dict.dashboard as any)[acc.role] || acc.role}</p>
-                    <p className="text-xs text-gray-500 font-medium">{acc.email}</p>
-                  </div>
-                  <span className="text-xs font-mono text-gray-400 bg-gray-50 px-2 py-1 rounded">{acc.password}</span>
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-gray-400 mt-4 font-medium text-center">
-              {d.demoWarning}
-            </p>
           </div>
         </motion.div>
       </div>

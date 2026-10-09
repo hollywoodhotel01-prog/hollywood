@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function AccountantRedirectPage() {
-  redirect("/dashboard/accountant");
+export default function AccountantRedirect() {
+  redirect("/dashboard/finance");
 }

@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Star, Quote, Sparkles, Users, Dumbbell } from "lucide-react";
 import PlaceholderImage from "@/components/PlaceholderImage";
@@ -16,42 +18,68 @@ const staggerContainer = {
 };
 
 export default function HomePageClient({ lang, dict }: { lang: string, dict: any }) {
-  const featuredRooms = dict.accommodations?.featuredRooms || [];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const heroImages = [
+    "/night.webp",
+    "/evening.webp",
+    "/hero.webp",
+    "/evening.webp"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 8000); // Wait 8 seconds before starting next fade
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  const featuredRooms = [
+    {
+      name: "Luxury Room",
+      description: "Experience ultimate comfort with our signature room featuring fresh air ventilation, a smart bathroom, seamless connectivity, and 24/7 full support to ensure a perfect stay.",
+      price: 150,
+      image: "/bed.webp",
+      amenities: ["Fresh Air", "High-Speed Wi-Fi", "Smart Bathroom", "Full Support"]
+    }
+  ];
   const testimonials = dict.reviews?.testimonials || [];
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-10" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/30 rounded-full blur-[100px] z-10 animate-pulse pointer-events-none" />
-        <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-gold/20 rounded-full blur-[80px] z-10 animate-pulse pointer-events-none" />
-        <div className="absolute inset-0 z-0">
-          <img src="/hero.png" alt="Hero: Hotel Exterior" className="w-full h-full object-cover rounded-none" />
+        <div className="absolute inset-0 z-0 bg-black">
+          {heroImages.map((imgSrc, idx) => (
+            <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hero image ${idx + 1}`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
+                opacity: idx === currentImageIndex ? 1 : 0,
+                transition: "opacity 5s ease-in-out"
+              }} />
+          ))}
         </div>
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="text-gold uppercase tracking-[0.2em] text-sm font-bold mb-4 block drop-shadow-md">
+            <span className="text-gold uppercase tracking-[0.2em] text-sm font-bold mb-4 block">
               {dict.welcome}
             </span>
-            <h1 className="text-5xl md:text-7xl font-heading font-black text-white mb-6 leading-tight drop-shadow-lg whitespace-pre-line">
+            <h1 className="text-5xl md:text-7xl font-heading font-black text-white mb-6 leading-tight whitespace-pre-line">
               {dict.heroTitle}
             </h1>
             {dict.heroSubtitle && (
-              <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-medium drop-shadow-md">
+              <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-medium">
                 {dict.heroSubtitle}
               </p>
             )}
             <div className={`flex flex-col sm:flex-row gap-6 justify-center items-center ${!dict.heroSubtitle ? 'mt-10' : ''}`}>
               <Link
                 href={`/${lang}/book`}
-                className="relative group overflow-hidden bg-gold hover:bg-gold-light text-black px-8 py-4 rounded-full font-bold text-lg transition-all shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:shadow-[0_0_30px_rgba(251,191,36,0.8)] hover:-translate-y-1"
+                className="relative group overflow-hidden bg-gold hover:bg-gold-light text-black px-8 py-4 rounded-full font-bold text-lg transition-all shadow-md hover:-translate-y-1"
               >
                 <span className="relative z-10">{dict.bookSuite}</span>
                 <div className="absolute inset-0 h-full w-full bg-white/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out" />
               </Link>
               <Link
                 href={`/${lang}/contact`}
-                className="bg-black/40 hover:bg-black/60 backdrop-blur-md border-2 border-gold text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:-translate-y-1"
+                className="bg-black/40 hover:bg-black/60 backdrop-blur-md border-2 border-gold text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-sm hover:-translate-y-1"
               >
                 {dict.planEvent}
               </Link>
@@ -80,18 +108,15 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               </div>
 
               <h2 className="text-4xl md:text-5xl font-heading font-black text-black mb-6 leading-tight">
-                {dict.why?.titleLine1 || 'Urubuga rwiza kuri'}<br />
+                {dict.why?.titleLine1 || 'Amahitamo meza'}<br />
                 <span className="relative inline-block text-black">
-                  {dict.why?.titleLine2 || 'Buri Gikorwa'}
+                  {dict.why?.titleLine2 || 'igihe cyose'}
                   <span className="absolute left-0 -bottom-1 w-full h-[3px] bg-amber-400/70 rounded-full" />
                 </span>
               </h2>
 
-              <p className="text-gray-900 mb-10 leading-relaxed text-lg font-normal text-justify">
-                Proudly located in Rwimiyaga City, Hollywood Hotel stands as
-                the finest destination in the Eastern Province. We blend
-                timeless elegance with modern luxury — offering meticulously designed suites, world-class amenities,
-                and an unmatched level of hospitality that has made us the top choice for travelers across the region.
+              <p className="text-gray-900 mb-10 leading-relaxed text-lg font-normal text-justify whitespace-pre-line">
+                {dict.why?.description}
               </p>
 
               <Link
@@ -111,11 +136,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               transition={{ duration: 0.8 }}
               className="lg:w-1/2 relative order-1 lg:order-2 w-full"
             >
-              <img
-                src="/bar.png"
-                alt="Hollywood Hotel Bar"
-                className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl"
-              />
+              <Image src="/reception.webp" alt="Hollywood Hotel Reception" width={800} height={600} sizes="(max-width: 768px) 100vw, 50vw" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl" />
             </motion.div>
 
           </div>
@@ -136,9 +157,9 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               {dict.accommodations?.description}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 max-w-3xl mx-auto gap-10">
             {featuredRooms.map((room: any, index: number) => {
-              const roomImage = index === 0 ? "/room.png" : index === 1 ? "/bigger.png" : "/biggest.png";
+              const roomImage = room.image || "/bed.webp";
               return (
               <motion.div
                 key={index}
@@ -149,7 +170,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                 className="group bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-gold hover:shadow-[0_20px_40px_rgba(251,191,36,0.15)] transition-all duration-300 flex flex-col"
               >
                 <div className="h-64 relative overflow-hidden bg-gray-100">
-                  <img src={roomImage} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <Image src={roomImage} alt={room.name} fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute top-4 right-4 bg-gold px-4 py-1.5 rounded-full font-black text-black text-sm shadow-md">
                     ${room.price}/night
                   </div>
@@ -179,54 +200,92 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         </div>
       </section>
 
-      <section className="py-24 bg-gray-50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="lg:w-1/2 order-2 lg:order-1">
-              <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mb-8 shadow-md">
-                <Users size={28} className="text-gold" />
+      {/* === CONFERENCE CENTER SECTION === */}
+      <section className="py-24 relative overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative rounded-[2rem] overflow-hidden shadow-2xl bg-black"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
+              <div className="lg:col-span-7 relative min-h-[400px] lg:min-h-[600px] order-2 lg:order-1">
+                <Image src="/salle.webp" alt="Conference Center" fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent lg:bg-gradient-to-t lg:from-transparent lg:to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent lg:hidden"></div>
               </div>
-              <h4 className="text-4xl md:text-5xl font-heading font-black text-black mb-6">Conference Center</h4>
-              <p className="text-gray-500 mb-10 text-lg leading-relaxed font-medium">
-                Host your events in our state-of-the-art facilities. Designed for productivity and elegance, our versatile spaces accommodate intimate meetings and large corporate gatherings with world-class catering and technology.
-              </p>
-              <Link href={`/${lang}/conference`} className="inline-flex items-center gap-3 font-bold text-black border-b-2 border-gold pb-1 hover:text-gold transition-colors uppercase tracking-widest text-sm group">
-                <span>Explore Spaces</span>
-                <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-              </Link>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="lg:w-1/2 relative order-1 lg:order-2 w-full">
-              <div className="absolute inset-0 bg-gold translate-x-6 translate-y-6 rounded-3xl -z-10 shadow-lg"></div>
-              <div className="absolute inset-0 border-2 border-black -translate-x-4 -translate-y-4 rounded-3xl -z-10"></div>
-              <img src="/conference.png" alt="Conference Center" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-2xl border-4 border-white" />
-            </motion.div>
-          </div>
+              <div className="lg:col-span-5 p-10 lg:p-16 flex flex-col justify-center relative order-1 lg:order-2 z-10">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-bl-full pointer-events-none"></div>
+                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20">
+                  <Users size={24} className="text-gold" />
+                </div>
+                <h4 className="text-3xl md:text-5xl font-heading font-black text-white mb-6 leading-tight">
+                  {dict.conferenceSection?.title || "Conference Center"}
+                </h4>
+                <p className="text-gray-300 mb-10 text-lg leading-relaxed">
+                  {dict.conferenceSection?.description}
+                </p>
+                <div className="mt-auto">
+                  <Link href={`/${lang}/conference`} className="group inline-flex items-center gap-4 text-white font-bold tracking-widest text-sm uppercase">
+                    <span className="relative">
+                      {dict.conferenceSection?.explore || "Explore Spaces"}
+                      <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gold group-hover:w-full transition-all duration-300"></span>
+                    </span>
+                    <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-gold group-hover:text-black transition-all duration-300">
+                      <ArrowRight size={16} />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="py-24 bg-white relative overflow-hidden border-t-2 border-gold/15">
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* === WELLNESS & GYM SECTION === */}
+      <section className="py-24 relative overflow-hidden bg-gray-50 border-t border-gray-200">
+        <div className="absolute right-0 top-0 w-1/2 h-full bg-gold/5 pointer-events-none hidden lg:block rounded-l-[5rem]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
-            <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="lg:w-1/2 relative w-full">
-              <div className="absolute inset-0 bg-black translate-x-6 translate-y-6 rounded-3xl -z-10 shadow-lg"></div>
-              <div className="absolute inset-0 border-2 border-gold -translate-x-4 -translate-y-4 rounded-3xl -z-10"></div>
-              <img src="/gym.png" alt="Fitness & Wellness" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-2xl border-4 border-white" />
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="lg:w-1/2">
-              <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mb-8 shadow-md">
-                <Dumbbell size={28} className="text-gold" />
-              </div>
-              <h4 className="text-4xl md:text-5xl font-heading font-black text-black mb-6">Fitness & Wellness</h4>
-              <p className="text-gray-500 mb-10 text-lg leading-relaxed font-medium">
-                Maintain your wellness routine in our fully-equipped modern gymnasium. Featuring the latest cardiovascular and strength training equipment, alongside dedicated spaces for yoga, stretching, and rejuvenation.
-              </p>
-              <Link href={`/${lang}/gym`} className="inline-flex items-center gap-3 font-bold text-black border-b-2 border-gold pb-1 hover:text-gold transition-colors uppercase tracking-widest text-sm group">
-                <span>View Facilities</span>
-                <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-              </Link>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            
+            <div className="order-2 lg:order-1 relative">
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-[2px] bg-gold"></div>
+                  <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Wellness</span>
+                </div>
+                <h4 className="text-4xl md:text-6xl font-heading font-black text-black mb-8 leading-[1.1]">
+                  {dict.wellnessSection?.title || "Fitness & Wellness"}
+                </h4>
+                <p className="text-gray-600 mb-10 text-xl leading-relaxed">
+                  {dict.wellnessSection?.description}
+                </p>
+                
+                <Link href={`/${lang}/facilities`} className="inline-flex items-center justify-center bg-transparent border-2 border-black text-black hover:bg-black hover:text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 gap-3 group">
+                  <span>{dict.wellnessSection?.explore || "View Facilities"}</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </motion.div>
+            </div>
+
+            <div className="order-1 lg:order-2 relative h-[450px] lg:h-[650px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
+               <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="absolute inset-0">
+                <Image src="/gym.webp" alt="Fitness & Wellness" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute bottom-6 left-6 lg:bottom-10 lg:left-10 bg-white/95 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl flex items-center gap-4">
+                  <div className="bg-gold/20 p-3 rounded-full text-gold">
+                    <Dumbbell size={24} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-black text-sm uppercase tracking-wider">Premium</p>
+                    <p className="text-gray-500 text-xs font-medium">Equipment</p>
+                  </div>
+                </div>
+               </motion.div>
+            </div>
+            
           </div>
         </div>
       </section>
@@ -235,7 +294,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
       <section className="relative overflow-hidden py-28">
         {/* Background image with dark overlay */}
         <div className="absolute inset-0 z-0">
-          <img src="/biggest.png" alt="" className="w-full h-full object-cover" />
+          <Image src="/hero.webp" alt="Reviews Background" fill sizes="100vw" className="object-cover" />
           <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.82)' }} />
         </div>
 

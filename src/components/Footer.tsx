@@ -25,7 +25,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
               </span>
             </Link>
             <p className="text-gray-400 font-medium text-sm leading-relaxed mb-6">
-              Where every moment shines. Your premier destination for luxury stays, grand events, rooftop dining, and world-class wellness.
+              Where every moment shines. Your premier destination for luxury stays, grand events, exquisite dining, and world-class wellness.
             </p>
           </div>
 
@@ -36,7 +36,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
               <li><Link href={`/${lang}/rooms`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.rooms}</Link></li>
               <li><Link href={`/${lang}/conference`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.conference}</Link></li>
               <li><Link href={`/${lang}/dining`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.dining}</Link></li>
-              <li><Link href={`/${lang}/wellness`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.wellness}</Link></li>
+              <li><Link href={`/${lang}/facilities`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.facilities || dict.wellness}</Link></li>
             </ul>
           </div>
 
@@ -47,19 +47,33 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
                 <div className="bg-white/10 p-1.5 rounded-md mt-0.5">
                   <MapPin className="text-gold shrink-0" size={16} />
                 </div>
-                <span className="text-sm mt-1">Hollywood Boulevard, City Centre<br />Kigali, Rwanda</span>
+                <span className="text-sm mt-1">Rwimiyaga, Nyagatare<br />Eastern Province, Rwanda</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 font-medium">
                 <div className="bg-white/10 p-1.5 rounded-md">
                   <Phone className="text-gold shrink-0" size={16} />
                 </div>
-                <span className="text-sm">+250 123 456 789</span>
+                <div className="flex flex-col text-sm">
+                  <a href="tel:+250788876479" className="hover:text-white transition-colors">
+                    +250 788 876 479
+                  </a>
+                  <a
+                    href="https://wa.me/250788876479"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-green-400 hover:underline font-semibold"
+                  >
+                    Chat on WhatsApp
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-3 text-gray-400 font-medium">
                 <div className="bg-white/10 p-1.5 rounded-md">
                   <Mail className="text-gold shrink-0" size={16} />
                 </div>
-                <span className="text-sm">info@hollywoodhotel.rw</span>
+                <a href="mailto:hollywoodhotel01@gmail.com" className="text-sm hover:text-white transition-colors">
+                  hollywoodhotel01@gmail.com
+                </a>
               </li>
             </ul>
           </div>

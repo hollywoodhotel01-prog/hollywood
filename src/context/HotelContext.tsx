@@ -12,8 +12,6 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
-// --- Auth ---------------------------------------------------------------------
-
 export type UserRole = "admin" | "cashier" | "receptionist" | "accountant";
 
 export interface AuthUser {
@@ -23,8 +21,6 @@ export interface AuthUser {
   uid: string;
 }
 
-// Map of email → role & display name (roles are stored here since Firebase Auth
-// doesn't store custom claims in the client SDK without a backend).
 export const STAFF_ROSTER: Record<string, { name: string; role: UserRole }> = {
   "admin@hollywoodhotel.rw": { name: "Victor Adonis", role: "admin" },
   "cashier@hollywoodhotel.rw": { name: "Sandra Mbeki", role: "cashier" },
@@ -32,38 +28,24 @@ export const STAFF_ROSTER: Record<string, { name: string; role: UserRole }> = {
   "accounts@hollywoodhotel.rw": { name: "Grace Mutua", role: "accountant" },
 };
 
-// --- Room Bookings ------------------------------------------------------------
-
 export type BookingStatus = "Confirmed" | "Pending" | "Cancelled";
 
 export interface Booking {
   id: string;
   guestName: string;
   roomType: string;
+  numberOfRooms?: number;
   checkIn: string;
   checkOut: string;
   status: BookingStatus;
   amount: number;
+  paymentMethod?: string;
+  paymentStatus?: "Full Paid" | "Partially Paid" | "Not Yet Paid";
 }
 
-const initialBookings: Booking[] = [
-  { id: "HH-2026-001", guestName: "Alice Johnson", roomType: "Deluxe Room", checkIn: "2026-07-20", checkOut: "2026-07-23", status: "Confirmed", amount: 360 },
-  { id: "HH-2026-002", guestName: "Michael Smith", roomType: "Executive Room", checkIn: "2026-07-15", checkOut: "2026-07-18", status: "Confirmed", amount: 450 },
-  { id: "HH-2026-003", guestName: "Sarah Connor", roomType: "Standard Room", checkIn: "2026-07-25", checkOut: "2026-07-27", status: "Pending", amount: 160 },
-  { id: "HH-2026-004", guestName: "David Kim", roomType: "Hollywood Suite", checkIn: "2026-08-01", checkOut: "2026-08-05", status: "Confirmed", amount: 1200 },
-  { id: "HH-2026-005", guestName: "Emma Brown", roomType: "Deluxe Room", checkIn: "2026-07-18", checkOut: "2026-07-20", status: "Cancelled", amount: 240 },
-  { id: "HH-2026-006", guestName: "Robert Hayes", roomType: "Presidential Suite", checkIn: "2026-08-10", checkOut: "2026-08-14", status: "Confirmed", amount: 3200 },
-];
-
 export const ROOM_PRICES: Record<string, number> = {
-  "Standard Room": 80,
-  "Deluxe Room": 120,
-  "Executive Room": 150,
-  "Hollywood Suite": 300,
-  "Presidential Suite": 800,
+  "Luxury Room": 150,
 };
-
-// --- Conference Bookings ------------------------------------------------------
 
 export interface ConferenceBooking {
   id: string;
@@ -73,16 +55,29 @@ export interface ConferenceBooking {
   hall: string;
   guests: number;
   date: string;
+  amount: number;
   requirements: string;
   status: "Pending" | "Confirmed" | "Declined";
+  paymentMethod?: string;
+  paymentStatus?: "Full Paid" | "Partially Paid" | "Not Yet Paid";
+  createdAt?: string;
 }
 
-const initialConferenceBookings: ConferenceBooking[] = [
-  { id: "CB-2026-001", contactName: "Lucia Fernandez", phone: "+250 781 234 567", eventType: "Corporate Meeting", hall: "Executive Boardroom", guests: 20, date: "2026-08-05", requirements: "Projector, whiteboard", status: "Confirmed" },
-  { id: "CB-2026-002", contactName: "Peter Nkomo", phone: "+250 782 345 678", eventType: "Training / Workshop", hall: "Grand Ballroom", guests: 120, date: "2026-08-12", requirements: "Tea break catering", status: "Pending" },
-];
+export interface Expense {
+  id: string;
+  category: string;
+  description: string;
+  amount: number;
+  date: string;
+}
 
-// --- In-House Guests ----------------------------------------------------------
+export interface OtherRevenue {
+  id: string;
+  source: string;
+  description: string;
+  amount: number;
+  date: string;
+}
 
 export interface InHouseGuest {
   id: string;
@@ -97,14 +92,7 @@ export interface InHouseGuest {
   checkedInAt: string;
 }
 
-const initialInHouseGuests: InHouseGuest[] = [
-  { id: "IG-001", fullName: "Alice Johnson", idNumber: "NID-RW-123456", phone: "+250 700 111 222", nationality: "Rwandan", roomAssigned: "101", guestCount: 1, checkIn: "2026-07-20", checkOut: "2026-07-23", checkedInAt: "2026-07-20T10:30:00Z" },
-  { id: "IG-002", fullName: "David Kim", idNumber: "PP-KR-AB123456", phone: "+82 10 1234 5678", nationality: "South Korean", roomAssigned: "401", guestCount: 2, checkIn: "2026-08-01", checkOut: "2026-08-05", checkedInAt: "2026-08-01T14:00:00Z" },
-];
-
-// --- Room Records -------------------------------------------------------------
-
-export type RoomStatus = "Available" | "Occupied" | "Cleaning" | "Maintenance";
+export type RoomStatus = "Available" | "Occupied" | "Booked" | "Maintenance";
 
 export interface RoomRecord {
   id: string;
@@ -112,24 +100,6 @@ export interface RoomRecord {
   status: RoomStatus;
   housekeeper: string;
 }
-
-const initialRoomsData: RoomRecord[] = [
-  { id: "101", type: "Standard Room", status: "Occupied", housekeeper: "Jane Doe" },
-  { id: "102", type: "Standard Room", status: "Available", housekeeper: "Jane Doe" },
-  { id: "103", type: "Standard Room", status: "Cleaning", housekeeper: "Jane Doe" },
-  { id: "201", type: "Deluxe Room", status: "Occupied", housekeeper: "John Smith" },
-  { id: "202", type: "Deluxe Room", status: "Available", housekeeper: "John Smith" },
-  { id: "203", type: "Deluxe Room", status: "Cleaning", housekeeper: "John Smith" },
-  { id: "301", type: "Executive Room", status: "Occupied", housekeeper: "Mary Johnson" },
-  { id: "302", type: "Executive Room", status: "Maintenance", housekeeper: "-" },
-  { id: "303", type: "Executive Room", status: "Available", housekeeper: "Mary Johnson" },
-  { id: "401", type: "Hollywood Suite", status: "Occupied", housekeeper: "Jane Doe" },
-  { id: "402", type: "Hollywood Suite", status: "Available", housekeeper: "Jane Doe" },
-  { id: "501", type: "Presidential Suite", status: "Available", housekeeper: "Mary Johnson" },
-  { id: "502", type: "Presidential Suite", status: "Occupied", housekeeper: "Mary Johnson" },
-];
-
-// --- Daily Sales Report -------------------------------------------------------
 
 export interface DailySalesReport {
   date: string;
@@ -167,35 +137,45 @@ function generateMockReport(): DailySalesReport {
   };
 }
 
-// --- Context Type -------------------------------------------------------------
-
 interface HotelContextType {
   currentUser: AuthUser | null;
   firebaseUser: FirebaseUser | null;
   authLoading: boolean;
+  dataLoading: boolean;
   login: (email: string, password: string) => Promise<AuthUser>;
   logout: () => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
-  // Legacy: kept so login page demo buttons still compile
+  adminChangePassword: (targetEmail: string, newPassword: string) => Promise<void>;
   demoAccounts: { name: string; email: string; password: string; role: UserRole }[];
   bookings: Booking[];
-  addBooking: (booking: Omit<Booking, "id" | "status" | "amount">) => Booking;
+  addBooking: (booking: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string }) => Booking;
+  updateBooking: (id: string, updates: Partial<Booking>) => void;
   conferenceBookings: ConferenceBooking[];
-  addConferenceBooking: (booking: Omit<ConferenceBooking, "id" | "status">) => void;
+  addConferenceBooking: (booking: Omit<ConferenceBooking, "id" | "status">) => Promise<ConferenceBooking>;
+  updateConferenceBooking: (id: string, updates: Partial<ConferenceBooking>) => Promise<void>;
+  deleteConferenceBooking: (id: string) => Promise<void>;
   inHouseGuests: InHouseGuest[];
   addInHouseGuest: (guest: Omit<InHouseGuest, "id" | "checkedInAt">) => void;
   checkOutGuest: (id: string) => void;
   roomsData: RoomRecord[];
   updateRoomStatus: (roomId: string, status: RoomStatus) => void;
+  addRoom: (room: Omit<RoomRecord, never>) => Promise<void>;
+  editRoom: (roomId: string, updates: Partial<RoomRecord>) => Promise<void>;
+  deleteRoom: (roomId: string) => Promise<void>;
   dailySalesReport: DailySalesReport | null;
+  dailySalesHistory: any[];
   isGeneratingReport: boolean;
   uploadAndGenerateReport: () => void;
+  expenses: Expense[];
+  addExpense: (expense: Omit<Expense, "id">) => void;
+  deleteExpense: (id: string) => void;
+  otherRevenues: OtherRevenue[];
+  addOtherRevenue: (revenue: Omit<OtherRevenue, "id">) => void;
+  deleteOtherRevenue: (id: string) => void;
 }
 
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
 
-// Staff accounts shown on login page (passwords shown for convenience — these
-// are the real Firebase Auth passwords set when accounts were created).
 const DEMO_ACCOUNTS = [
   { name: "Victor Adonis", email: "admin@hollywoodhotel.rw", password: "Admin@2050", role: "admin" as UserRole },
   { name: "Sandra Mbeki", email: "cashier@hollywoodhotel.rw", password: "Cashier@2050", role: "cashier" as UserRole },
@@ -207,13 +187,17 @@ export function HotelProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
 
-  const [bookings, setBookings] = useState<Booking[]>(initialBookings);
-  const [conferenceBookings, setConferenceBookings] = useState<ConferenceBooking[]>(initialConferenceBookings);
-  const [inHouseGuests, setInHouseGuests] = useState<InHouseGuest[]>(initialInHouseGuests);
-  const [roomsData, setRoomsData] = useState<RoomRecord[]>(initialRoomsData);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [conferenceBookings, setConferenceBookings] = useState<ConferenceBooking[]>([]);
+  const [inHouseGuests, setInHouseGuests] = useState<InHouseGuest[]>([]);
+  const [roomsData, setRoomsData] = useState<RoomRecord[]>([]);
   const [dailySalesReport, setDailySalesReport] = useState<DailySalesReport | null>(null);
+  const [dailySalesHistory, setDailySalesHistory] = useState<any[]>([]);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [otherRevenues, setOtherRevenues] = useState<OtherRevenue[]>([]);
 
   // Listen to Firebase auth state
   useEffect(() => {
@@ -234,6 +218,54 @@ export function HotelProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
+  // Load live data from Google Sheets when user logs in
+  useEffect(() => {
+    if (!currentUser) return;
+    async function loadAll() {
+      setDataLoading(true);
+      try {
+        const [roomsRes, bookingsRes, guestsRes, eventsRes, expensesRes, otherRevRes, historyRes] = await Promise.all([
+          fetch('/api/rooms'),
+          fetch('/api/bookings'),
+          fetch('/api/guests'),
+          fetch('/api/events'),
+          fetch('/api/expenses'),
+          fetch('/api/otherRevenues'),
+          fetch('/api/reports/history'),
+        ]);
+        const safeJson = async (res: Response) => {
+          try {
+            return await res.json();
+          } catch (e) {
+            return {};
+          }
+        };
+
+        const [roomsJson, bookingsJson, guestsJson, eventsJson, expensesJson, otherRevJson, historyJson] = await Promise.all([
+          safeJson(roomsRes),
+          safeJson(bookingsRes),
+          safeJson(guestsRes),
+          safeJson(eventsRes),
+          safeJson(expensesRes),
+          safeJson(otherRevRes),
+          safeJson(historyRes),
+        ]);
+        if (roomsJson.success && Array.isArray(roomsJson.rooms)) setRoomsData(roomsJson.rooms.filter((r: any) => r.id));
+        if (bookingsJson.success && Array.isArray(bookingsJson.bookings)) setBookings(bookingsJson.bookings.filter((b: any) => b.id));
+        if (guestsJson.success && Array.isArray(guestsJson.guests)) setInHouseGuests(guestsJson.guests.filter((g: any) => g.id));
+        if (eventsJson.success && Array.isArray(eventsJson.events)) setConferenceBookings(eventsJson.events.filter((e: any) => e.id));
+        if (expensesJson.success && Array.isArray(expensesJson.expenses)) setExpenses(expensesJson.expenses.filter((e: any) => e.id));
+        if (otherRevJson.success && Array.isArray(otherRevJson.otherRevenues)) setOtherRevenues(otherRevJson.otherRevenues.filter((r: any) => r.id));
+        if (historyJson.success && Array.isArray(historyJson.entries)) setDailySalesHistory(historyJson.entries);
+      } catch (e) {
+        console.error('Failed to load data from sheets:', e);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    loadAll();
+  }, [currentUser]);
+
   const login = async (email: string, password: string): Promise<AuthUser> => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     const fbUser = cred.user;
@@ -251,72 +283,161 @@ export function HotelProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
     setCurrentUser(null);
     setFirebaseUser(null);
+    setRoomsData([]);
+    setBookings([]);
+    setInHouseGuests([]);
+    setConferenceBookings([]);
+    setExpenses([]);
+    setOtherRevenues([]);
+    setDailySalesHistory([]);
   };
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
     if (!firebaseUser || !firebaseUser.email) throw new Error("Not authenticated.");
-    // Re-authenticate first (Firebase requires recent login for sensitive ops)
     const credential = EmailAuthProvider.credential(firebaseUser.email, currentPassword);
     await reauthenticateWithCredential(firebaseUser, credential);
     await firebaseUpdatePassword(firebaseUser, newPassword);
   };
 
-  const addBooking = (bookingData: Omit<Booking, "id" | "status" | "amount">): Booking => {
+  const adminChangePassword = async (targetEmail: string, newPassword: string) => {
+    if (currentUser?.role !== "admin") throw new Error("Only admins can perform this action.");
+    const res = await fetch("/api/admin/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetEmail, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to change password");
+  };
+
+  const addBooking = (bookingData: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string }): Booking => {
     const d1 = new Date(bookingData.checkIn);
     const d2 = new Date(bookingData.checkOut);
     const nights = Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24)));
-    const pricePerNight = ROOM_PRICES[bookingData.roomType] ?? 100;
-    const amount = pricePerNight * nights;
+    const pricePerNight = ROOM_PRICES[bookingData.roomType] ?? 150;
+    const roomsCount = bookingData.numberOfRooms || 1;
+    const amount = bookingData.amount !== undefined ? bookingData.amount : (pricePerNight * nights * roomsCount);
     const newBooking: Booking = {
       ...bookingData,
-      id: `HH-2026-${String(bookings.length + 1).padStart(3, "0")}`,
+      numberOfRooms: roomsCount,
+      id: `HH-${new Date().getFullYear()}-${String(bookings.length + 1).padStart(3, "0")}`,
       status: "Confirmed",
       amount,
     };
     setBookings((prev) => [newBooking, ...prev]);
-    setRoomsData((prev) => {
-      const targetIdx = prev.findIndex((r) => r.type === bookingData.roomType && r.status === "Available");
-      if (targetIdx === -1) return prev;
-      const updated = [...prev];
-      updated[targetIdx] = { ...updated[targetIdx], status: "Occupied" };
-      return updated;
-    });
+    // Persist to sheet
+    fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newBooking) }).catch(console.error);
     return newBooking;
   };
 
-  const addConferenceBooking = (booking: Omit<ConferenceBooking, "id" | "status">) => {
-    const newBooking: ConferenceBooking = {
+  const updateBooking = (id: string, updates: Partial<Booking>) => {
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+    fetch('/api/bookings', { 
+      method: 'PUT', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ id, ...updates }) 
+    }).catch(console.error);
+  };
+
+  const addConferenceBooking = async (booking: Omit<ConferenceBooking, "id" | "status">): Promise<ConferenceBooking> => {
+    const res = await fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...booking, status: "Pending" }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Failed to save conference booking");
+    }
+    const savedBooking: ConferenceBooking = data.event || {
       ...booking,
-      id: `CB-2026-${String(conferenceBookings.length + 1).padStart(3, "0")}`,
+      id: `CB-${new Date().getFullYear()}-${String(conferenceBookings.length + 1).padStart(3, "0")}`,
       status: "Pending",
     };
-    setConferenceBookings((prev) => [newBooking, ...prev]);
+    setConferenceBookings((prev) => [savedBooking, ...prev]);
+    return savedBooking;
+  };
+
+  const updateConferenceBooking = async (id: string, updates: Partial<ConferenceBooking>) => {
+    setConferenceBookings((prev) => prev.map((c) => (c.id === id ? { ...c, ...updates } : c)));
+    await fetch('/api/events', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ...updates }),
+    }).catch(console.error);
+  };
+
+  const deleteConferenceBooking = async (id: string) => {
+    setConferenceBookings((prev) => prev.filter((c) => c.id !== id));
+    await fetch(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(console.error);
+  };
+
+  const addExpense = (expense: Omit<Expense, "id">) => {
+    const newExpense: Expense = {
+      ...expense,
+      id: `EXP-${Date.now()}`,
+    };
+    setExpenses((prev) => [newExpense, ...prev]);
+    fetch('/api/expenses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newExpense) }).catch(console.error);
+  };
+
+  const deleteExpense = (id: string) => {
+    setExpenses((prev) => prev.filter((e) => e.id !== id));
+    fetch(`/api/expenses?id=${id}`, { method: 'DELETE' }).catch(console.error);
+  };
+
+  const addOtherRevenue = (revenue: Omit<OtherRevenue, "id">) => {
+    const newRevenue: OtherRevenue = {
+      ...revenue,
+      id: `OREV-${Date.now()}`,
+    };
+    setOtherRevenues((prev) => [newRevenue, ...prev]);
+    fetch('/api/otherRevenues', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newRevenue) }).catch(console.error);
+  };
+
+  const deleteOtherRevenue = (id: string) => {
+    setOtherRevenues((prev) => prev.filter((r) => r.id !== id));
+    fetch(`/api/otherRevenues?id=${id}`, { method: 'DELETE' }).catch(console.error);
   };
 
   const addInHouseGuest = (guest: Omit<InHouseGuest, "id" | "checkedInAt">) => {
     const newGuest: InHouseGuest = {
       ...guest,
-      id: `IG-${String(inHouseGuests.length + 1).padStart(3, "0")}`,
+      id: `IG-${Date.now()}`,
       checkedInAt: new Date().toISOString(),
     };
     setInHouseGuests((prev) => [newGuest, ...prev]);
-    setRoomsData((prev) =>
-      prev.map((r) => (r.id === guest.roomAssigned ? { ...r, status: "Occupied" } : r))
-    );
+    setRoomsData((prev) => prev.map((r) => (r.id === guest.roomAssigned ? { ...r, status: "Occupied" } : r)));
+    fetch('/api/guests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newGuest) }).catch(console.error);
   };
 
   const checkOutGuest = (id: string) => {
     const guest = inHouseGuests.find((g) => g.id === id);
     setInHouseGuests((prev) => prev.filter((g) => g.id !== id));
     if (guest) {
-      setRoomsData((prev) =>
-        prev.map((r) => (r.id === guest.roomAssigned ? { ...r, status: "Cleaning" } : r))
-      );
+      setRoomsData((prev) => prev.map((r) => (r.id === guest.roomAssigned ? { ...r, status: "Available" } : r)));
+      fetch(`/api/guests/${id}`, { method: 'DELETE' }).catch(console.error);
     }
   };
 
   const updateRoomStatus = (roomId: string, status: RoomStatus) => {
     setRoomsData((prev) => prev.map((r) => (r.id === roomId ? { ...r, status } : r)));
+    fetch(`/api/rooms/${roomId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) }).catch(console.error);
+  };
+
+  const addRoom = async (room: RoomRecord) => {
+    setRoomsData((prev) => [...prev, room]);
+    await fetch('/api/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(room) });
+  };
+
+  const editRoom = async (roomId: string, updates: Partial<RoomRecord>) => {
+    setRoomsData((prev) => prev.map((r) => (r.id === roomId ? { ...r, ...updates } : r)));
+    await fetch(`/api/rooms/${roomId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
+  };
+
+  const deleteRoom = async (roomId: string) => {
+    setRoomsData((prev) => prev.filter((r) => r.id !== roomId));
+    await fetch(`/api/rooms/${roomId}`, { method: 'DELETE' });
   };
 
   const uploadAndGenerateReport = () => {
@@ -331,14 +452,18 @@ export function HotelProvider({ children }: { children: ReactNode }) {
   return (
     <HotelContext.Provider
       value={{
-        currentUser, firebaseUser, authLoading,
-        login, logout, changePassword,
+        currentUser, firebaseUser, authLoading, dataLoading,
+        login, logout, changePassword, adminChangePassword,
         demoAccounts: DEMO_ACCOUNTS,
-        bookings, addBooking,
-        conferenceBookings, addConferenceBooking,
+        bookings,
+        addBooking,
+        updateBooking,
+        conferenceBookings, addConferenceBooking, updateConferenceBooking, deleteConferenceBooking,
         inHouseGuests, addInHouseGuest, checkOutGuest,
-        roomsData, updateRoomStatus,
-        dailySalesReport, isGeneratingReport, uploadAndGenerateReport,
+        roomsData, updateRoomStatus, addRoom, editRoom, deleteRoom,
+        dailySalesReport, dailySalesHistory, isGeneratingReport, uploadAndGenerateReport,
+        expenses, addExpense, deleteExpense,
+        otherRevenues, addOtherRevenue, deleteOtherRevenue,
       }}
     >
       {children}
@@ -352,7 +477,6 @@ export function useHotel() {
   return context;
 }
 
-// Backward-compat alias so existing pages importing useBookings still work
 export function useBookings() {
   const { bookings, addBooking } = useHotel();
   return { bookings, addBooking };

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Coffee, UtensilsCrossed, Truck, GlassWater } from "lucide-react";
+import { Coffee, UtensilsCrossed, Truck, GlassWater, Music } from "lucide-react";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import Image from "next/image";
 
@@ -19,7 +19,7 @@ export default function DiningPage() {
         <div className="relative z-10 max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Dining, Lounge &amp; Catering</h1>
           <p className="text-gray-600 text-xl font-medium">
-            From a candlelit restaurant dinner to cocktails above the skyline � extraordinary culinary experiences await.
+            From a candlelit restaurant dinner to refreshing cocktails and great music at Baraza Lounge — extraordinary culinary experiences await.
           </p>
         </div>
       </div>
@@ -44,35 +44,42 @@ export default function DiningPage() {
             </p>
             <div className="bg-gray-50 p-6 rounded-2xl border-l-4 border-gold">
               <ul className="space-y-3 text-black font-medium text-lg">
-                <li className="flex justify-between border-b border-gray-200 pb-2"><span>Breakfast</span> <span className="text-gray-500">6:00 AM � 10:30 AM</span></li>
-                <li className="flex justify-between border-b border-gray-200 pb-2"><span>Lunch</span> <span className="text-gray-500">12:30 PM � 3:00 PM</span></li>
-                <li className="flex justify-between"><span>Dinner</span> <span className="text-gray-500">6:30 PM � 10:30 PM</span></li>
+                <li className="flex justify-between border-b border-gray-200 pb-2"><span>Breakfast</span> <span className="text-gray-500">6:00 AM – 10:30 AM</span></li>
+                <li className="flex justify-between border-b border-gray-200 pb-2"><span>Lunch</span> <span className="text-gray-500">12:30 PM – 3:00 PM</span></li>
+                <li className="flex justify-between"><span>Dinner</span> <span className="text-gray-500">6:30 PM – 10:30 PM</span></li>
               </ul>
             </div>
           </div>
         </motion.section>
 
-        {/* Rooftop Lounge & Bar */}
+        {/* Baraza Lounge & Bar */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-black rounded-[3rem] p-8 lg:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gold/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
           <div className="relative z-10 order-2">
-            <Image src="/bar.png" alt="Rooftop Lounge & Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
+            <Image src="/baraza.webp" alt="Baraza Lounge & Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
           </div>
           <div className="relative z-10 order-1">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-gold rounded-xl text-black shadow-md">
                 <GlassWater size={28} />
               </div>
-              <h2 className="text-4xl font-heading font-black text-white">Rooftop Lounge &amp; Bar</h2>
+              <h2 className="text-4xl font-heading font-black text-white">Baraza Lounge &amp; Bar</h2>
             </div>
             <p className="text-gray-300 mb-8 leading-relaxed text-lg font-medium">
-              Rise above it all. Our rooftop lounge offers panoramic city views, signature cocktails, and a curated menu of light bites and mezze plates. Whether you come for sunset drinks or late-night entertainment, the atmosphere is always electric.
+              The premier social gathering hub at Hollywood Hotel. Relax with handcrafted cocktails, cold beers, and fine spirits in an energetic, music-filled atmosphere. With curated playlists and live DJ performances on weekends, it is the ultimate destination to unwind, dance, and celebrate.
             </p>
             <div className="mb-8">
               <h3 className="text-sm font-bold text-gold uppercase tracking-widest mb-4">Highlights</h3>
               <ul className="space-y-3">
-                {["Signature Hollywood Cocktails & Mocktails", "Live DJ sets � Friday & Saturday nights", "Rooftop Sunset Happy Hour: 5�7 PM daily", "Private cabana seating available on request", "Light bites: mezze platters, sliders & more"].map((item, i) => (
+                {[
+                  "Live DJ sets & weekend music entertainment",
+                  "Good music & curated sound sessions all week",
+                  "Signature Hollywood Cocktails, Mocktails & Premium Spirits",
+                  "Daily Happy Hour: 5:00 PM – 7:00 PM",
+                  "Comfortable VIP lounge seating & table service",
+                  "Tasty bites: brochettes, grilled platters, sliders & bar snacks",
+                ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-300 font-medium">
                     <span className="w-2 h-2 rounded-full bg-gold shrink-0"></span>
                     {item}
@@ -81,7 +88,8 @@ export default function DiningPage() {
               </ul>
             </div>
             <div className="inline-flex items-center gap-3 bg-gold/20 border border-gold/40 px-5 py-3 rounded-full text-gold font-bold text-sm">
-              Open Daily: 4:00 PM � 2:00 AM
+              <Music size={16} />
+              <span>Open Daily: 4:00 PM – 2:00 AM • Great Music & Drinks</span>
             </div>
           </div>
         </motion.section>
@@ -127,10 +135,10 @@ export default function DiningPage() {
               <h2 className="text-4xl font-heading font-black text-black">Outside Catering</h2>
             </div>
             <p className="text-gray-600 mb-6 leading-relaxed text-lg font-medium">
-              Bring the Hollywood Hotel culinary experience directly to your chosen venue. We offer professional outside catering services for weddings, corporate events, and private celebrations across the city and region.
+              Bring the Hollywood Hotel culinary experience directly to your chosen venue. We offer professional outside catering services for weddings, corporate events, and private celebrations across the region.
             </p>
             <p className="text-gray-600 leading-relaxed text-lg font-medium">
-              Our dedicated catering team will design a fully customized menu around your theme, headcount, and budget � ensuring flawless execution and top-quality presentation wherever you are.
+              Our dedicated catering team will design a fully customized menu around your theme, headcount, and budget — ensuring flawless execution and top-quality presentation wherever you are.
             </p>
           </div>
         </motion.section>

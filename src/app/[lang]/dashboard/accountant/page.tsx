@@ -1,7 +1,8 @@
 "use client";
 
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { DollarSign, TrendingUp, BedDouble, Calendar, ClipboardList } from "lucide-react";
+import { BedDouble, Calendar, ClipboardList, Printer, TrendingUp } from "lucide-react";
 import { useHotel } from "@/context/HotelContext";
 
 function RevenueBar({ label, value, total, color }: { label: string; value: number; total: number; color: string }) {
@@ -11,7 +12,7 @@ function RevenueBar({ label, value, total, color }: { label: string; value: numb
       <div className="flex justify-between items-center">
         <span className="font-bold text-black text-sm">{label}</span>
         <div className="text-right">
-          <span className="font-black text-black">${value.toLocaleString()}</span>
+          <span className="font-black text-black">RWF {value.toLocaleString()}</span>
           <span className="text-xs text-gray-400 ml-2">({pct}%)</span>
         </div>
       </div>
@@ -24,86 +25,109 @@ function RevenueBar({ label, value, total, color }: { label: string; value: numb
 
 export default function AccountantDashboardPage() {
   const { bookings, conferenceBookings, dailySalesReport, currentUser } = useHotel();
+  const [dateFilter, setDateFilter] = useState("all");
+  
+  const isDateMatch = (dateStr: string) => {
+    if (dateFilter === "all") return true;
+    const date = new Date(dateStr);
+    const today = new Date();
+    if (dateFilter === "today") {
+      return date.toDateString() === today.toDateString();
+    }
+    if (dateFilter === "this_month") {
+      return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+    }
+    return true;
+  };
 
-  const roomRevenue = bookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + b.amount, 0);
-  const diningRevenue = dailySalesReport ? dailySalesReport.categories.food + dailySalesReport.categories.drinks + dailySalesReport.categories.bar : 0;
-  const conferenceRevenue = conferenceBookings.filter(c => c.status === "Confirmed").length * 450; // mocked flat rate
-  const cateringRevenue = Math.round(roomRevenue * 0.08); // mocked catering at 8% of rooms
-  const totalRevenue = roomRevenue + diningRevenue + conferenceRevenue + cateringRevenue;
+  const filteredBookings = bookings.filter(b => b.status === "Confirmed" && isDateMatch(b.checkIn));
+  const filteredConferences = conferenceBookings.filter(c => c.status === "Confirmed" && isDateMatch(c.date));
+  
+  const roomRevenue = filteredBookings.reduce((s, b) => s + b.amount, 0);
+  const conferenceRevenue = filteredConferences.reduce((s, c) => s + (c.amount || 0), 0);
+  
+  const isPosMatch = dailySalesReport && isDateMatch(dailySalesReport.date);
+  const diningRevenue = isPosMatch ? dailySalesReport.totalSales : 0;
 
-  const placeholderExpenses = Math.round(totalRevenue * 0.55);
-  const netRevenue = totalRevenue - placeholderExpenses;
-
-  const summaryCards = [
-    { label: "Total Revenue", value: `$${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-green-600", bg: "bg-green-100" },
-    { label: "Total Expenses (est.)", value: `$${placeholderExpenses.toLocaleString()}`, icon: DollarSign, color: "text-red-500", bg: "bg-red-100" },
-    { label: "Net Revenue", value: `$${netRevenue.toLocaleString()}`, icon: DollarSign, color: netRevenue >= 0 ? "text-gold" : "text-red-600", bg: "bg-black" },
-  ];
+  const totalRevenue = roomRevenue + diningRevenue + conferenceRevenue;
 
   return (
-    <>
-      <div className="mb-10">
-        <h1 className="text-4xl font-heading font-black text-black mb-2">Accountant � Revenue Overview</h1>
-        <p className="text-gray-600 font-medium text-lg">Welcome, {currentUser?.name}. Here is the financial summary across all revenue streams.</p>
+    <div className="print-container">
+      {/* Header */}
+      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-4xl font-heading font-black text-black mb-2">Operational Revenue</h1>
+          <p className="text-gray-600 font-medium text-lg">Welcome, {currentUser?.name}. Real-time breakdown of internal operations.</p>
+        </div>
+        <div className="flex items-center gap-3 no-print">
+          <select 
+            value={dateFilter} 
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="p-3 bg-white border-2 border-gray-100 rounded-xl font-bold text-black focus:outline-none focus:border-gold"
+          >
+            <option value="all">All Time</option>
+            <option value="this_month">This Month</option>
+            <option value="today">Today</option>
+          </select>
+          <button 
+            onClick={() => window.print()} 
+            className="flex items-center gap-2 bg-black text-white px-5 py-3 rounded-xl font-bold hover:bg-gold transition-colors"
+          >
+            <Printer size={18} /> Print Report
+          </button>
+        </div>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-        {summaryCards.map((card, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-gold transition-all">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-2xl ${card.bg} ${card.color}`}>
-                <card.icon size={24} strokeWidth={2.5} />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">{card.label}</p>
-                <p className="text-2xl font-black text-black">{card.value}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {/* Main Revenue Highlight */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-black p-8 rounded-3xl border-2 border-gold shadow-[0_10px_30px_rgba(0,0,0,0.1)] mb-12 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-gold font-bold uppercase tracking-widest mb-2">Total Operational Revenue</p>
+          <h2 className="text-5xl font-black text-white">RWF {totalRevenue.toLocaleString()}</h2>
+        </div>
+        <div className="bg-gold/20 p-4 rounded-2xl hidden sm:block">
+          <TrendingUp size={40} className="text-gold" />
+        </div>
+      </motion.div>
 
       {/* Revenue breakdown bars */}
       <div className="bg-white rounded-3xl border-2 border-gray-100 p-8 shadow-[0_10px_30px_rgba(0,0,0,0.03)] mb-10">
-        <h2 className="text-2xl font-black text-black mb-8">Revenue Breakdown by Stream</h2>
+        <h2 className="text-2xl font-black text-black mb-8">Revenue Streams</h2>
         <div className="space-y-8">
           <RevenueBar label="Room Bookings" value={roomRevenue} total={totalRevenue} color="bg-gold" />
-          <RevenueBar label="Dining & Bar" value={diningRevenue} total={totalRevenue} color="bg-orange-400" />
-          <RevenueBar label="Conference Halls" value={conferenceRevenue} total={totalRevenue} color="bg-blue-400" />
-          <RevenueBar label="Catering (est.)" value={cateringRevenue} total={totalRevenue} color="bg-purple-400" />
+          <RevenueBar label="Dining & Bar (POS)" value={diningRevenue} total={totalRevenue} color="bg-orange-400" />
+          <RevenueBar label="Conferences & Events" value={conferenceRevenue} total={totalRevenue} color="bg-blue-400" />
         </div>
-        {diningRevenue === 0 && (
-          <p className="text-xs text-gray-400 mt-6 font-medium">* Dining & Catering revenue reflects the last uploaded cashier report. Upload a daily report from the Cashier dashboard to see live figures.</p>
-        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 page-break-inside-avoid">
         {/* Room bookings log */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
           <div className="p-6 border-b-2 border-gray-100 bg-gray-50/50 flex items-center gap-3">
             <BedDouble size={20} className="text-gold" />
             <h2 className="text-xl font-black text-black">Room Bookings Log</h2>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
+              <thead className="bg-white text-gray-400 border-b-2 border-gray-100 sticky top-0">
                 <tr>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Ref</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Date</th>
                   <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Guest</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Room</th>
                   <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs text-right">Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {bookings.filter(b => b.status === "Confirmed").map((b, i) => (
+                {filteredBookings.map((b) => (
                   <tr key={b.id} className="hover:bg-gold/5 transition-colors">
-                    <td className="px-6 py-4 font-black text-black text-xs">{b.id}</td>
+                    <td className="px-6 py-4 font-bold text-gray-500 text-xs">{b.checkIn}</td>
                     <td className="px-6 py-4 font-bold text-gray-800">{b.guestName}</td>
-                    <td className="px-6 py-4 text-gray-500 font-medium">{b.roomType}</td>
-                    <td className="px-6 py-4 font-black text-black text-right">${b.amount}</td>
+                    <td className="px-6 py-4 font-black text-green-600 text-right">+RWF {b.amount.toLocaleString()}</td>
                   </tr>
                 ))}
+                {filteredBookings.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="px-6 py-8 text-center text-gray-400 font-medium">No bookings in this period.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -115,62 +139,46 @@ export default function AccountantDashboardPage() {
             <ClipboardList size={20} className="text-gold" />
             <h2 className="text-xl font-black text-black">Conference Log</h2>
           </div>
-          <div className="divide-y divide-gray-100">
-            {conferenceBookings.map((cb, i) => (
-              <div key={cb.id} className="px-6 py-4 hover:bg-gold/5 transition-colors">
-                <p className="font-bold text-black text-sm">{cb.hall}</p>
-                <p className="text-xs text-gray-500 font-medium">{cb.date} � {cb.guests} guests</p>
-                <p className="text-xs mt-1">
-                  <span className={`font-black uppercase text-xs ${cb.status === "Confirmed" ? "text-green-600" : "text-orange-500"}`}>{cb.status}</span>
-                  {cb.status === "Confirmed" && <span className="text-gray-400 ml-2">+$450</span>}
-                </p>
-              </div>
-            ))}
-            {conferenceBookings.length === 0 && <p className="px-6 py-8 text-center text-gray-400 font-medium text-sm">No conference bookings.</p>}
-          </div>
-        </div>
-      </div>
-
-      {/* Cashier / Orders log */}
-      {dailySalesReport && (
-        <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
-          <div className="p-6 border-b-2 border-gray-100 bg-gray-50/50 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Calendar size={20} className="text-gold" />
-              <h2 className="text-xl font-black text-black">POS Orders Log � {dailySalesReport.date}</h2>
-            </div>
-            <span className="text-sm font-black text-gold">{dailySalesReport.totalOrders} orders � ${dailySalesReport.totalSales.toLocaleString()}</span>
-          </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
+              <thead className="bg-white text-gray-400 border-b-2 border-gray-100 sticky top-0">
                 <tr>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">#</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Item</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Qty</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs text-right">Revenue</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Date</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Hall / Contact</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs text-right">Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {dailySalesReport.topItems.map((item, i) => (
-                  <tr key={i} className="hover:bg-gold/5 transition-colors">
-                    <td className="px-6 py-4 font-black text-gold">{i + 1}</td>
-                    <td className="px-6 py-4 font-bold text-black">{item.name}</td>
-                    <td className="px-6 py-4 text-gray-500 font-medium">{item.qty}</td>
-                    <td className="px-6 py-4 font-black text-black text-right">${item.amount}</td>
+                {filteredConferences.map((cb) => (
+                  <tr key={cb.id} className="hover:bg-gold/5 transition-colors">
+                    <td className="px-6 py-4 font-bold text-gray-500 text-xs">{cb.date}</td>
+                    <td className="px-6 py-4 font-bold text-gray-800">{cb.hall} <span className="text-xs font-normal text-gray-400 block">{cb.contactName}</span></td>
+                    <td className="px-6 py-4 font-black text-green-600 text-right">+RWF {(cb.amount || 0).toLocaleString()}</td>
                   </tr>
                 ))}
+                {filteredConferences.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="px-6 py-8 text-center text-gray-400 font-medium">No conferences in this period.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
-      )}
-      {!dailySalesReport && (
-        <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-10 text-center text-gray-400">
-          <p className="font-bold">No POS report available yet.</p>
-          <p className="text-sm mt-1 font-medium">Ask the cashier to upload a daily SimbaPOS report to see orders here.</p>
-        </div>
-      )}
-    </>
+      </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          body { background: white; }
+          .no-print { display: none !important; }
+          .print-container { padding: 0; }
+          .page-break-inside-avoid { page-break-inside: avoid; }
+          .shadow-[0_10px_30px_rgba(0,0,0,0.03)], .shadow-[0_20px_50px_rgba(0,0,0,0.05)] {
+            box-shadow: none !important;
+            border-color: #e5e7eb !important;
+          }
+        }
+      `}} />
+    </div>
   );
 }

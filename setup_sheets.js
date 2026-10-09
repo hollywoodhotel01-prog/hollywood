@@ -1,9 +1,9 @@
 /**
  * ============================================================
- *  Midland Hotel — Google Sheets Database Setup Script
+ *  Hollywood Hotel — Google Sheets Database Setup Script
  *  Sheets: Bookings | Rooms | InHouseGuests | ConferenceBookings
- *          Invoices | InvoiceItems | Receipts | DailySalesReports
- *          Staff | AdminLog
+ *          Expenses | OtherRevenues | Invoices | InvoiceItems | Receipts 
+ *          DailySalesReports | Staff | AdminLog
  * ============================================================
  */
 
@@ -45,44 +45,35 @@ const SHEETS = [
   {
     name: "📋 Bookings",
     tabColor: { red: 0.2, green: 0.6, blue: 1.0 },
-    sectionTitle: "ROOM BOOKINGS — Midland Hotel Kayonza",
+    sectionTitle: "ROOM BOOKINGS — Hollywood Hotel",
     columns: [
-      "Booking ID", "Guest Name", "Room Type", "Room Price/Night (USD)",
-      "Check-In Date", "Check-Out Date", "Nights", "Total Amount (USD)",
-      "Status", "Created At", "Notes"
+      "Booking ID", "Guest Name", "Room Type", "Number of Rooms", "Check-In Date", "Check-Out Date", "Amount", "Status", "Payment Method", "Payment Status"
     ],
     data: [
-      ["HH-2026-001", "Alice Johnson", "Deluxe Room", 120, "2026-07-20", "2026-07-23", 3, 360, "Confirmed", "2026-07-20T10:00:00Z", "VIP guest, top floor"],
-      ["HH-2026-002", "Michael Smith", "Executive Room", 150, "2026-07-15", "2026-07-18", 3, 450, "Confirmed", "2026-07-15T09:00:00Z", ""],
-      ["HH-2026-003", "Sarah Connor", "Standard Room", 80, "2026-07-25", "2026-07-27", 2, 160, "Pending", "2026-07-25T11:00:00Z", "Awaiting arrival confirmation"],
-      ["HH-2026-004", "David Kim", "Hollywood Suite", 300, "2026-08-01", "2026-08-05", 4, 1200, "Confirmed", "2026-08-01T14:00:00Z", "2 guests"],
-      ["HH-2026-005", "Emma Brown", "Deluxe Room", 120, "2026-07-18", "2026-07-20", 2, 240, "Cancelled", "2026-07-18T08:00:00Z", "Cancelled by guest"],
-      ["HH-2026-006", "Robert Hayes", "Presidential Suite", 800, "2026-08-10", "2026-08-14", 4, 3200, "Confirmed", "2026-08-10T12:00:00Z", "Diplomatic visit"],
+      ["HH-2026-001", "Alice Johnson", "Luxury Room", 1, "2026-07-20", "2026-07-23", 450, "Confirmed", "Cash", "Full Paid"],
+      ["HH-2026-002", "Michael Smith", "Luxury Room", 2, "2026-07-15", "2026-07-18", 900, "Confirmed", "Card", "Full Paid"],
+      ["HH-2026-003", "Sarah Connor", "Luxury Room", 1, "2026-07-25", "2026-07-27", 300, "Pending", "Cash", "Not Yet Paid"],
     ],
   },
 
   {
     name: "🛏️ Rooms",
     tabColor: { red: 0.4, green: 0.8, blue: 0.4 },
-    sectionTitle: "ROOM INVENTORY & STATUS — Midland Hotel Kayonza",
+    sectionTitle: "ROOM INVENTORY & STATUS — Hollywood Hotel",
     columns: [
       "Room Number", "Room Type", "Price/Night (USD)", "Status",
       "Housekeeper", "Last Updated", "Floor", "Max Guests", "Notes"
     ],
     data: [
-      ["101", "Standard Room", 80, "Occupied", "Jane Doe", "2026-09-12", 1, 2, ""],
-      ["102", "Standard Room", 80, "Available", "Jane Doe", "2026-09-12", 1, 2, ""],
-      ["103", "Standard Room", 80, "Cleaning", "Jane Doe", "2026-09-12", 1, 2, ""],
-      ["201", "Deluxe Room", 120, "Occupied", "John Smith", "2026-09-12", 2, 2, "Sea view"],
-      ["202", "Deluxe Room", 120, "Available", "John Smith", "2026-09-12", 2, 2, ""],
-      ["203", "Deluxe Room", 120, "Cleaning", "John Smith", "2026-09-12", 2, 2, ""],
-      ["301", "Executive Room", 150, "Occupied", "Mary Johnson", "2026-09-12", 3, 3, ""],
-      ["302", "Executive Room", 150, "Maintenance", "-", "2026-09-12", 3, 3, "AC repair"],
-      ["303", "Executive Room", 150, "Available", "Mary Johnson", "2026-09-12", 3, 3, ""],
-      ["401", "Hollywood Suite", 300, "Occupied", "Jane Doe", "2026-09-12", 4, 4, "Living room + bedroom"],
-      ["402", "Hollywood Suite", 300, "Available", "Jane Doe", "2026-09-12", 4, 4, ""],
-      ["501", "Presidential Suite", 800, "Available", "Mary Johnson", "2026-09-12", 5, 6, "Full butler service"],
-      ["502", "Presidential Suite", 800, "Occupied", "Mary Johnson", "2026-09-12", 5, 6, ""],
+      ["101", "Luxury Room", 150, "Occupied", "Jane Doe", "2026-09-12", 1, 2, ""],
+      ["102", "Luxury Room", 150, "Available", "Jane Doe", "2026-09-12", 1, 2, ""],
+      ["103", "Luxury Room", 150, "Cleaning", "Jane Doe", "2026-09-12", 1, 2, ""],
+      ["201", "Luxury Room", 150, "Occupied", "John Smith", "2026-09-12", 2, 2, "Sea view"],
+      ["202", "Luxury Room", 150, "Available", "John Smith", "2026-09-12", 2, 2, ""],
+      ["203", "Luxury Room", 150, "Cleaning", "John Smith", "2026-09-12", 2, 2, ""],
+      ["301", "Luxury Room", 150, "Occupied", "Mary Johnson", "2026-09-12", 3, 3, ""],
+      ["302", "Luxury Room", 150, "Maintenance", "-", "2026-09-12", 3, 3, "AC repair"],
+      ["303", "Luxury Room", 150, "Available", "Mary Johnson", "2026-09-12", 3, 3, ""],
     ],
   },
 
@@ -107,11 +98,37 @@ const SHEETS = [
     sectionTitle: "CONFERENCE & EVENT BOOKINGS — Receptionist / Admin",
     columns: [
       "Booking ID", "Contact Name", "Phone", "Event Type", "Hall / Venue",
-      "Expected Guests", "Event Date", "Special Requirements", "Status", "Created At"
+      "Expected Guests", "Event Date", "Amount (USD)", "Special Requirements", "Status", "Created At"
     ],
     data: [
-      ["CB-2026-001", "Lucia Fernandez", "+250 781 234 567", "Corporate Meeting", "Executive Boardroom", 20, "2026-08-05", "Projector, whiteboard", "Confirmed", "2026-07-28T09:00:00Z"],
-      ["CB-2026-002", "Peter Nkomo", "+250 782 345 678", "Training / Workshop", "Grand Ballroom", 120, "2026-08-12", "Tea break catering", "Pending", "2026-08-01T10:30:00Z"],
+      ["CB-2026-001", "Lucia Fernandez", "+250 781 234 567", "Corporate Meeting", "Executive Boardroom", 20, "2026-08-05", 450, "Projector, whiteboard", "Confirmed", "2026-07-28T09:00:00Z"],
+      ["CB-2026-002", "Peter Nkomo", "+250 782 345 678", "Training / Workshop", "Grand Ballroom", 120, "2026-08-12", 1200, "Tea break catering", "Pending", "2026-08-01T10:30:00Z"],
+    ],
+  },
+
+  {
+    name: "💸 Expenses",
+    tabColor: { red: 0.9, green: 0.2, blue: 0.2 },
+    sectionTitle: "EXPENSES — Finance & Accounting",
+    columns: [
+      "Expense ID", "Category", "Description", "Amount (USD)", "Date", "Logged By"
+    ],
+    data: [
+      ["EXP-2026-001", "Maintenance", "AC Repair in Room 302", 150, "2026-09-12", "Grace Mutua"],
+      ["EXP-2026-002", "Supplies", "Restocking mini-bars", 320, "2026-09-10", "Grace Mutua"],
+    ],
+  },
+
+  {
+    name: "📈 OtherRevenues",
+    tabColor: { red: 0.2, green: 0.9, blue: 0.5 },
+    sectionTitle: "OTHER REVENUES — Finance & Accounting",
+    columns: [
+      "Revenue ID", "Source", "Description", "Amount (USD)", "Date", "Logged By"
+    ],
+    data: [
+      ["OREV-2026-001", "Equipment Rental", "Projector rental for external event", 120, "2026-09-12", "Grace Mutua"],
+      ["OREV-2026-002", "Penalty", "Late checkout fee Room 201", 50, "2026-09-11", "Grace Mutua"],
     ],
   },
 
@@ -159,7 +176,7 @@ const SHEETS = [
         "2026-08-01", "2026-08-15", "OVERDUE", "USD",
         "David Kim", "david.kim@innovate.kr", "+250 788 777 888", "Seoul / Kigali", "",
         1350.00, 100.00, 1250.00, 225.00, 0.00, 1475.00, 0.00, 1475.00,
-        "Net 14", "Bank wire to Midland Hotel. Follow-up sent.", "Overdue — follow-up email sent by accounting.",
+        "Net 14", "Bank wire to Hollywood Hotel. Follow-up sent.", "Overdue — follow-up email sent by accounting.",
         "2026-08-01T08:00:00Z", "2026-08-16T09:00:00Z"
       ],
     ],
@@ -283,6 +300,28 @@ const SHEETS = [
       ["LOG-005", "2026-09-12T11:00:00Z", "Sandra Mbeki", "Cashier", "UPLOAD_SALES_REPORT", "DailySalesReports", "2026-09-11", "Daily POS report uploaded", "Cashier Terminal"],
     ],
   },
+
+  {
+    name: "DailyReports",
+    tabColor: { red: 0.8, green: 0.3, blue: 0.5 },
+    sectionTitle: "DAILY REPORTS — XPS Upload",
+    columns: ["Date", "PeriodFrom", "PeriodTo", "TotalSales", "TotalItemsSold", "UploadedAt"],
+    data: [],
+  },
+  {
+    name: "SalesDetail",
+    tabColor: { red: 0.7, green: 0.4, blue: 0.3 },
+    sectionTitle: "SALES DETAIL — Item-Level Performance",
+    columns: ["Date", "ItemName", "Quantity", "Amount"],
+    data: [],
+  },
+  {
+    name: "CategorySales",
+    tabColor: { red: 0.9, green: 0.6, blue: 0.2 },
+    sectionTitle: "CATEGORY SALES — Breakdown",
+    columns: ["Date", "Category", "PercentOfAmount", "Amount"],
+    data: [],
+  },
 ];
 
 // ── Helper: sleep ──────────────────────────────────────────────────────────────
@@ -305,7 +344,7 @@ function range(sheetName, startRow, startCol, endRow, endCol) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log("\n🏨  Midland Hotel — Google Sheets Database Setup");
+  console.log("\n🏨  Hollywood Hotel — Google Sheets Database Setup");
   console.log("═".repeat(55));
 
   // Auth
@@ -467,7 +506,7 @@ async function main() {
       repeatCell: {
         range: { sheetId, startRowIndex: 1, endRowIndex: 2, startColumnIndex: 0, endColumnIndex: numCols },
         cell: {
-          userEnteredValue: { stringValue: "Midland Hotel Kayonza  •  Hotel Management System  •  Last Updated: " + new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) },
+          userEnteredValue: { stringValue: "Hollywood Hotel  •  Hotel Management System  •  Last Updated: " + new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) },
           userEnteredFormat: {
             backgroundColor: COLORS.subheaderBg,
             textFormat: { foregroundColor: COLORS.subheaderText, italic: true, fontSize: 9 },

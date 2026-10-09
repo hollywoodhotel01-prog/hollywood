@@ -10,25 +10,28 @@ const labelToImageMap: Record<string, string> = {
   "Hero: Hotel Exterior": "/hero.png",
 
   // Home Page
-  "Lobby / Reception Area": "/soloon.png",
+  "Lobby / Reception Area": "/reception.webp",
   
   // Rooms & Suites
   "Photo: Standard Room": "/room.png",
   "Photo: Deluxe Room": "/room.png",
   "Photo: Executive Room": "/room.png",
-  "Photo: Midland Suite": "/room.png",
+  "Photo: Hollywood Suite": "/room.png",
   "Room View": "/room.png",
   
   // Conference Page
-  "Conference Setup: U-Shape": "/conference.png",
+  "Conference Setup: U-Shape": "/salle.webp",
   
   // Dining Page
   "Restaurant Dining Area": "/lunch.png",
   "Coffee Break Setup": "/drinks.png",
   "Outside Catering Setup": "/food.png",
   
-  // Gym Page
-  "Gym Interior & Equipment": "/gym.png",
+  // Facilities Page
+  "Gym Interior & Equipment": "/gym.webp",
+  "Sauna": "/sauna.webp",
+  "Massage": "/massage.webp",
+  "Parking": "/parking.webp",
 };
 
 export default function PlaceholderImage({ label, className = "" }: PlaceholderImageProps) {

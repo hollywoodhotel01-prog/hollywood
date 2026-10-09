@@ -63,307 +63,55 @@ interface FinanceContextType {
   getReceiptsForInvoice: (invoiceNumber: string) => Receipt[];
 }
 
-const initialSeedInvoices: Invoice[] = [
-  {
-    id: "inv-seed-1",
-    invoice_number: "INV-2026-0001",
-    issue_date: "2026-07-20",
-    due_date: "2026-08-04",
-    status: "PAID",
-    currency: "USD",
-    order_id: "MH-2026-001",
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-101",
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      phone: "+250 788 111 222",
-      address: "Kigali, Rwanda",
-    },
-    items: [
-      {
-        item_id: "DR-01",
-        description: "Deluxe Room Accommodation (3 Nights)",
-        quantity: 3,
-        unit_price: 120,
-        discount_amount: 20,
-        tax_rate_percent: 18,
-        tax_amount: 61.20,
-        line_gross_total: 360,
-        line_after_discount: 340,
-        line_total: 401.20,
-      },
-      {
-        item_id: "CB-01",
-        description: "Breakfast & Special Coffee Package",
-        quantity: 3,
-        unit_price: 12,
-        discount_amount: 0,
-        tax_rate_percent: 18,
-        tax_amount: 6.48,
-        line_gross_total: 36,
-        line_after_discount: 36,
-        line_total: 42.48,
-      },
-    ],
-    summary: {
-      subtotal: 396.00,
-      total_discount: 20.00,
-      taxable_amount: 376.00,
-      total_tax: 67.68,
-      shipping_fee: 0.00,
-      grand_total: 443.68,
-      amount_paid: 443.68,
-      balance_due: 0.00,
-    },
-    global_discount: 0,
-    payment_terms: "Due on Receipt",
-    payment_instructions: "Paid in full via Credit Card auth TXN-941203",
-    notes: "VIP guest requested top floor quiet room.",
-    created_at: "2026-07-20T10:00:00Z",
-    updated_at: "2026-07-20T10:30:00Z",
-  },
-  {
-    id: "inv-seed-2",
-    invoice_number: "INV-2026-0002",
-    issue_date: "2026-08-15",
-    due_date: "2026-08-30",
-    status: "PARTIALLY_PAID",
-    currency: "USD",
-    order_id: "MH-2026-002",
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-102",
-      name: "Michael Smith",
-      email: "m.smith@globalcorp.com",
-      phone: "+250 788 333 444",
-      address: "Nairobi, Kenya",
-      tax_id: "PIN-P0512849",
-    },
-    items: [
-      {
-        item_id: "CH-01",
-        description: "Conference Hall Rental (Full Day)",
-        quantity: 2,
-        unit_price: 450,
-        discount_amount: 50,
-        tax_rate_percent: 18,
-        tax_amount: 153.00,
-        line_gross_total: 900,
-        line_after_discount: 850,
-        line_total: 1003.00,
-      },
-      {
-        item_id: "CAT-01",
-        description: "Executive Catering / Buffet (25 Delegates x 2 Days)",
-        quantity: 50,
-        unit_price: 35,
-        discount_amount: 100,
-        tax_rate_percent: 18,
-        tax_amount: 297.00,
-        line_gross_total: 1750,
-        line_after_discount: 1650,
-        line_total: 1947.00,
-      },
-    ],
-    summary: {
-      subtotal: 2650.00,
-      total_discount: 150.00,
-      taxable_amount: 2500.00,
-      total_tax: 450.00,
-      shipping_fee: 50.00,
-      grand_total: 3000.00,
-      amount_paid: 1500.00,
-      balance_due: 1500.00,
-    },
-    global_discount: 0,
-    shipping_fee: 50.00,
-    payment_terms: "50% Advance, Balance Net 15",
-    payment_instructions: "Please settle remaining balance to Bank of Kigali A/C: 00045-0129384-88",
-    notes: "Corporate Annual Strategy Retreat with projector & PA system setup.",
-    created_at: "2026-08-15T09:15:00Z",
-    updated_at: "2026-08-16T14:20:00Z",
-  },
-  {
-    id: "inv-seed-3",
-    invoice_number: "INV-2026-0003",
-    issue_date: "2026-08-25",
-    due_date: "2026-09-08",
-    status: "UNPAID",
-    currency: "USD",
-    order_id: "MH-2026-003",
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-103",
-      name: "Sarah Connor",
-      email: "sarah.c@techsol.io",
-      phone: "+250 788 555 666",
-      address: "Musanze, Rwanda",
-    },
-    items: [
-      {
-        item_id: "SR-01",
-        description: "Standard Room Stay (2 Nights)",
-        quantity: 2,
-        unit_price: 80,
-        discount_amount: 0,
-        tax_rate_percent: 18,
-        tax_amount: 28.80,
-        line_gross_total: 160,
-        line_after_discount: 160,
-        line_total: 188.80,
-      },
-    ],
-    summary: {
-      subtotal: 160.00,
-      total_discount: 0.00,
-      taxable_amount: 160.00,
-      total_tax: 28.80,
-      shipping_fee: 0.00,
-      grand_total: 188.80,
-      amount_paid: 0.00,
-      balance_due: 188.80,
-    },
-    payment_terms: "Due on Arrival / Check-in",
-    payment_instructions: "MTN Mobile Money Code: *182*8*1*558291#",
-    notes: "Awaiting arrival confirmation.",
-    created_at: "2026-08-25T11:45:00Z",
-    updated_at: "2026-08-25T11:45:00Z",
-  },
-  {
-    id: "inv-seed-4",
-    invoice_number: "INV-2026-0004",
-    issue_date: "2026-08-01",
-    due_date: "2026-08-15",
-    status: "OVERDUE",
-    currency: "USD",
-    order_id: "MH-2026-004",
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-104",
-      name: "David Kim",
-      email: "david.kim@innovate.kr",
-      phone: "+250 788 777 888",
-      address: "Seoul / Kigali",
-    },
-    items: [
-      {
-        item_id: "ST-01",
-        description: "Presidential Suite (4 Nights)",
-        quantity: 4,
-        unit_price: 300,
-        discount_amount: 100,
-        tax_rate_percent: 18,
-        tax_amount: 198.00,
-        line_gross_total: 1200,
-        line_after_discount: 1100,
-        line_total: 1298.00,
-      },
-      {
-        item_id: "TR-01",
-        description: "Airport VIP Transfer Service",
-        quantity: 2,
-        unit_price: 75,
-        discount_amount: 0,
-        tax_rate_percent: 18,
-        tax_amount: 27.00,
-        line_gross_total: 150,
-        line_after_discount: 150,
-        line_total: 177.00,
-      },
-    ],
-    summary: {
-      subtotal: 1350.00,
-      total_discount: 100.00,
-      taxable_amount: 1250.00,
-      total_tax: 225.00,
-      shipping_fee: 0.00,
-      grand_total: 1475.00,
-      amount_paid: 0.00,
-      balance_due: 1475.00,
-    },
-    payment_terms: "Net 14",
-    payment_instructions: "Overdue reminder sent. Bank wire to Midland Hotel.",
-    notes: "Follow-up email sent by accounting team.",
-    created_at: "2026-08-01T08:00:00Z",
-    updated_at: "2026-08-16T09:00:00Z",
-  },
-];
-
-const initialSeedReceipts: Receipt[] = [
-  {
-    id: "rec-seed-1",
-    receipt_number: "REC-2026-0001",
-    invoice_reference_id: "INV-2026-0001",
-    order_id: "MH-2026-001",
-    payment_date: "2026-07-20 10:30:00",
-    payment_method: "CREDIT_CARD",
-    transaction_reference: "CC-AUTH-941203",
-    amount_received: 443.68,
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-101",
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      phone: "+250 788 111 222",
-      address: "Kigali, Rwanda",
-    },
-    total_invoice_amount: 443.68,
-    total_paid_to_date: 443.68,
-    remaining_balance: 0.00,
-    payment_status: "FULLY_PAID",
-    notes: "Visa Card settlement via POS Terminal 1",
-    created_at: "2026-07-20T10:30:00Z",
-  },
-  {
-    id: "rec-seed-2",
-    receipt_number: "REC-2026-0002",
-    invoice_reference_id: "INV-2026-0002",
-    order_id: "MH-2026-002",
-    payment_date: "2026-08-16 14:20:00",
-    payment_method: "BANK_TRANSFER",
-    transaction_reference: "BK-TXN-718294",
-    amount_received: 1500.00,
-    vendor: DEFAULT_VENDOR,
-    customer: {
-      customer_id: "CUST-102",
-      name: "Michael Smith",
-      email: "m.smith@globalcorp.com",
-      phone: "+250 788 333 444",
-      address: "Nairobi, Kenya",
-      tax_id: "PIN-P0512849",
-    },
-    total_invoice_amount: 3000.00,
-    total_paid_to_date: 1500.00,
-    remaining_balance: 1500.00,
-    payment_status: "PARTIALLY_PAID",
-    notes: "50% Corporate advance deposit received via Bank of Kigali Swift transfer",
-    created_at: "2026-08-16T14:20:00Z",
-  },
-];
-
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
-  const [invoices, setInvoices] = useState<Invoice[]>(initialSeedInvoices);
-  const [receipts, setReceipts] = useState<Receipt[]>(initialSeedReceipts);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [vendorConfig, setVendorConfig] = useState<VendorInfo>(DEFAULT_VENDOR);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
-  // Check and update overdue status on mount
+  // Fetch from Google Sheets on mount
   useEffect(() => {
-    const todayStr = new Date().toISOString().split("T")[0];
-    setInvoices((prev) =>
-      prev.map((inv) => {
-        if (
-          (inv.status === "UNPAID" || inv.status === "PARTIALLY_PAID" || inv.status === "ISSUED") &&
-          inv.due_date < todayStr &&
-          inv.summary.balance_due > 0
-        ) {
-          return { ...inv, status: "OVERDUE" };
+    async function loadFinanceData() {
+      try {
+        const safeJson = async (res: Response) => {
+          try {
+            return await res.json();
+          } catch (e) {
+            return {};
+          }
+        };
+        const [invRes, recRes] = await Promise.all([
+          fetch('/api/invoices'),
+          fetch('/api/receipts')
+        ]);
+        const [invJson, recJson] = await Promise.all([
+          safeJson(invRes),
+          safeJson(recRes)
+        ]);
+        if (invJson.success && Array.isArray(invJson.invoices)) {
+          const todayStr = new Date().toISOString().split("T")[0];
+          const updatedInvoices = invJson.invoices.map((inv: Invoice) => {
+            if (
+              (inv.status === "UNPAID" || inv.status === "PARTIALLY_PAID" || inv.status === "ISSUED") &&
+              inv.due_date < todayStr &&
+              inv.summary.balance_due > 0
+            ) {
+              return { ...inv, status: "OVERDUE" as InvoiceStatus };
+            }
+            return inv;
+          });
+          setInvoices(updatedInvoices);
         }
-        return inv;
-      })
-    );
+        if (recJson.success && Array.isArray(recJson.receipts)) setReceipts(recJson.receipts);
+      } catch (e) {
+        console.error("Failed to load finance data", e);
+      } finally {
+        setDataLoaded(true);
+      }
+    }
+    loadFinanceData();
   }, []);
 
   const createInvoice = (input: CreateInvoiceInput): Invoice => {
@@ -401,13 +149,14 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       payment_instructions:
         input.payment_instructions ||
         `Direct Transfer: ${vendorConfig.bank_name}, A/C: ${vendorConfig.account_number} or MoMo: ${vendorConfig.momo_code}`,
-      notes: input.notes || "Thank you for choosing Midland Hotel Kayonza.",
+      notes: input.notes || "Thank you for choosing Hollywood Hotel.",
       order_id: input.order_id,
       created_at: now.toISOString(),
       updated_at: now.toISOString(),
     };
 
     setInvoices((prev) => [newInvoice, ...prev]);
+    fetch('/api/invoices', { method: 'POST', body: JSON.stringify(newInvoice) }).catch(e => console.error("Failed to save invoice", e));
     return newInvoice;
   };
 
@@ -468,6 +217,9 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       })
     );
 
+    if (updated) {
+      fetch('/api/invoices', { method: 'PUT', body: JSON.stringify(updated) }).catch(e => console.error("Failed to update invoice", e));
+    }
     return updated;
   };
 
@@ -482,6 +234,9 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         return inv;
       })
     );
+    if (success) {
+      fetch('/api/invoices', { method: 'PUT', body: JSON.stringify({ id, status: 'CANCELLED' }) }).catch(e => console.error("Failed to cancel invoice", e));
+    }
     return success;
   };
 
@@ -495,6 +250,9 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       }
       return prev;
     });
+    if (success) {
+      fetch(`/api/invoices?id=${id}`, { method: 'DELETE' }).catch(e => console.error("Failed to delete invoice", e));
+    }
     return success;
   };
 
@@ -570,6 +328,20 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     };
 
     setReceipts((prev) => [newReceipt, ...prev]);
+
+    // Save receipt
+    fetch('/api/receipts', { method: 'POST', body: JSON.stringify(newReceipt) }).catch(e => console.error("Failed to save receipt", e));
+    // Update invoice
+    fetch('/api/invoices', { method: 'PUT', body: JSON.stringify({
+      invoice_number: targetInvoice.invoice_number,
+      status: newStatus,
+      summary: {
+        ...targetInvoice.summary,
+        amount_paid: newTotalPaid,
+        balance_due: newBalanceDue,
+      }
+    }) }).catch(e => console.error("Failed to update invoice payment", e));
+
     return newReceipt;
   };
 
@@ -583,6 +355,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       created_at: now.toISOString(),
     };
     setReceipts((prev) => [newReceipt, ...prev]);
+    fetch('/api/receipts', { method: 'POST', body: JSON.stringify(newReceipt) }).catch(e => console.error("Failed to save direct receipt", e));
     return newReceipt;
   };
 
@@ -595,17 +368,16 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const nights = Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24)));
 
     const prices: Record<string, number> = {
-      "Standard Room": 80,
-      "Deluxe Room": 120,
-      "Executive Room": 150,
-      "Suite": 300,
+      "Luxury Room": 150,
     };
-    const unitPrice = prices[booking.roomType] || Math.round(booking.amount / nights);
+    
+    const roomsCount = booking.numberOfRooms || 1;
+    const unitPrice = prices[booking.roomType] || Math.round(booking.amount / (nights * roomsCount));
 
     const itemInput = {
       item_id: `ROOM-${booking.roomType.substring(0, 2).toUpperCase()}`,
-      description: `${booking.roomType} Accommodation (${nights} Night${nights > 1 ? "s" : ""}: ${booking.checkIn} to ${booking.checkOut})`,
-      quantity: nights,
+      description: `${roomsCount}x ${booking.roomType} Accommodation (${nights} Night${nights > 1 ? "s" : ""}: ${booking.checkIn} to ${booking.checkOut})`,
+      quantity: nights * roomsCount,
       unit_price: unitPrice,
       discount_amount: 0,
       tax_rate_percent: 18,
@@ -619,7 +391,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         name: booking.guestName,
         email: `${booking.guestName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
         phone: "+250 788 000 000",
-        address: "Midland Hotel Kayonza Guest",
+        address: "Hollywood Hotel Guest",
       },
       items: [itemInput],
       notes: customNotes || `Generated for reservation ${booking.id} (${booking.roomType})`,

@@ -1,46 +1,97 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { BedDouble, CheckCircle, Clock, AlertCircle, Filter, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BedDouble, CheckCircle, AlertCircle, Filter, Search, Calendar, Plus, Pencil, Trash2, X } from "lucide-react";
 import { useHotel } from "@/context/HotelContext";
-import { RoomStatus } from "@/context/HotelContext";
+import { RoomRecord, RoomStatus } from "@/context/HotelContext";
 import { useState } from "react";
 
+const ROOM_TYPES = ["Standard Room", "Deluxe Room", "Executive Room", "Hollywood Suite", "Presidential Suite"];
+const STATUSES: RoomStatus[] = ["Available", "Occupied", "Booked", "Maintenance"];
+
+const emptyForm = { id: "", type: "Standard Room", status: "Available" as RoomStatus, housekeeper: "" };
+
 export default function RoomsManagementPage() {
-  const { roomsData, updateRoomStatus } = useHotel();
+  const { roomsData, updateRoomStatus, addRoom, editRoom, deleteRoom, dataLoading } = useHotel();
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [modal, setModal] = useState<"add" | "edit" | "delete" | null>(null);
+  const [editTarget, setEditTarget] = useState<RoomRecord | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<RoomRecord | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const [saving, setSaving] = useState(false);
 
   const filtered = roomsData.filter(r =>
-    r.id.includes(searchTerm) || r.type.toLowerCase().includes(searchTerm.toLowerCase()) || r.status.toLowerCase().includes(searchTerm.toLowerCase())
+    (r.id?.includes(searchTerm) || r.type?.toLowerCase().includes(searchTerm.toLowerCase()) || r.status?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (statusFilter ? r.status === statusFilter : true)
   );
 
   const available = roomsData.filter(r => r.status === "Available").length;
   const occupied = roomsData.filter(r => r.status === "Occupied").length;
-  const cleaning = roomsData.filter(r => r.status === "Cleaning").length;
+  const booked = roomsData.filter(r => r.status === "Booked").length;
 
   const cycleStatus = (roomId: string, current: RoomStatus) => {
-    const cycle: RoomStatus[] = ["Available", "Occupied", "Cleaning", "Maintenance"];
+    const cycle: RoomStatus[] = ["Available", "Occupied", "Booked", "Maintenance"];
     const next = cycle[(cycle.indexOf(current) + 1) % cycle.length];
     updateRoomStatus(roomId, next);
   };
 
+  const openAdd = () => { setForm(emptyForm); setModal("add"); };
+  const openEdit = (room: RoomRecord) => { setEditTarget(room); setForm({ id: room.id, type: room.type, status: room.status, housekeeper: room.housekeeper }); setModal("edit"); };
+  const openDelete = (room: RoomRecord) => { setDeleteTarget(room); setModal("delete"); };
+  const closeModal = () => { setModal(null); setEditTarget(null); setDeleteTarget(null); };
+
+  const handleSaveAdd = async () => {
+    if (!form.id || !form.housekeeper) return;
+    setSaving(true);
+    await addRoom(form as RoomRecord);
+    setSaving(false);
+    closeModal();
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTarget) return;
+    setSaving(true);
+    await editRoom(editTarget.id, { type: form.type, status: form.status, housekeeper: form.housekeeper });
+    setSaving(false);
+    closeModal();
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setSaving(true);
+    await deleteRoom(deleteTarget.id);
+    setSaving(false);
+    closeModal();
+  };
+
+  const inputClass = "w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-black focus:bg-white focus:ring-0 focus:border-gold outline-none transition-all font-medium text-sm";
+
   return (
     <>
-      <div className="mb-12">
-        <h1 className="text-4xl font-heading font-black text-black mb-2">Rooms Management</h1>
-        <p className="text-gray-600 font-medium text-lg">Monitor room status and housekeeping. Click Update to cycle status.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
+        <div>
+          <h1 className="text-4xl font-heading font-black text-black mb-2">Rooms Management</h1>
+          <p className="text-gray-600 font-medium text-lg">Monitor, add, edit, and remove hotel rooms.</p>
+        </div>
+        <button
+          onClick={openAdd}
+          className="flex items-center gap-2 px-6 py-3 bg-black hover:bg-gray-900 text-white rounded-xl font-bold transition-all shadow-md hover:shadow-[0_10px_20px_rgba(251,191,36,0.2)] hover:-translate-y-0.5"
+        >
+          <Plus size={18} /> Add Room
+        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-12">
         {[
-          { label: "Total Rooms", value: roomsData.length, color: "hover:border-gold" },
-          { label: "Available", value: available, color: "hover:border-green-400", valColor: "text-green-500" },
-          { label: "Occupied", value: occupied, color: "hover:border-blue-400", valColor: "text-blue-500" },
-          { label: "Cleaning", value: cleaning, color: "hover:border-orange-400", valColor: "text-orange-500" },
+          { label: "Total Rooms", value: roomsData.length, color: "hover:border-gold", filterValue: null },
+          { label: "Available", value: available, color: "hover:border-green-400", valColor: "text-green-500", filterValue: "Available" },
+          { label: "Occupied", value: occupied, color: "hover:border-blue-400", valColor: "text-blue-500", filterValue: "Occupied" },
+          { label: "Booked", value: booked, color: "hover:border-purple-400", valColor: "text-purple-500", filterValue: "Booked" },
         ].map((s, i) => (
-          <div key={i} className={`bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-colors ${s.color}`}>
+          <div key={i} onClick={() => setStatusFilter(s.filterValue)} className={`bg-white p-6 rounded-3xl border-2 shadow-[0_10px_30px_rgba(0,0,0,0.03)] cursor-pointer transition-all hover:scale-105 ${statusFilter === s.filterValue ? 'border-gold ring-4 ring-gold/20' : 'border-gray-100'} ${s.color}`}>
             <p className="text-sm text-gray-500 font-bold uppercase tracking-widest mb-2">{s.label}</p>
-            <p className={`text-4xl font-black ${s.valColor ?? "text-black"}`}>{s.value}</p>
+            {dataLoading ? <div className="h-10 w-16 bg-gray-200 animate-pulse rounded-xl" /> : <p className={`text-4xl font-black ${s.valColor ?? "text-black"}`}>{s.value}</p>}
           </div>
         ))}
       </div>
@@ -49,10 +100,6 @@ export default function RoomsManagementPage() {
         <div className="p-6 md:p-8 border-b-2 border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-gray-50/50">
           <h2 className="text-2xl font-black text-black">Room Status</h2>
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border-2 border-gray-200 rounded-xl font-bold text-gray-600 hover:border-gold hover:text-black transition-colors">
-              <Filter size={18} />
-              <span>Filter</span>
-            </button>
             <div className="relative flex-1 sm:flex-none">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -77,7 +124,17 @@ export default function RoomsManagementPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filtered.map((room, i) => (
+              {dataLoading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <td key={j} className="px-8 py-5">
+                        <div className="h-4 bg-gray-100 rounded-lg w-24" />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : filtered.map((room, i) => (
                 <motion.tr key={room.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="hover:bg-gold/5 transition-colors group">
                   <td className="px-8 py-5 font-black text-black text-lg">{room.id}</td>
                   <td className="px-8 py-5 font-bold text-gray-800">
@@ -92,27 +149,112 @@ export default function RoomsManagementPage() {
                     <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border ${
                       room.status === "Available" ? "bg-green-50 text-green-700 border-green-200" :
                       room.status === "Occupied" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                      room.status === "Cleaning" ? "bg-orange-50 text-orange-700 border-orange-200" :
+                      room.status === "Booked" ? "bg-purple-50 text-purple-700 border-purple-200" :
                       "bg-red-50 text-red-700 border-red-200"
                     }`}>
                       {room.status === "Available" && <CheckCircle size={14} strokeWidth={3} />}
-                      {room.status === "Cleaning" && <Clock size={14} strokeWidth={3} />}
+                      {room.status === "Booked" && <Calendar size={14} strokeWidth={3} />}
                       {room.status === "Maintenance" && <AlertCircle size={14} strokeWidth={3} />}
                       {room.status}
                     </span>
                   </td>
                   <td className="px-8 py-5 font-medium text-gray-600">{room.housekeeper}</td>
                   <td className="px-8 py-5 text-right">
-                    <button onClick={() => cycleStatus(room.id, room.status)} className="px-4 py-2 bg-black hover:bg-gray-900 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 text-xs uppercase tracking-wider">
-                      Update
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => cycleStatus(room.id, room.status)} className="px-3 py-2 bg-black hover:bg-gray-900 text-white rounded-lg font-bold transition-all text-xs uppercase tracking-wider">Update</button>
+                      <button onClick={() => openEdit(room)} className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors" title="Edit room">
+                        <Pencil size={16} />
+                      </button>
+                      <button onClick={() => openDelete(room)} className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors" title="Delete room">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </motion.tr>
               ))}
+              {!dataLoading && filtered.length === 0 && (
+                <tr><td colSpan={5} className="px-8 py-16 text-center text-gray-400 font-medium">No rooms found.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Add / Edit Modal */}
+      <AnimatePresence>
+        {(modal === "add" || modal === "edit") && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl relative">
+              <button onClick={closeModal} className="absolute top-4 right-4 p-2 text-gray-400 hover:text-black rounded-full hover:bg-gray-100 transition-colors">
+                <X size={20} />
+              </button>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2.5 bg-black rounded-xl"><BedDouble size={20} className="text-gold" /></div>
+                <h2 className="text-2xl font-black text-black">{modal === "add" ? "Add New Room" : `Edit Room ${editTarget?.id}`}</h2>
+              </div>
+              <div className="space-y-4">
+                {modal === "add" && (
+                  <div>
+                    <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Room Number</label>
+                    <input type="text" value={form.id} onChange={e => setForm({ ...form, id: e.target.value })} className={inputClass} placeholder="e.g. 205" />
+                  </div>
+                )}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Room Type</label>
+                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className={`${inputClass} appearance-none`}>
+                    {ROOM_TYPES.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Status</label>
+                  <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as RoomStatus })} className={`${inputClass} appearance-none`}>
+                    {STATUSES.map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Housekeeper</label>
+                  <input type="text" value={form.housekeeper} onChange={e => setForm({ ...form, housekeeper: e.target.value })} className={inputClass} placeholder="Staff name" />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button onClick={closeModal} className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-200 text-gray-600 hover:border-gray-400 transition-colors">Cancel</button>
+                <button
+                  onClick={modal === "add" ? handleSaveAdd : handleSaveEdit}
+                  disabled={saving}
+                  className="flex-1 py-3 rounded-xl font-bold bg-black text-white hover:bg-gray-900 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : (modal === "add" ? "Add Room" : "Save Changes")}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirm Modal */}
+      <AnimatePresence>
+        {modal === "delete" && deleteTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trash2 size={28} className="text-red-600" />
+              </div>
+              <h2 className="text-2xl font-black text-black mb-2">Delete Room {deleteTarget.id}?</h2>
+              <p className="text-gray-500 font-medium mb-6">This will permanently remove the room from Google Sheets. This cannot be undone.</p>
+              <div className="flex gap-3">
+                <button onClick={closeModal} className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-200 text-gray-600 hover:border-gray-400 transition-colors">Cancel</button>
+                <button
+                  onClick={handleDelete}
+                  disabled={saving}
+                  className="flex-1 py-3 rounded-xl font-bold bg-red-600 text-white hover:bg-red-700 transition-all disabled:opacity-60 flex items-center justify-center"
+                >
+                  {saving ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Delete"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

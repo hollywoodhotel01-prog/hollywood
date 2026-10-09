@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import DashboardSidebar from "@/components/DashboardSidebar";
 import { useFinance } from "@/context/FinanceContext";
 import { Invoice, InvoiceStatus } from "@/types/finance";
 import { formatCurrency } from "@/lib/financeCalculations";
@@ -93,12 +92,8 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20 flex relative">
-      <div className="absolute top-0 right-0 w-full h-[300px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+    <>
 
-      <DashboardSidebar />
-
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto relative z-10">
         {/* Header */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
@@ -386,7 +381,6 @@ export default function InvoicesPage() {
             </table>
           </div>
         </div>
-      </main>
 
       {/* Modals */}
       <InvoiceModal
@@ -411,6 +405,7 @@ export default function InvoicesPage() {
         type="invoice"
         invoice={selectedInvoiceForPrint}
       />
-    </div>
+    </>
   );
 }
+

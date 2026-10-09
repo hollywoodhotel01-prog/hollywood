@@ -9,16 +9,16 @@ import {
 } from "@/types/finance";
 
 export const DEFAULT_VENDOR: VendorInfo = {
-  name: "Midland Hotel Kayonza",
-  email: "billing@midlandhotel.rw",
-  phone: "+250 788 123 456",
-  address: "Kayonza Commercial Center, Eastern Province, Rwanda",
+  name: "Hollywood Hotel",
+  email: "hollywoodhotel01@gmail.com",
+  phone: "+250 788 876 479",
+  address: "Rwimiyaga, Nyagatare, Rwanda",
   tax_id: "TIN-102938475",
-  bank_name: "Bank of Kigali (BK)",
-  account_name: "Midland Hotel Ltd",
+  bank_name: "Bank of Kigali",
+  account_name: "Hollywood Hotel Ltd",
   account_number: "00045-0129384-88",
-  swift_code: "BKIGRWRW",
-  momo_code: "*182*8*1*558291# (MIDLAND HOTEL)",
+  swift_code: "BOKIRWXX",
+  momo_code: "*182*8*1*558291# (HOLLYWOOD HOTEL)",
 };
 
 export interface ServicePreset {

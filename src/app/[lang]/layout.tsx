@@ -21,8 +21,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Midland Hotel | Premium Accommodation in Kayonza",
-  description: "Experience comfort and elegance at Midland Hotel, located just minutes from Kayonza Bus Park. Offering premium rooms, conference halls, and exquisite dining.",
+  title: "Hollywood Hotel | Premium Accommodation",
+  description: "Experience comfort and elegance at Hollywood Hotel, located just minutes from the Bus Park. Offering premium rooms, conference halls, and exquisite dining.",
 };
 
 export default async function RootLayout({
