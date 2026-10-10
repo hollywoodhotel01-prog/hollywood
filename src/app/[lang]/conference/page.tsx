@@ -9,8 +9,10 @@ const INITIAL_FORM = {
   contactName: "",
   phone: "",
   eventType: "",
+  hall: "Conference Room",
   guests: "",
   date: "",
+  paymentMethod: "Mobile Money",
   requirements: "",
 };
 
@@ -23,21 +25,27 @@ export default function ConferencePage() {
 
   const today = new Date().toISOString().split("T")[0];
 
+  const guestsCount = parseInt(formData.guests, 10) || 0;
+  const estimatedAmount = guestsCount > 0 ? guestsCount * 50000 : 0;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus("submitting");
     setErrorMessage("");
     try {
-      const guestsCount = parseInt(formData.guests, 10) || 0;
+      const guests = parseInt(formData.guests, 10) || 0;
+      const amount = guests > 0 ? guests * 50000 : 50000;
       const saved = await addConferenceBooking({
         contactName: formData.contactName.trim(),
         phone: formData.phone.trim(),
         eventType: formData.eventType,
-        hall: "Conference Room",
-        guests: guestsCount,
+        hall: formData.hall || "Conference Room",
+        guests: guests,
         date: formData.date,
+        amount: amount,
+        paymentMethod: formData.paymentMethod || "Mobile Money",
+        paymentStatus: "Not Yet Paid",
         requirements: formData.requirements.trim(),
-        amount: guestsCount * 50000,
       });
       setConfirmedBooking(saved);
       setFormData(INITIAL_FORM);
@@ -65,9 +73,9 @@ export default function ConferencePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-full bg-gold/10 blur-[100px] rounded-full pointer-events-none" />
         <div className="relative z-10 max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Conference Room</h1>
+          <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Conference &amp; Event Halls</h1>
           <p className="text-gray-600 text-xl font-medium">
-            A modern space equipped with high-speed internet, Smart TVs, and everything you need for a successful meeting or event.
+            Modern spaces equipped with high-speed internet, Smart TVs, quality audio, and everything you need for a successful meeting or event.
           </p>
         </div>
       </div>
@@ -91,10 +99,10 @@ export default function ConferencePage() {
             </div>
 
             <h2 className="text-3xl font-heading font-black text-black mb-4">
-              Modern Conference &amp; Meeting Space
+              Modern Conference &amp; Meeting Spaces
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed font-medium mb-8">
-              Host your corporate meetings, workshops, seminars, or private gatherings in our modern conference room. Equipped with fast internet, Smart TVs, audio equipment, and comfortable seating to ensure a smooth and productive experience.
+              Host your corporate meetings, workshops, seminars, or private gatherings in our premium event spaces. Equipped with high-speed fiber internet, Smart TVs, presentation systems, sound systems, and customizable seating arrangements.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -121,7 +129,7 @@ export default function ConferencePage() {
           >
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border-2 border-gray-100 sticky top-28 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-2 bg-gold"></div>
-              <h3 className="text-3xl font-heading font-black text-black mb-8">Book Conference Room</h3>
+              <h3 className="text-3xl font-heading font-black text-black mb-8">Book Conference Hall</h3>
               {formStatus === "success" ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -131,10 +139,10 @@ export default function ConferencePage() {
                   <CheckCircle2 className="mx-auto mb-4 text-green-500" size={56} />
                   <h4 className="text-2xl font-bold mb-2">Booking Request Received!</h4>
                   <p className="text-gray-600 mb-6 font-medium">
-                    Our team will contact you shortly to confirm your conference room reservation.
+                    Your conference booking has been successfully recorded in our management system. Our team will contact you shortly to confirm your reservation.
                   </p>
                   {confirmedBooking && (
-                    <div className="bg-white rounded-xl p-4 mb-6 text-left border border-green-200 space-y-2 text-sm">
+                    <div className="bg-white rounded-xl p-5 mb-6 text-left border border-green-200 space-y-2.5 text-sm">
                       <div className="flex justify-between items-center border-b border-gray-100 pb-2">
                         <span className="text-gray-500 font-bold uppercase text-xs">Reference ID</span>
                         <span className="font-black text-black bg-gold/20 px-2.5 py-0.5 rounded-md">
@@ -142,8 +150,16 @@ export default function ConferencePage() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Contact</span>
+                        <span className="text-gray-500">Contact Person</span>
                         <span className="font-bold text-black">{confirmedBooking.contactName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Phone Number</span>
+                        <span className="font-bold text-black">{confirmedBooking.phone}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Hall / Space</span>
+                        <span className="font-bold text-black">{confirmedBooking.hall || "Conference Room"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Event Type</span>
@@ -155,6 +171,26 @@ export default function ConferencePage() {
                           {confirmedBooking.date} · {confirmedBooking.guests} guests
                         </span>
                       </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Estimated Total</span>
+                        <span className="font-black text-black">RWF {(confirmedBooking.amount || 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Payment Method</span>
+                        <span className="font-bold text-black">{confirmedBooking.paymentMethod || "Mobile Money"}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-1 border-t border-gray-100">
+                        <span className="text-gray-500">Status</span>
+                        <span className="font-bold text-xs uppercase px-2 py-0.5 rounded bg-orange-100 text-orange-700">
+                          {confirmedBooking.status || "Pending"}
+                        </span>
+                      </div>
+                      {confirmedBooking.requirements && (
+                        <div className="pt-2 border-t border-gray-100 text-xs text-gray-500">
+                          <span className="font-bold text-gray-700 block mb-0.5">Special Requirements:</span>
+                          <p className="italic">{confirmedBooking.requirements}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   <button
@@ -177,7 +213,7 @@ export default function ConferencePage() {
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Full Name *</label>
                       <input
                         required
                         type="text"
@@ -188,7 +224,7 @@ export default function ConferencePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number *</label>
                       <input
                         required
                         type="tel"
@@ -199,9 +235,23 @@ export default function ConferencePage() {
                       />
                     </div>
                   </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Event Type</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Event Hall / Space *</label>
+                      <select
+                        required
+                        value={formData.hall}
+                        onChange={(e) => setFormData({ ...formData, hall: e.target.value })}
+                        className={`${inputClass} appearance-none`}
+                      >
+                        <option value="Conference Room">Conference Room (Up to 100 guests)</option>
+                        <option value="Grand Ballroom">Grand Ballroom (Up to 350 guests)</option>
+                        <option value="Executive Boardroom">Executive Boardroom (Up to 30 guests)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Event Type *</label>
                       <select
                         required
                         value={formData.eventType}
@@ -213,11 +263,26 @@ export default function ConferencePage() {
                         <option value="Training / Workshop">Training / Workshop</option>
                         <option value="Gala / Dinner">Gala / Dinner</option>
                         <option value="Wedding Reception">Wedding Reception</option>
+                        <option value="Seminar / Conference">Seminar / Conference</option>
                         <option value="Other Event">Other Event</option>
                       </select>
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Estimated Guests</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Event Date *</label>
+                      <input
+                        required
+                        type="date"
+                        min={today}
+                        value={formData.date}
+                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Estimated Guests *</label>
                       <input
                         required
                         type="number"
@@ -230,27 +295,44 @@ export default function ConferencePage() {
                       />
                     </div>
                   </div>
+
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Event Date</label>
-                    <input
-                      required
-                      type="date"
-                      min={today}
-                      value={formData.date}
-                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className={inputClass}
-                    />
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Preferred Payment Method</label>
+                    <select
+                      value={formData.paymentMethod}
+                      onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                      className={`${inputClass} appearance-none`}
+                    >
+                      <option value="Mobile Money">Mobile Money (MTN / Airtel)</option>
+                      <option value="Cash">Cash on Arrival</option>
+                      <option value="Bank Transfer">Bank Transfer</option>
+                      <option value="Credit / Debit Card">Credit / Debit Card</option>
+                    </select>
                   </div>
+
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Additional Requirements</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Special Requirements / Setup</label>
                     <textarea
                       rows={3}
-                      placeholder="Any special setup, catering, or equipment needs..."
+                      placeholder="Special seating arrangement, projectors, microphones, catering, coffee break..."
                       value={formData.requirements}
                       onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                       className={`${inputClass} resize-none`}
                     ></textarea>
                   </div>
+
+                  {guestsCount > 0 && (
+                    <div className="p-4 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Estimated Total</span>
+                        <span className="text-xs text-gray-500">50,000 RWF per guest (includes hall, audio/visual &amp; setup)</span>
+                      </div>
+                      <span className="text-xl font-black text-black">
+                        RWF {estimatedAmount.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     disabled={formStatus === "submitting"}

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSheet } from '@/lib/googleSheets';
 
+export const dynamic = 'force-dynamic';
+
 const EVENT_HEADERS = [
   'EventID',
   'ContactName',
@@ -9,9 +11,9 @@ const EVENT_HEADERS = [
   'Hall',
   'Guests',
   'Date',
-  'Amount',
   'Requirements',
   'Status',
+  'Amount',
   'PaymentMethod',
   'PaymentStatus',
   'CreatedAt',
