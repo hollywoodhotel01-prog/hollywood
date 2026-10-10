@@ -50,7 +50,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         <div className="absolute inset-0 bg-black/50 z-10" />
         <div className="absolute inset-0 z-0 bg-black">
           {heroImages.map((imgSrc, idx) => (
-            <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hero image ${idx + 1}`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
+            <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hollywood Hotel Rwimiyaga - Luxury Hotel in Rwanda (${idx + 1})`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
                 opacity: idx === currentImageIndex ? 1 : 0,
                 transition: "opacity 5s ease-in-out"
               }} />
@@ -212,7 +212,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
               <div className="lg:col-span-7 relative min-h-[400px] lg:min-h-[600px] order-2 lg:order-1">
-                <Image src="/salle.webp" alt="Conference Center" fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
+                <Image src="/salle.webp" alt="Hollywood Hotel Conference Center & Event Hall" fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent lg:bg-gradient-to-t lg:from-transparent lg:to-transparent"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent lg:hidden"></div>
               </div>
@@ -272,7 +272,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
 
             <div className="order-1 lg:order-2 relative h-[450px] lg:h-[650px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="absolute inset-0">
-                <Image src="/gym.webp" alt="Fitness & Wellness" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                <Image src="/gym.webp" alt="Hollywood Hotel Fitness & Wellness Center" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="absolute bottom-6 left-6 lg:bottom-10 lg:left-10 bg-white/95 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl flex items-center gap-4">
                   <div className="bg-gold/20 p-3 rounded-full text-gold">
@@ -294,7 +294,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
       <section className="relative overflow-hidden py-28">
         {/* Background image with dark overlay */}
         <div className="absolute inset-0 z-0">
-          <Image src="/hero.webp" alt="Reviews Background" fill sizes="100vw" className="object-cover" />
+          <Image src="/hero.webp" alt="Hollywood Hotel Guest Reviews Ambience" fill sizes="100vw" className="object-cover" />
           <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.82)' }} />
         </div>
 

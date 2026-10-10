@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -53,7 +53,7 @@ export default function ContactPage() {
         <div className="relative z-10 max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Location &amp; Contact</h1>
           <p className="text-gray-600 text-xl font-medium">
-            Centrally located and easily accessible � we are always happy to assist you.
+            Centrally located and easily accessible — we are always happy to assist you.
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function ContactPage() {
             </div>
             <h2 className="text-4xl font-heading font-black text-black mb-6">We are Here to Help</h2>
             <p className="text-gray-600 mb-8 leading-relaxed text-lg font-medium">
-              Whether you have a question about our suites, event halls, spa, or dining � our team is on call 24 hours a day, 7 days a week. Reach us using the details below or drop us a message.
+              Whether you have a question about our suites, event halls, spa, or dining — our team is on call 24 hours a day, 7 days a week. Reach us using the details below or drop us a message.
             </p>
 
             <div className="space-y-6 mb-10">

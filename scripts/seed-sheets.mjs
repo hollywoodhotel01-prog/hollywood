@@ -2,14 +2,28 @@
 // Run with: node --env-file=.env.local scripts/seed-sheets.mjs
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config();
+
+const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+const sheetId = process.env.GOOGLE_SHEET_ID;
+
+if (!email || !privateKey || !sheetId) {
+  console.error('❌ Missing Google Sheets configuration in .env.local');
+  process.exit(1);
+}
 
 const serviceAccountAuth = new JWT({
-  email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  email,
+  key: privateKey.replace(/\\n/g, '\n'),
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
-const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
+const doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
 
 const ROOMS_DATA = [
   { RoomID: '101', Type: 'Standard Room', Status: 'Available', Housekeeper: 'Jane Doe' },

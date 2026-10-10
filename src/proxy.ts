@@ -8,7 +8,13 @@ export function proxy(request: NextRequest) {
   // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
 
-  if (/\.(png|jpg|jpeg|svg|webp|gif|ico|avif)$/i.test(pathname)) {
+  // Skip static assets, sitemaps, robots, and manifests
+  if (
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    pathname === "/manifest.webmanifest" ||
+    /\.(png|jpg|jpeg|svg|webp|gif|ico|avif|txt|xml|webmanifest)$/i.test(pathname)
+  ) {
     return;
   }
 
@@ -25,7 +31,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next) and api routes
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.webp|.*\\.gif|.*\\.ico|.*\\.avif).*)",
+    // Skip all internal paths (_next), api routes, sitemaps, robots, manifest, and static assets
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.webp|.*\\.gif|.*\\.ico|.*\\.avif|.*\\.txt|.*\\.xml|.*\\.webmanifest).*)",
   ],
 };

@@ -1,13 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "midiland",
+  "name": "hollywood-hotel",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sheets:audit": "node scripts/audit-sheets.mjs",
+    "sheets:setup": "node scripts/setup-sheets.mjs",
+    "sheets:seed": "node scripts/seed-sheets.mjs"
   },
   "dependencies": {
     "adm-zip": "^0.6.1",
