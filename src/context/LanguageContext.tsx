@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import { Locale } from "@/dictionaries";
+
+export type Locale = "en" | "rw";
 
 interface LanguageContextType {
   lang: Locale;
