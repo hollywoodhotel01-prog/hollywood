@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Hollywood Hotel",
     short_name: "Hollywood",
     description:
-      "Premier luxury hotel in Rwimiyaga, Eastern Province, Rwanda. Offering luxury accommodations, conference halls, Baraza Lounge, wellness spa, and exquisite dining.",
+      "Premier luxury hotel in Rwimiyaga, Eastern Province, Rwanda. Offering luxury accommodations, conference halls, Hollywood Bar, wellness spa, and exquisite dining.",
     start_url: "/",
     display: "standalone",
     background_color: "#0B0B0B",

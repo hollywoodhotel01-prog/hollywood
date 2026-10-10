@@ -32,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.8,
       images: [
-        `${baseUrl}/baraza.webp`,
+        `${baseUrl}/hollywood-bar.webp`,
         `${baseUrl}/food.png`,
         `${baseUrl}/drinks.png`,
       ],
@@ -51,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         `${baseUrl}/garden.webp`,
         `${baseUrl}/gym.webp`,
         `${baseUrl}/sauna.webp`,
-        `${baseUrl}/baraza.webp`,
+        `${baseUrl}/hollywood-bar.webp`,
       ],
     },
     {

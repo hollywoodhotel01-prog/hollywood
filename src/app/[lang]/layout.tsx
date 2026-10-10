@@ -33,8 +33,8 @@ export async function generateMetadata({
     : "Hollywood Hotel | Luxury Hotel & Suites in Rwimiyaga, Rwanda";
 
   const description = isKinyarwanda
-    ? "Gira ibihe byiza muri Hollywood Hotel i Rwimiyaga, mu Ntara y'Iburasirazuba. Tubafitiye ibyumba byiza byo kuraramo, salle z'inama ziteguye neza, Baraza Lounge & Bar, pisine, spa na resitora ihebuje."
-    : "Experience luxury and elegance at Hollywood Hotel in Rwimiyaga, Eastern Province, Rwanda. Offering premium suites, state-of-the-art conference halls, Baraza Lounge & Bar, swimming pool, wellness spa, and exquisite dining.";
+    ? "Gira ibihe byiza muri Hollywood Hotel i Rwimiyaga, mu Ntara y'Iburasirazuba. Tubafitiye ibyumba byiza byo kuraramo, salle z'inama ziteguye neza, Hollywood Bar, pisine, spa na resitora ihebuje."
+    : "Experience luxury and elegance at Hollywood Hotel in Rwimiyaga, Eastern Province, Rwanda. Offering premium suites, state-of-the-art conference halls, Hollywood Bar, swimming pool, wellness spa, and exquisite dining.";
 
   return {
     metadataBase: new URL("https://hollywoodhotel.rw"),
@@ -59,7 +59,7 @@ export async function generateMetadata({
       "Luxury hotel Rwanda",
       "Rwanda hotel booking",
       "Rwimiyaga accommodation",
-      "Baraza Lounge & Bar",
+      "Hollywood Bar",
       "Hollywood Hotel conference hall",
       "Rwanda luxury suites",
       "Best hotel in Rwimiyaga Nyagatare",
@@ -140,12 +140,12 @@ export default async function RootLayout({
           "https://hollywoodhotel.rw/night.webp",
           "https://hollywoodhotel.rw/evening.webp",
           "https://hollywoodhotel.rw/bed.webp",
-          "https://hollywoodhotel.rw/baraza.webp",
+          "https://hollywoodhotel.rw/hollywood-bar.webp",
           "https://hollywoodhotel.rw/garden.webp",
           "https://hollywoodhotel.rw/front.webp",
         ],
         "description":
-          "Premier luxury hotel in Rwimiyaga, Eastern Province, Rwanda offering luxury accommodations, conference halls, Baraza Lounge & Bar, wellness spa, and exquisite dining.",
+          "Premier luxury hotel in Rwimiyaga, Eastern Province, Rwanda offering luxury accommodations, conference halls, Hollywood Bar, wellness spa, and exquisite dining.",
         "telephone": "+250788876479",
         "email": "hollywoodhotel01@gmail.com",
         "priceRange": "$$",
@@ -187,7 +187,7 @@ export default async function RootLayout({
           },
           {
             "@type": "LocationFeatureSpecification",
-            "name": "Baraza Lounge & Bar",
+            "name": "Hollywood Bar",
             "value": true,
           },
           {

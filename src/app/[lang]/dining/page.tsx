@@ -19,7 +19,7 @@ export default function DiningPage() {
         <div className="relative z-10 max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Dining, Lounge &amp; Catering</h1>
           <p className="text-gray-600 text-xl font-medium">
-            From a candlelit restaurant dinner to refreshing cocktails and great music at Baraza Lounge — extraordinary culinary experiences await.
+            From a candlelit restaurant dinner to refreshing cocktails and great music at Hollywood Bar — extraordinary culinary experiences await.
           </p>
         </div>
       </div>
@@ -52,19 +52,19 @@ export default function DiningPage() {
           </div>
         </motion.section>
 
-        {/* Baraza Lounge & Bar */}
+        {/* Hollywood Bar */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-black rounded-[3rem] p-8 lg:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gold/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
           <div className="relative z-10 order-2">
-            <Image src="/baraza.webp" alt="Baraza Lounge & Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
+            <Image src="/hollywood-bar.webp" alt="Hollywood Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
           </div>
           <div className="relative z-10 order-1">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-gold rounded-xl text-black shadow-md">
                 <GlassWater size={28} />
               </div>
-              <h2 className="text-4xl font-heading font-black text-white">Baraza Lounge &amp; Bar</h2>
+              <h2 className="text-4xl font-heading font-black text-white">Hollywood Bar</h2>
             </div>
             <p className="text-gray-300 mb-8 leading-relaxed text-lg font-medium">
               The premier social gathering hub at Hollywood Hotel. Relax with handcrafted cocktails, cold beers, and fine spirits in an energetic, music-filled atmosphere. With curated playlists and live DJ performances on weekends, it is the ultimate destination to unwind, dance, and celebrate.

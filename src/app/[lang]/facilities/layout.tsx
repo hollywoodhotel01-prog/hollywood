@@ -10,8 +10,8 @@ export async function generateMetadata({
 
   const title = isKinyarwanda ? "Ibikorwaremezo n'Ibyiza Byacu" : "Hotel Facilities & Amenities";
   const description = isKinyarwanda
-    ? "Sura ibikorwaremezo byo ku rwego rw'isi bya Hollywood Hotel: pisine, spa na sauna, gym igezweho, Baraza Lounge, ubusitani bwiza n'aho guhagarika imodoka hatekanye."
-    : "Explore world-class facilities at Hollywood Hotel in Rwimiyaga: swimming pool, full spa & sauna, modern gym, Baraza Lounge, lush gardens, and complimentary secure parking.";
+    ? "Sura ibikorwaremezo byo ku rwego rw'isi bya Hollywood Hotel: pisine, spa na sauna, gym igezweho, Hollywood Bar, ubusitani bwiza n'aho guhagarika imodoka hatekanye."
+    : "Explore world-class facilities at Hollywood Hotel in Rwimiyaga: swimming pool, full spa & sauna, modern gym, Hollywood Bar, lush gardens, and complimentary secure parking.";
 
   return {
     title,
