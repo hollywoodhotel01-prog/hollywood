@@ -17,8 +17,8 @@ const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAut
 
 // Canonical sheets and their exact column schemas
 export const SCHEMA = {
-  Rooms: ['RoomID', 'Type', 'Status', 'Housekeeper'],
-  Bookings: ['BookingID', 'GuestName', 'RoomType', 'NumberOfRooms', 'CheckInDate', 'CheckOutDate', 'Amount', 'Status', 'PaymentMethod', 'PaymentStatus'],
+  Rooms: ['RoomID', 'Type', 'Status', 'Housekeeper', 'Price'],
+  Bookings: ['BookingID', 'GuestName', 'RoomType', 'NumberOfRooms', 'CheckInDate', 'CheckOutDate', 'Amount', 'Status', 'PaymentMethod', 'PaymentStatus', 'Price', 'Days', 'Discount'],
   InHouseGuests: ['GuestID', 'FullName', 'IDNumber', 'Phone', 'Nationality', 'RoomAssigned', 'GuestCount', 'CheckInDate', 'CheckOutDate', 'CheckedInAt'],
   Events: ['EventID', 'ContactName', 'Phone', 'EventType', 'Hall', 'Guests', 'Date', 'Requirements', 'Status', 'Amount', 'PaymentMethod', 'PaymentStatus', 'CreatedAt'],
   Expenses: ['ID', 'Category', 'Description', 'Amount', 'Date'],

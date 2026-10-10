@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BedDouble, CheckCircle, Clock, AlertCircle, Users, Calendar, LogOut, ClipboardList, ImageIcon, X, BarChart3, TrendingUp, DollarSign } from "lucide-react";
-import { useHotel } from "@/context/HotelContext";
+import { useHotel, ROOM_PRICES } from "@/context/HotelContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 const statusColor: Record<string, string> = {
@@ -20,19 +20,28 @@ const statusIcon: Record<string, React.ReactNode> = {
   Maintenance: <AlertCircle size={14} strokeWidth={3} />,
 };
 
-
-
 export default function ReceptionistDashboardPage() {
   const { roomsData, inHouseGuests, conferenceBookings, updateConferenceBooking, addInHouseGuest, checkOutGuest, currentUser, addBooking, updateBooking, bookings } = useHotel();
   const { dict } = useLanguage();
   const d = dict.dashboard as any;
 
   const [activeTab, setActiveTab] = useState<"frontdesk" | "reports">("frontdesk");
-  const [form, setForm] = useState({ fullName: "", idNumber: "", phone: "", nationality: "", roomAssigned: "", guestCount: "1", checkIn: "", checkOut: "", amountPaid: "", paymentMethod: "Cash" });
+  const [form, setForm] = useState({ fullName: "", idNumber: "", phone: "", nationality: "", roomAssigned: "", guestCount: "1", checkIn: "", checkOut: "", discount: "0", amountPaid: "", paymentMethod: "Cash" });
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [roomFilter, setRoomFilter] = useState<string | null>(null);
   const [insightsDate, setInsightsDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const selectedRoomForForm = roomsData.find(r => r.id === form.roomAssigned);
+  const currentFormRoomPrice = selectedRoomForForm ? (selectedRoomForForm.price || ROOM_PRICES[selectedRoomForForm.type] || 50000) : 50000;
+  const currentFormDays = (() => {
+    if (!form.checkIn || !form.checkOut) return 1;
+    const d1 = new Date(form.checkIn);
+    const d2 = new Date(form.checkOut);
+    return Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24)) || 1);
+  })();
+  const currentFormDiscount = parseFloat(form.discount) || 0;
+  const currentFormCalculatedRevenue = Math.max(0, (currentFormDays * currentFormRoomPrice) - currentFormDiscount);
 
   const getMonthlyReports = () => {
     const map: Record<string, any> = {};
@@ -71,24 +80,41 @@ export default function ReceptionistDashboardPage() {
     setTimeout(() => {
       const selectedRoom = roomsData.find(r => r.id === form.roomAssigned);
       if (selectedRoom) {
-        const amount = parseFloat(form.amountPaid) || 0;
+        const roomPrice = selectedRoom.price || 0;
+        const days = currentFormDays;
+        const discount = currentFormDiscount;
+        const amount = form.amountPaid !== "" ? (parseFloat(form.amountPaid) || 0) : currentFormCalculatedRevenue;
         const existingBooking = bookings.find(b => b.status === "Pending" && b.guestName.toLowerCase().trim() === form.fullName.toLowerCase().trim());
         
         if (existingBooking) {
-          updateBooking(existingBooking.id, { status: "Confirmed", amount, paymentMethod: form.paymentMethod, roomType: selectedRoom.type, checkIn: form.checkIn, checkOut: form.checkOut });
+          updateBooking(existingBooking.id, {
+            status: "Confirmed",
+            amount,
+            price: roomPrice,
+            days,
+            discount,
+            paymentMethod: form.paymentMethod,
+            roomType: selectedRoom.type,
+            checkIn: form.checkIn,
+            checkOut: form.checkOut
+          });
         } else {
           addBooking({
             guestName: form.fullName,
             roomType: selectedRoom.type,
             checkIn: form.checkIn,
             checkOut: form.checkOut,
-            amount: amount,
-            paymentMethod: form.paymentMethod
+            price: roomPrice,
+            days,
+            discount,
+            amount,
+            paymentMethod: form.paymentMethod,
+            status: "Confirmed",
           });
         }
       }
       addInHouseGuest({ ...form, guestCount: parseInt(form.guestCount) || 1 });
-      setForm({ fullName: "", idNumber: "", phone: "", nationality: "", roomAssigned: "", guestCount: "1", checkIn: "", checkOut: "", amountPaid: "", paymentMethod: "Cash" });
+      setForm({ fullName: "", idNumber: "", phone: "", nationality: "", roomAssigned: "", guestCount: "1", checkIn: "", checkOut: "", discount: "0", amountPaid: "", paymentMethod: "Cash" });
       setFormStatus("success");
       setTimeout(() => setFormStatus("idle"), 3000);
     }, 1000);
@@ -157,19 +183,95 @@ export default function ReceptionistDashboardPage() {
               <h2 className="text-xl font-black text-black">{d.roomStatusGrid}</h2>
             </div>
             <div className="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {roomsData.filter(room => roomFilter ? room.status === roomFilter : true).map((room) => (
-                <div key={room.id} onClick={() => setSelectedRoomId(room.id)} className={`p-4 rounded-2xl border text-center cursor-pointer transition-transform hover:scale-105 ${statusColor[room.status] ?? "bg-gray-50 text-gray-500 border-gray-200"}`}>
-                  <p className="text-2xl font-black mb-1">{room.id}</p>
-                  <div className="flex items-center justify-center gap-1 text-xs font-bold">
-                    {statusIcon[room.status]}
-                    <span>{room.status}</span>
+              {roomsData.filter(room => roomFilter ? room.status === roomFilter : true).map((room) => {
+                const rPrice = room.price || 0;
+                return (
+                  <div key={room.id} onClick={() => setSelectedRoomId(room.id)} className={`p-4 rounded-2xl border text-center cursor-pointer transition-transform hover:scale-105 ${statusColor[room.status] ?? "bg-gray-50 text-gray-500 border-gray-200"}`}>
+                    {/* Price on top of card */}
+                    <div className="mb-2.5">
+                      <span className="inline-block px-2.5 py-1 bg-white/95 text-black font-black text-xs rounded-xl shadow-sm border border-black/10">
+                        RWF {rPrice.toLocaleString()} <span className="text-[10px] text-gray-500 font-bold">/ night</span>
+                      </span>
+                    </div>
+                    <p className="text-2xl font-black mb-1">{room.id}</p>
+                    <div className="flex items-center justify-center gap-1 text-xs font-bold">
+                      {statusIcon[room.status]}
+                      <span>{room.status}</span>
+                    </div>
+                    <p className="text-xs mt-1 opacity-70 font-medium">{room.type}</p>
                   </div>
-                  <p className="text-xs mt-1 opacity-70">{room.type.split(" ")[0]}</p>
-                </div>
-              ))}
+                );
+              })}
               {roomsData.filter(room => roomFilter ? room.status === roomFilter : true).length === 0 && (
                 <div className="col-span-full py-8 text-center text-gray-400 font-medium">{d.noRoomsFound}</div>
               )}
+            </div>
+          </div>
+
+          {/* Pending Room Bookings (Awaiting Confirmation) */}
+          <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden mb-10">
+            <div className="p-6 border-b-2 border-gray-100 bg-gray-50/50 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Clock size={20} className="text-amber-500" />
+                <h2 className="text-xl font-black text-black">Pending Room Bookings (Awaiting Confirmation)</h2>
+              </div>
+              <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-xl text-xs font-black border border-amber-200">
+                {bookings.filter(b => b.status === "Pending").length} Pending
+              </span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
+                  <tr>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Ref ID</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Guest</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Room &amp; Qty</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Price/Night</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Dates</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Discount</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Total Revenue</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {bookings.filter(b => b.status === "Pending").map((b) => {
+                    const price = b.price || ROOM_PRICES[b.roomType] || 50000;
+                    return (
+                      <tr key={b.id} className="hover:bg-gold/5 transition-colors">
+                        <td className="px-6 py-4 font-black text-black">{b.id}</td>
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-black">{b.guestName}</p>
+                          {b.phone && <p className="text-xs text-gray-400">{b.phone}</p>}
+                        </td>
+                        <td className="px-6 py-4 font-medium text-gray-700">{b.numberOfRooms || 1} x {b.roomType}</td>
+                        <td className="px-6 py-4 font-bold text-black">RWF {price.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-xs font-medium text-gray-600">
+                          {b.checkIn} &rarr; {b.checkOut} ({b.days || 1}d)
+                        </td>
+                        <td className="px-6 py-4 font-medium text-red-500">
+                          {b.discount ? `-RWF ${b.discount.toLocaleString()}` : '0'}
+                        </td>
+                        <td className="px-6 py-4 font-black text-green-600">RWF {(b.amount || 0).toLocaleString()}</td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => updateBooking(b.id, { status: "Confirmed" })}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-sm"
+                          >
+                            <CheckCircle size={14} /> Confirm
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {bookings.filter(b => b.status === "Pending").length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="px-6 py-8 text-center text-gray-400 font-medium">
+                        No pending room bookings waiting for confirmation.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -275,23 +377,12 @@ export default function ReceptionistDashboardPage() {
                       <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.roomNo}</label>
                       <select required value={form.roomAssigned} onChange={e => setForm({...form, roomAssigned: e.target.value})} className={`${inputClass} appearance-none`}>
                         <option value="">{d.selectRoom}</option>
-                        {roomsData.filter(r => r.status === "Available").map(r => <option key={r.id} value={r.id}>{r.id} — {r.type}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.guestCount || "Guests"}</label>
-                      <input required type="number" min="1" max="10" value={form.guestCount} onChange={e => setForm({...form, guestCount: e.target.value})} className={inputClass} />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.amountPaid || "Amount Paid (RWF)"}</label>
-                      <input required type="number" min="0" value={form.amountPaid} onChange={e => setForm({...form, amountPaid: e.target.value})} className={inputClass} placeholder="0" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.paymentMethod || "Payment Method"}</label>
-                      <select required value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})} className={`${inputClass} appearance-none`}>
-                        <option value="Cash">Cash</option>
-                        <option value="Mobile Money">Mobile Money</option>
-                        <option value="Card">Card</option>
+                        {roomsData.filter(r => r.status === "Available").map(r => {
+                          const rPrice = r.price !== undefined && r.price > 0 ? r.price : (ROOM_PRICES[r.type] || 50000);
+                          return (
+                            <option key={r.id} value={r.id}>{r.id} — {r.type} (RWF {rPrice.toLocaleString()}/night)</option>
+                          );
+                        })}
                       </select>
                     </div>
                     <div>
@@ -301,6 +392,50 @@ export default function ReceptionistDashboardPage() {
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.checkOutDate}</label>
                       <input required type="date" value={form.checkOut} min={form.checkIn} onChange={e => setForm({...form, checkOut: e.target.value})} className={inputClass} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Discount (RWF)</label>
+                      <input type="number" min="0" value={form.discount} onChange={e => setForm({...form, discount: e.target.value})} className={inputClass} placeholder="0" />
+                    </div>
+
+                    {form.roomAssigned && (
+                      <div className="p-3 bg-gray-100 rounded-xl text-xs space-y-1 font-bold text-gray-700">
+                        <div className="flex justify-between">
+                          <span>Room Rate:</span>
+                          <span>RWF {currentFormRoomPrice.toLocaleString()} / night × {currentFormDays} day(s)</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Subtotal:</span>
+                          <span>RWF {(currentFormDays * currentFormRoomPrice).toLocaleString()}</span>
+                        </div>
+                        {currentFormDiscount > 0 && (
+                          <div className="flex justify-between text-red-600">
+                            <span>Discount:</span>
+                            <span>-RWF {currentFormDiscount.toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-black font-black text-sm pt-1 border-t border-gray-200">
+                          <span>Total Revenue:</span>
+                          <span className="text-green-600">RWF {currentFormCalculatedRevenue.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.guestCount || "Guests"}</label>
+                      <input required type="number" min="1" max="10" value={form.guestCount} onChange={e => setForm({...form, guestCount: e.target.value})} className={inputClass} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.amountPaid || "Amount Paid (RWF)"}</label>
+                      <input required type="number" min="0" value={form.amountPaid} onChange={e => setForm({...form, amountPaid: e.target.value})} className={inputClass} placeholder={String(currentFormCalculatedRevenue)} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">{d.paymentMethod || "Payment Method"}</label>
+                      <select required value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})} className={`${inputClass} appearance-none`}>
+                        <option value="Cash">Cash</option>
+                        <option value="Mobile Money">Mobile Money</option>
+                        <option value="Card">Card</option>
+                      </select>
                     </div>
                   </div>
                   <button type="submit" disabled={formStatus === "submitting"} className="w-full bg-black hover:bg-gray-900 text-white py-3.5 rounded-xl font-bold transition-all shadow-md hover:shadow-[0_10px_20px_rgba(251,191,36,0.2)] disabled:opacity-70 flex items-center justify-center gap-2">
@@ -483,6 +618,12 @@ export default function ReceptionistDashboardPage() {
                       <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <p className="text-xs text-gray-400 font-bold uppercase mb-1">{d.type}</p>
                         <p className="font-bold text-black">{room.type}</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <p className="text-xs text-gray-400 font-bold uppercase mb-1">Price / Night</p>
+                        <p className="font-black text-black">
+                          RWF {(room.price ?? 0).toLocaleString()}
+                        </p>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 col-span-2">
                         <p className="text-xs text-gray-400 font-bold uppercase mb-1">{d.housekeeper}</p>

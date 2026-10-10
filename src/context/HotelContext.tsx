@@ -35,16 +35,25 @@ export interface Booking {
   guestName: string;
   roomType: string;
   numberOfRooms?: number;
+  price?: number;
+  days?: number;
+  discount?: number;
   checkIn: string;
   checkOut: string;
   status: BookingStatus;
   amount: number;
   paymentMethod?: string;
   paymentStatus?: "Full Paid" | "Partially Paid" | "Not Yet Paid";
+  phone?: string;
 }
 
 export const ROOM_PRICES: Record<string, number> = {
-  "Luxury Room": 150,
+  "Standard Room": 50000,
+  "Deluxe Room": 80000,
+  "Executive Room": 120000,
+  "Hollywood Suite": 180000,
+  "Presidential Suite": 250000,
+  "Luxury Room": 100000,
 };
 
 export interface ConferenceBooking {
@@ -99,6 +108,7 @@ export interface RoomRecord {
   type: string;
   status: RoomStatus;
   housekeeper: string;
+  price?: number;
 }
 
 export interface DailySalesReport {
@@ -148,7 +158,7 @@ interface HotelContextType {
   adminChangePassword: (targetEmail: string, newPassword: string) => Promise<void>;
   demoAccounts: { name: string; email: string; password: string; role: UserRole }[];
   bookings: Booking[];
-  addBooking: (booking: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string }) => Booking;
+  addBooking: (booking: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string, price?: number, days?: number, discount?: number, status?: BookingStatus, phone?: string }) => Booking;
   updateBooking: (id: string, updates: Partial<Booking>) => void;
   conferenceBookings: ConferenceBooking[];
   addConferenceBooking: (booking: Omit<ConferenceBooking, "id" | "status">) => Promise<ConferenceBooking>;
@@ -216,6 +226,18 @@ export function HotelProvider({ children }: { children: ReactNode }) {
       setAuthLoading(false);
     });
     return unsubscribe;
+  }, []);
+
+  // Load room catalog immediately on mount so all booking forms and views have registered rooms and prices
+  useEffect(() => {
+    fetch('/api/rooms')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.rooms)) {
+          setRoomsData(data.rooms.filter((r: any) => r.id));
+        }
+      })
+      .catch(console.error);
   }, []);
 
   // Load live data from Google Sheets when user logs in
@@ -310,18 +332,28 @@ export function HotelProvider({ children }: { children: ReactNode }) {
     if (!res.ok) throw new Error(data.error || "Failed to change password");
   };
 
-  const addBooking = (bookingData: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string }): Booking => {
+  const addBooking = (bookingData: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string, price?: number, days?: number, discount?: number, status?: BookingStatus, phone?: string }): Booking => {
     const d1 = new Date(bookingData.checkIn);
     const d2 = new Date(bookingData.checkOut);
-    const nights = Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24)));
-    const pricePerNight = ROOM_PRICES[bookingData.roomType] ?? 150;
+    const diffTime = d2.getTime() - d1.getTime();
+    const days = bookingData.days || Math.max(1, Math.round(diffTime / (1000 * 3600 * 24)) || 1);
+    // Hardcoded price from room registration
+    const registeredRoom = roomsData.find(r => r.type === bookingData.roomType || r.id === (bookingData as any).roomId || r.id === (bookingData as any).roomAssigned);
+    const pricePerNight = bookingData.price !== undefined && bookingData.price > 0
+      ? bookingData.price
+      : (registeredRoom?.price ?? ROOM_PRICES[bookingData.roomType] ?? 0);
     const roomsCount = bookingData.numberOfRooms || 1;
-    const amount = bookingData.amount !== undefined ? bookingData.amount : (pricePerNight * nights * roomsCount);
+    const discount = bookingData.discount || 0;
+    const calculatedRevenue = Math.max(0, (days * pricePerNight * roomsCount) - discount);
+    const amount = bookingData.amount !== undefined ? bookingData.amount : calculatedRevenue;
     const newBooking: Booking = {
       ...bookingData,
       numberOfRooms: roomsCount,
+      price: pricePerNight,
+      days,
+      discount,
       id: `HH-${new Date().getFullYear()}-${String(bookings.length + 1).padStart(3, "0")}`,
-      status: "Confirmed",
+      status: bookingData.status || "Pending",
       amount,
     };
     setBookings((prev) => [newBooking, ...prev]);

@@ -6,12 +6,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const { id } = await params;
     const body = await req.json();
     const sheet = await getSheet('Rooms');
+    await sheet.loadHeaderRow();
+    if (!sheet.headerValues.includes('Price')) {
+      await sheet.setHeaderRow([...sheet.headerValues, 'Price']);
+    }
     const rows = await sheet.getRows();
     const row = rows.find((r: any) => r.get('RoomID') === id);
     if (!row) return NextResponse.json({ success: false, error: 'Room not found' }, { status: 404 });
     if (body.status !== undefined) row.set('Status', body.status);
     if (body.type !== undefined) row.set('Type', body.type);
     if (body.housekeeper !== undefined) row.set('Housekeeper', body.housekeeper);
+    if (body.price !== undefined) row.set('Price', body.price);
     await row.save();
     return NextResponse.json({ success: true });
   } catch (e: any) {
