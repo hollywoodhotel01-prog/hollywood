@@ -18,8 +18,8 @@ import {
 
 const STAFF_LIST = Object.entries(STAFF_ROSTER).map(([email, info]) => ({
   email,
-  name: info.name,
   role: info.role,
+  name: email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1),
 }));
 
 const ROLE_COLORS: Record<string, string> = {
@@ -176,10 +176,10 @@ export default function ChangePasswordPage() {
                 {selectedStaff ? (
                   <span className="flex items-center gap-3">
                     <span className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white text-xs font-black">
-                      {selectedStaff.name.charAt(0)}
+                      {selectedStaff.email.charAt(0).toUpperCase()}
                     </span>
                     <span className="flex flex-col items-start">
-                      <span className="text-gray-900 font-black text-sm">{selectedStaff.name}</span>
+                      <span className="text-gray-900 font-black text-sm">{selectedStaff.email}</span>
                       <span className="text-gray-400 text-xs">{selectedStaff.email}</span>
                     </span>
                     <span
@@ -218,10 +218,10 @@ export default function ChangePasswordPage() {
                       }`}
                     >
                       <span className="w-9 h-9 bg-black rounded-full flex items-center justify-center text-white text-sm font-black shrink-0">
-                        {staff.name.charAt(0)}
+                        {staff.email.charAt(0).toUpperCase()}
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className="block text-gray-900 font-black text-sm">{staff.name}</span>
+                        <span className="block text-gray-900 font-black text-sm">{staff.email}</span>
                         <span className="block text-gray-400 text-xs truncate">{staff.email}</span>
                       </span>
                       <span

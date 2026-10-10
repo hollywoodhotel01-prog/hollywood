@@ -139,7 +139,7 @@ export default function ReceptionistDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
           <h1 className="text-4xl font-heading font-black text-black mb-2">{d.frontDesk}</h1>
-          <p className="text-gray-600 font-medium text-lg">{d.welcomeRec?.replace("{name}", currentUser?.name || "")}</p>
+          <p className="text-gray-600 font-medium text-lg">{d.welcomeRec?.replace("{name}", currentUser?.role || "")}</p>
         </div>
         <div className="flex bg-gray-100 p-1.5 rounded-2xl">
           <button onClick={() => setActiveTab("frontdesk")} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === "frontdesk" ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-black"}`}>

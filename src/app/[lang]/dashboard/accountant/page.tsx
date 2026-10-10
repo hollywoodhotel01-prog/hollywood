@@ -57,7 +57,7 @@ export default function AccountantDashboardPage() {
       <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-4xl font-heading font-black text-black mb-2">Operational Revenue</h1>
-          <p className="text-gray-600 font-medium text-lg">Welcome, {currentUser?.name}. Real-time breakdown of internal operations.</p>
+          <p className="text-gray-600 font-medium text-lg">Welcome, {currentUser?.role}. Real-time breakdown of internal operations.</p>
         </div>
         <div className="flex items-center gap-3 no-print">
           <select 

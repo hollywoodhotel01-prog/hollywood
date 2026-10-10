@@ -12,20 +12,20 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
-export type UserRole = "admin" | "cashier" | "receptionist" | "accountant";
+export type UserRole = "admin" | "manager" | "cashier" | "receptionist" | "accountant";
 
 export interface AuthUser {
-  name: string;
   email: string;
   role: UserRole;
   uid: string;
 }
 
-export const STAFF_ROSTER: Record<string, { name: string; role: UserRole }> = {
-  "admin@hollywoodhotel.rw": { name: "Victor Adonis", role: "admin" },
-  "cashier@hollywoodhotel.rw": { name: "Sandra Mbeki", role: "cashier" },
-  "reception@hollywoodhotel.rw": { name: "James Osei", role: "receptionist" },
-  "accounts@hollywoodhotel.rw": { name: "Grace Mutua", role: "accountant" },
+export const STAFF_ROSTER: Record<string, { role: UserRole }> = {
+  "admin@hollywoodhotel.rw": { role: "admin" },
+  "manager@hollywoodhotel.rw": { role: "manager" },
+  "cashier@hollywoodhotel.rw": { role: "cashier" },
+  "reception@hollywoodhotel.rw": { role: "receptionist" },
+  "accounts@hollywoodhotel.rw": { role: "accountant" },
 };
 
 export type BookingStatus = "Confirmed" | "Pending" | "Cancelled";
@@ -156,7 +156,7 @@ interface HotelContextType {
   logout: () => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   adminChangePassword: (targetEmail: string, newPassword: string) => Promise<void>;
-  demoAccounts: { name: string; email: string; password: string; role: UserRole }[];
+  demoAccounts: { email: string; password: string; role: UserRole }[];
   bookings: Booking[];
   addBooking: (booking: Omit<Booking, "id" | "status" | "amount"> & { amount?: number, paymentMethod?: string, price?: number, days?: number, discount?: number, status?: BookingStatus, phone?: string }) => Booking;
   updateBooking: (id: string, updates: Partial<Booking>) => void;
@@ -187,10 +187,11 @@ interface HotelContextType {
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
 
 const DEMO_ACCOUNTS = [
-  { name: "Victor Adonis", email: "admin@hollywoodhotel.rw", password: "Admin@2050", role: "admin" as UserRole },
-  { name: "Sandra Mbeki", email: "cashier@hollywoodhotel.rw", password: "Cashier@2050", role: "cashier" as UserRole },
-  { name: "James Osei", email: "reception@hollywoodhotel.rw", password: "Recept@2050", role: "receptionist" as UserRole },
-  { name: "Grace Mutua", email: "accounts@hollywoodhotel.rw", password: "Account@2050", role: "accountant" as UserRole },
+  { email: "admin@hollywoodhotel.rw", password: "Admin@2050", role: "admin" as UserRole },
+  { email: "manager@hollywoodhotel.rw", password: "Manager@2050", role: "manager" as UserRole },
+  { email: "cashier@hollywoodhotel.rw", password: "Cashier@2050", role: "cashier" as UserRole },
+  { email: "reception@hollywoodhotel.rw", password: "Recept@2050", role: "receptionist" as UserRole },
+  { email: "accounts@hollywoodhotel.rw", password: "Account@2050", role: "accountant" as UserRole },
 ];
 
 export function HotelProvider({ children }: { children: ReactNode }) {
@@ -216,7 +217,7 @@ export function HotelProvider({ children }: { children: ReactNode }) {
       if (fbUser && fbUser.email) {
         const roster = STAFF_ROSTER[fbUser.email.toLowerCase()];
         if (roster) {
-          setCurrentUser({ name: roster.name, email: fbUser.email, role: roster.role, uid: fbUser.uid });
+          setCurrentUser({ email: fbUser.email, role: roster.role, uid: fbUser.uid });
         } else {
           setCurrentUser(null);
         }
@@ -296,7 +297,7 @@ export function HotelProvider({ children }: { children: ReactNode }) {
       await signOut(auth);
       throw new Error("This email is not a registered staff account.");
     }
-    const user: AuthUser = { name: roster.name, email: fbUser.email!, role: roster.role, uid: fbUser.uid };
+    const user: AuthUser = { email: fbUser.email!, role: roster.role, uid: fbUser.uid };
     setCurrentUser(user);
     return user;
   };

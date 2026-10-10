@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const roleDashboard: Record<string, string> = {
   admin: "/dashboard",
+  manager: "/dashboard",
   cashier: "/dashboard/cashier",
   receptionist: "/dashboard/receptionist",
   accountant: "/dashboard/finance",

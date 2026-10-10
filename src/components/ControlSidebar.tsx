@@ -58,6 +58,7 @@ export default function ControlSidebar({ isOpen = false, onClose }: ControlSideb
 
   const linksByRole: Record<string, typeof adminLinks> = {
     admin: adminLinks,
+    manager: adminLinks,
     cashier: cashierLinks,
     receptionist: receptionistLinks,
     accountant: accountantLinks,
@@ -120,7 +121,7 @@ export default function ControlSidebar({ isOpen = false, onClose }: ControlSideb
               {d.signedInAs}
             </p>
             <p className="text-sm font-bold text-white truncate">
-              {currentUser.name}
+              {currentUser.email}
             </p>
           </div>
         )}

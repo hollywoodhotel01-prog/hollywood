@@ -36,6 +36,16 @@ export default function AdminDashboardPage() {
     return conferenceBookings.filter(b => b.date.startsWith(selectedMonth));
   }, [conferenceBookings, selectedMonth]);
 
+  const filteredExpenses = useMemo(() => {
+    if (selectedMonth === "all") return expenses;
+    return expenses.filter(e => e.date.startsWith(selectedMonth));
+  }, [expenses, selectedMonth]);
+
+  const filteredOtherRevenues = useMemo(() => {
+    if (selectedMonth === "all") return otherRevenues;
+    return otherRevenues.filter(r => r.date.startsWith(selectedMonth));
+  }, [otherRevenues, selectedMonth]);
+
   // ── Monthly Financial Report ──────────────────────────────────────
   const monthlyReport = useMemo(() => {
     const reportMap: Record<string, number> = {};
@@ -99,17 +109,20 @@ export default function AdminDashboardPage() {
 
   // ────────────────────────────────────────────────────────────────
 
-  const totalRevenue =
+  const totalRevenueCalc =
     filteredBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
-    filteredConfBookings.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0);
+    filteredConfBookings.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0) +
+    filteredOtherRevenues.reduce((s, r) => s + (r.amount || 0), 0);
+
+  const totalExpensesCalc = filteredExpenses.reduce((s, e) => s + (e.amount || 0), 0);
+  const totalProfitCalc = totalRevenueCalc - totalExpensesCalc;
 
   const stats = [
-    { label: d.totalBookings, value: filteredBookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100" },
-    { label: d.confirmed, value: filteredBookings.filter(b => b.status === "Confirmed").length, icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
-    { label: d.roomsOccupied, value: occupiedRooms, icon: BedDouble, color: "text-gold", bg: "bg-black" },
-    { label: d.inHouseGuests, value: inHouseGuests.length, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { label: d.revenueConfirmed, value: `RWF ${totalRevenue.toLocaleString()}`, icon: DollarSign, color: "text-purple-600", bg: "bg-purple-100" },
-    { label: d.conferenceBookings, value: filteredConfBookings.length, icon: ClipboardList, color: "text-orange-600", bg: "bg-orange-100" },
+    { label: (d as any).totalRevenue || "Total Revenue", value: `RWF ${totalRevenueCalc.toLocaleString()}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-100", href: `/${lang}/dashboard/finance` },
+    { label: (d as any).totalExpenses || "Total Expenses", value: `RWF ${totalExpensesCalc.toLocaleString()}`, icon: TrendingDown, color: "text-red-600", bg: "bg-red-100", href: `/${lang}/dashboard/finance` },
+    { label: (d as any).netProfit || "Net Profit", value: `RWF ${totalProfitCalc.toLocaleString()}`, icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-100", href: `/${lang}/dashboard/finance` },
+    { label: d.inHouseGuests, value: inHouseGuests.length, icon: Users, color: "text-purple-600", bg: "bg-purple-100", href: `/${lang}/dashboard/receptionist` },
+    { label: d.totalBookings, value: filteredBookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100", href: `/${lang}/dashboard/bookings` },
   ];
 
   const shortcuts = [
@@ -120,10 +133,11 @@ export default function AdminDashboardPage() {
   ];
 
   const demoStaff = [
-    { name: "Victor Adonis", roleKey: "admin", email: "admin@hollywoodhotel.rw", href: `/${lang}/dashboard` },
-    { name: "Sandra Mbeki", roleKey: "cashier", email: "cashier@hollywoodhotel.rw", href: `/${lang}/dashboard/cashier` },
-    { name: "James Osei", roleKey: "receptionist", email: "reception@hollywoodhotel.rw", href: `/${lang}/dashboard/receptionist` },
-    { name: "Grace Mutua", roleKey: "accountant", email: "accounts@hollywoodhotel.rw", href: `/${lang}/dashboard/finance` },
+    { roleKey: "admin", email: "admin@hollywoodhotel.rw", href: `/${lang}/dashboard` },
+    { roleKey: "manager", email: "manager@hollywoodhotel.rw", href: `/${lang}/dashboard` },
+    { roleKey: "cashier", email: "cashier@hollywoodhotel.rw", href: `/${lang}/dashboard/cashier` },
+    { roleKey: "receptionist", email: "reception@hollywoodhotel.rw", href: `/${lang}/dashboard/receptionist` },
+    { roleKey: "accountant", email: "accounts@hollywoodhotel.rw", href: `/${lang}/dashboard/finance` },
   ];
 
   const TABS = [
@@ -137,7 +151,7 @@ export default function AdminDashboardPage() {
       <div className="mb-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div>
           <h1 className="text-4xl font-heading font-black text-black mb-2">{d.adminOverview}</h1>
-          <p className="text-gray-600 font-medium text-lg">{d.welcomeBack}, {currentUser?.name}. {d.fullControl}</p>
+          <p className="text-gray-600 font-medium text-lg">{d.welcomeBack}. {d.fullControl}</p>
         </div>
 
         {/* Reports Button */}
@@ -155,16 +169,18 @@ export default function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {stats.map((stat, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-gold hover:shadow-[0_10px_30px_rgba(251,191,36,0.1)] transition-all">
-            <div className="flex items-center gap-5">
-              <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} shadow-inner`}>
-                <stat.icon size={28} strokeWidth={2.5} />
+          <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+            <Link href={stat.href} className="block bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-gold hover:shadow-[0_10px_30px_rgba(251,191,36,0.1)] transition-all h-full">
+              <div className="flex items-center gap-5">
+                <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} shadow-inner`}>
+                  <stat.icon size={28} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 font-bold uppercase tracking-widest mb-1">{stat.label}</p>
+                  <p className="text-3xl font-black text-black">{stat.value}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500 font-bold uppercase tracking-widest mb-1">{stat.label}</p>
-                <p className="text-3xl font-black text-black">{stat.value}</p>
-              </div>
-            </div>
+            </Link>
           </motion.div>
         ))}
       </div>
@@ -209,7 +225,6 @@ export default function AdminDashboardPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
               <tr>
-                <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">{d.name}</th>
                 <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">{d.role}</th>
                 <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">{d.email}</th>
                 <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs text-right">Dashboard</th>
@@ -218,7 +233,6 @@ export default function AdminDashboardPage() {
             <tbody className="divide-y divide-gray-100">
               {demoStaff.map((staff, i) => (
                 <tr key={i} className="hover:bg-gold/5 transition-colors">
-                  <td className="px-8 py-5 font-bold text-black">{staff.name}</td>
                   <td className="px-8 py-5">
                     <span className="inline-block px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-black text-gold">{(d as any)[staff.roleKey] || staff.roleKey}</span>
                   </td>
