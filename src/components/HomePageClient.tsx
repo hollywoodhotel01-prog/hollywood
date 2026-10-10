@@ -29,7 +29,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 8000); // Wait 8 seconds before starting next fade
+    }, 4000); // Wait 4 seconds before starting next fade
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
@@ -52,7 +52,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
           {heroImages.map((imgSrc, idx) => (
             <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hollywood Hotel Rwimiyaga - Luxury Hotel in Rwanda (${idx + 1})`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
                 opacity: idx === currentImageIndex ? 1 : 0,
-                transition: "opacity 5s ease-in-out"
+                transition: "opacity 2.5s ease-in-out"
               }} />
           ))}
         </div>
