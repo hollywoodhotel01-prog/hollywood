@@ -368,7 +368,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const nights = Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24)));
 
     const prices: Record<string, number> = {
-      "Luxury Room": 150,
+      "Luxury Room": 200000,
     };
     
     const roomsCount = booking.numberOfRooms || 1;

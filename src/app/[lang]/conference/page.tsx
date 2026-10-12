@@ -9,7 +9,6 @@ const INITIAL_FORM = {
   contactName: "",
   phone: "",
   eventType: "",
-  hall: "Conference Room",
   guests: "",
   date: "",
   paymentMethod: "Mobile Money",
@@ -26,7 +25,6 @@ export default function ConferencePage() {
   const today = new Date().toISOString().split("T")[0];
 
   const guestsCount = parseInt(formData.guests, 10) || 0;
-  const estimatedAmount = guestsCount > 0 ? guestsCount * 50000 : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +32,12 @@ export default function ConferencePage() {
     setErrorMessage("");
     try {
       const guests = parseInt(formData.guests, 10) || 0;
-      const amount = guests > 0 ? guests * 50000 : 50000;
       const saved = await addConferenceBooking({
         contactName: formData.contactName.trim(),
         phone: formData.phone.trim(),
         eventType: formData.eventType,
-        hall: formData.hall || "Conference Room",
         guests: guests,
         date: formData.date,
-        amount: amount,
         paymentMethod: formData.paymentMethod || "Mobile Money",
         paymentStatus: "Not Yet Paid",
         requirements: formData.requirements.trim(),
@@ -158,10 +153,6 @@ export default function ConferencePage() {
                         <span className="font-bold text-black">{confirmedBooking.phone}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Hall / Space</span>
-                        <span className="font-bold text-black">{confirmedBooking.hall || "Conference Room"}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-gray-500">Event Type</span>
                         <span className="font-bold text-black">{confirmedBooking.eventType}</span>
                       </div>
@@ -170,10 +161,6 @@ export default function ConferencePage() {
                         <span className="font-bold text-black">
                           {confirmedBooking.date} · {confirmedBooking.guests} guests
                         </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Estimated Total</span>
-                        <span className="font-black text-black">RWF {(confirmedBooking.amount || 0).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Payment Method</span>
@@ -236,20 +223,7 @@ export default function ConferencePage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Event Hall / Space *</label>
-                      <select
-                        required
-                        value={formData.hall}
-                        onChange={(e) => setFormData({ ...formData, hall: e.target.value })}
-                        className={`${inputClass} appearance-none`}
-                      >
-                        <option value="Conference Room">Conference Room (Up to 100 guests)</option>
-                        <option value="Grand Ballroom">Grand Ballroom (Up to 350 guests)</option>
-                        <option value="Executive Boardroom">Executive Boardroom (Up to 30 guests)</option>
-                      </select>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Event Type *</label>
                       <select
@@ -320,18 +294,6 @@ export default function ConferencePage() {
                       className={`${inputClass} resize-none`}
                     ></textarea>
                   </div>
-
-                  {guestsCount > 0 && (
-                    <div className="p-4 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Estimated Total</span>
-                        <span className="text-xs text-gray-500">50,000 RWF per guest (includes hall, audio/visual &amp; setup)</span>
-                      </div>
-                      <span className="text-xl font-black text-black">
-                        RWF {estimatedAmount.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
 
                   <button
                     type="submit"

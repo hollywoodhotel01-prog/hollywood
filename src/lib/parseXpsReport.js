@@ -19,14 +19,18 @@ function extractTextRuns(xmlContent) {
 }
 
 function classify(token) {
-  if (/^\d+(\.\d+)?%$/.test(token)) return 'PERCENT';
-  if (/^\d{1,3}(,\d{3})*\.\d{2}$/.test(token)) return 'AMOUNT';
-  if (/^\d+$/.test(token)) return 'INTEGER';
+  if (!token) return 'TEXT';
+  const clean = token.trim();
+  if (/^\d+(\.\d+)?%$/.test(clean)) return 'PERCENT';
+  if (/^\d{1,3}(,\d{3})*(\.\d{1,2})?$/.test(clean) && clean.includes(',')) return 'AMOUNT';
+  if (/^\d+\.\d{1,2}$/.test(clean)) return 'AMOUNT';
+  if (/^\d+$/.test(clean)) return 'INTEGER';
   return 'TEXT';
 }
 
 function toAmount(str) {
-  return parseFloat(str.replace(/,/g, ''));
+  if (!str) return 0;
+  return parseFloat(String(str).replace(/,/g, '')) || 0;
 }
 
 /**
@@ -37,10 +41,12 @@ export function parseXpsReport(buffer) {
   const zip = new AdmZip(buffer);
   const pageEntries = zip
     .getEntries()
-    .filter((e) => /Documents\/\d+\/Pages\/\d+\.fpage$/.test(e.entryName))
+    .filter((e) => /Documents[/\\]\d+[/\\]Pages[/\\]\d+\.fpage$/i.test(e.entryName))
     .sort((a, b) => {
-      const numA = parseInt(a.entryName.match(/Pages\/(\d+)\.fpage$/)[1], 10);
-      const numB = parseInt(b.entryName.match(/Pages\/(\d+)\.fpage$/)[1], 10);
+      const matchA = a.entryName.match(/Pages[/\\](\d+)\.fpage$/i);
+      const matchB = b.entryName.match(/Pages[/\\](\d+)\.fpage$/i);
+      const numA = matchA ? parseInt(matchA[1], 10) : 0;
+      const numB = matchB ? parseInt(matchB[1], 10) : 0;
       return numA - numB;
     });
 
@@ -66,17 +72,20 @@ export function parseXpsReport(buffer) {
     grandTotalQuantity: 0,
   };
 
-  const idxAmountHeading = tokens.indexOf('Group Sales by Amount');
-  const idxQtyHeading = tokens.indexOf('Group Sales by Quantity');
-  const idxSalesHeading = tokens.indexOf('Sales');
+  const findHeadingIndex = (phrase) =>
+    tokens.findIndex((t) => t && t.trim().toLowerCase() === phrase.toLowerCase());
+
+  const idxAmountHeading = findHeadingIndex('Group Sales by Amount');
+  const idxQtyHeading = findHeadingIndex('Group Sales by Quantity');
+  const idxSalesHeading = findHeadingIndex('Sales');
 
   function parseGroupSection(startIdx, endIdx, valueType) {
     const rows = [];
     let idx = startIdx + 1;
     let pendingName = null;
     while (idx < endIdx) {
-      const token = tokens[idx];
-      if (token === 'Total') {
+      const token = tokens[idx]?.trim();
+      if (!token || token.toLowerCase() === 'total') {
         idx += 2;
         continue;
       }
@@ -91,7 +100,7 @@ export function parseXpsReport(buffer) {
         rows.push({
           category: pendingName || 'Unspecified',
           percent: token,
-          value: valueType === 'amount' ? toAmount(valueToken) : parseInt(valueToken, 10),
+          value: valueType === 'amount' ? toAmount(valueToken) : parseInt(valueToken, 10) || 0,
         });
         pendingName = null;
         idx += 2;
@@ -112,13 +121,39 @@ export function parseXpsReport(buffer) {
 
   if (idxSalesHeading !== -1) {
     let idx = idxSalesHeading + 1;
+    // Skip any header row names if present
+    while (
+      idx < tokens.length &&
+      ['item', 'items', 'item name', 'qty', 'quantity', 'amount', 'total'].includes(
+        tokens[idx]?.toLowerCase()?.trim()
+      )
+    ) {
+      idx += 1;
+    }
+
     while (idx + 2 < tokens.length) {
-      const name = tokens[idx];
-      const qty = tokens[idx + 1];
-      const amount = tokens[idx + 2];
-      if (classify(qty) !== 'INTEGER' || classify(amount) !== 'AMOUNT') break;
-      report.salesDetail.push({ item: name, quantity: parseInt(qty, 10), amount: toAmount(amount) });
-      idx += 3;
+      const name = tokens[idx]?.trim();
+      const qtyToken = tokens[idx + 1]?.trim();
+      const amountToken = tokens[idx + 2]?.trim();
+
+      const qty = parseInt(qtyToken?.replace(/,/g, ''), 10);
+      const amount = toAmount(amountToken);
+
+      if (
+        name &&
+        !isNaN(qty) &&
+        !isNaN(amount) &&
+        !qtyToken.includes('%') &&
+        name.toLowerCase() !== 'total'
+      ) {
+        report.salesDetail.push({ item: name, quantity: qty, amount: amount });
+        idx += 3;
+      } else if (name && name.toLowerCase() === 'total') {
+        // reached totals footer
+        break;
+      } else {
+        idx += 1;
+      }
     }
   }
 

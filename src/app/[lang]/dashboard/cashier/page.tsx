@@ -72,6 +72,8 @@ interface DailyEntry {
   totalSales: number;
   totalItemsSold: number;
   uploadedAt: string;
+  groupSalesByAmount?: any[];
+  salesDetail?: any[];
 }
 
 interface MonthlySummary {
@@ -105,15 +107,31 @@ export default function CashierDashboardPage() {
     }
   };
 
-  // load history on mount
+  // load history on mount + automatically display latest report on mobile/desktop
   useEffect(() => {
     async function load() {
       try {
         const res = await fetch("/api/reports/history");
         const data = await safeJson(res);
         if (data.success) {
-          setHistory([...data.entries].reverse()); // newest first
+          const loadedEntries = [...data.entries].reverse(); // newest first
+          setHistory(loadedEntries);
           setMonthlySummary(data.monthlySummary);
+          if (data.latestReport) {
+            setReport(data.latestReport);
+          } else if (loadedEntries.length > 0) {
+            const first = loadedEntries[0];
+            setReport({
+              hotelName: "Hollywood Hotel",
+              reportTitle: "Item Sales Report",
+              periodFrom: first.periodFrom,
+              periodTo: first.periodTo,
+              grandTotalAmount: first.totalSales,
+              grandTotalQuantity: first.totalItemsSold,
+              groupSalesByAmount: first.groupSalesByAmount || [],
+              salesDetail: first.salesDetail || [],
+            });
+          }
         } else {
           setHistoryError("Could not load history.");
         }
@@ -302,8 +320,8 @@ export default function CashierDashboardPage() {
           </div>
 
           {/* Category breakdown */}
-          <div className="bg-white rounded-3xl border-2 border-gray-100 p-8 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
-            <div className="flex items-center gap-3 mb-8">
+          <div className="bg-white rounded-3xl border-2 border-gray-100 p-5 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+            <div className="flex items-center gap-3 mb-6 sm:mb-8">
               <DollarSign size={20} className="text-yellow-500" />
               <h2 className="text-xl font-black text-black">Category Breakdown</h2>
             </div>
@@ -324,32 +342,38 @@ export default function CashierDashboardPage() {
           </div>
 
           {/* Item-level table */}
-          <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
-            <div className="p-6 md:p-8 border-b-2 border-gray-100 bg-gray-50/50">
-              <h2 className="text-2xl font-black text-black">Item-Level Sales</h2>
+          <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+            <div className="p-4 sm:p-8 border-b-2 border-gray-100 bg-gray-50/50 rounded-t-3xl flex items-center justify-between">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black text-black">Item-Level Sales</h2>
+                <p className="text-xs text-gray-500 font-medium mt-0.5">Full list of items and quantities sold</p>
+              </div>
+              <span className="bg-yellow-400 text-black text-xs font-black px-3 py-1 rounded-full">
+                {sortedSales.length} items
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
                   <tr>
-                    <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">#</th>
-                    <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Item</th>
-                    <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Qty Sold</th>
-                    <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs text-right">Revenue</th>
+                    <th className="px-3 sm:px-8 py-3.5 sm:py-5 font-bold uppercase tracking-widest text-[11px] sm:text-xs">#</th>
+                    <th className="px-3 sm:px-8 py-3.5 sm:py-5 font-bold uppercase tracking-widest text-[11px] sm:text-xs">Item</th>
+                    <th className="px-3 sm:px-8 py-3.5 sm:py-5 font-bold uppercase tracking-widest text-[11px] sm:text-xs">Qty Sold</th>
+                    <th className="px-3 sm:px-8 py-3.5 sm:py-5 font-bold uppercase tracking-widest text-[11px] sm:text-xs text-right">Revenue</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {sortedSales.map((item: any, i: number) => (
                     <tr key={i} className="hover:bg-yellow-50/40 transition-colors">
-                      <td className="px-8 py-5 font-black text-yellow-500 text-lg">{i + 1}</td>
-                      <td className="px-8 py-5 font-bold text-black">{item.item}</td>
-                      <td className="px-8 py-5 font-medium text-gray-600">{item.quantity} units</td>
-                      <td className="px-8 py-5 font-black text-black text-right">RWF {fmt(item.amount)}</td>
+                      <td className="px-3 sm:px-8 py-3 sm:py-5 font-black text-yellow-500 text-sm sm:text-lg">{i + 1}</td>
+                      <td className="px-3 sm:px-8 py-3 sm:py-5 font-bold text-black text-xs sm:text-sm">{item.item}</td>
+                      <td className="px-3 sm:px-8 py-3 sm:py-5 font-medium text-gray-600 text-xs sm:text-sm whitespace-nowrap">{item.quantity} units</td>
+                      <td className="px-3 sm:px-8 py-3 sm:py-5 font-black text-black text-right text-xs sm:text-sm whitespace-nowrap">RWF {fmt(item.amount)}</td>
                     </tr>
                   ))}
                   {sortedSales.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="px-8 py-5 text-center text-gray-500">
+                      <td colSpan={4} className="px-4 sm:px-8 py-6 text-center text-gray-500">
                         No sales detail available.
                       </td>
                     </tr>
@@ -459,43 +483,69 @@ export default function CashierDashboardPage() {
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
-              {history.map((entry, i) => (
-                <motion.div
-                  key={entry.uploadedAt + i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04, duration: 0.3 }}
-                  className="flex items-center justify-between px-6 md:px-8 py-5 hover:bg-yellow-50/40 transition-colors group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-yellow-100 group-hover:bg-yellow-200 rounded-xl flex items-center justify-center transition-colors shrink-0">
-                      <Calendar size={16} className="text-yellow-600" />
+              {history.map((entry, i) => {
+                const isSelected = report && (report.date === entry.date || (report.periodFrom === entry.periodFrom && report.grandTotalAmount === entry.totalSales));
+                return (
+                  <motion.div
+                    key={entry.uploadedAt + i}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.3 }}
+                    onClick={() => {
+                      setReport({
+                        hotelName: "Hollywood Hotel",
+                        reportTitle: "Item Sales Report",
+                        periodFrom: entry.periodFrom,
+                        periodTo: entry.periodTo,
+                        date: entry.date,
+                        grandTotalAmount: entry.totalSales,
+                        grandTotalQuantity: entry.totalItemsSold,
+                        groupSalesByAmount: entry.groupSalesByAmount || [],
+                        salesDetail: entry.salesDetail || [],
+                      });
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 cursor-pointer transition-colors group ${
+                      isSelected ? "bg-yellow-100/50 border-l-4 border-yellow-500" : "hover:bg-yellow-50/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 bg-yellow-100 group-hover:bg-yellow-200 rounded-xl flex items-center justify-center transition-colors shrink-0">
+                        <Calendar size={16} className="text-yellow-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-black text-black text-sm">
+                            {new Date(entry.date).toLocaleDateString("default", {
+                              weekday: "short", year: "numeric", month: "long", day: "numeric",
+                            })}
+                          </p>
+                          {isSelected && (
+                            <span className="text-[10px] font-black uppercase tracking-wider bg-black text-yellow-400 px-2 py-0.5 rounded-full">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-400 font-medium mt-0.5">
+                          {entry.periodFrom} → {entry.periodTo}
+                          {entry.totalItemsSold > 0 && ` · ${entry.totalItemsSold} items`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-black text-black text-sm">
-                        {new Date(entry.date).toLocaleDateString("default", {
-                          weekday: "short", year: "numeric", month: "long", day: "numeric",
-                        })}
-                      </p>
-                      <p className="text-xs text-gray-400 font-medium mt-0.5">
-                        {entry.periodFrom} → {entry.periodTo}
-                        {entry.totalItemsSold > 0 && ` · ${entry.totalItemsSold} items`}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="font-black text-black text-sm">RWF {fmt(entry.totalSales)}</p>
+                        <p className="text-xs text-gray-400 font-medium">
+                          {entry.uploadedAt
+                            ? `Uploaded ${new Date(entry.uploadedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+                            : ""}
+                        </p>
+                      </div>
+                      <ChevronRight size={16} className={`transition-colors ${isSelected ? "text-yellow-600 font-bold" : "text-gray-300 group-hover:text-yellow-500"}`} />
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className="font-black text-black text-sm">RWF {fmt(entry.totalSales)}</p>
-                      <p className="text-xs text-gray-400 font-medium">
-                        {entry.uploadedAt
-                          ? `Uploaded ${new Date(entry.uploadedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-                          : ""}
-                      </p>
-                    </div>
-                    <ChevronRight size={16} className="text-gray-300 group-hover:text-yellow-500 transition-colors" />
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </div>

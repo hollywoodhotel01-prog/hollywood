@@ -2,6 +2,24 @@ import { NextResponse } from 'next/server';
 import { parseXpsReport } from '@/lib/parseXpsReport';
 import { getSheet } from '@/lib/googleSheets';
 
+// Helper to delete existing rows for a given date to avoid duplication
+async function clearExistingDataForDate(sheetName, dateStr) {
+  try {
+    const sheet = await getSheet(sheetName);
+    const rows = await sheet.getRows();
+    
+    // Delete from bottom up to avoid index shifting issues
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const row = rows[i];
+      if (row.get('Date') === dateStr) {
+        await row.delete();
+      }
+    }
+  } catch (err) {
+    console.warn(`Could not clear existing data for ${sheetName}:`, err);
+  }
+}
+
 // POST /api/reports/upload -> counter staff uploads the SimbaPOS .xps export
 export async function POST(request) {
   try {
@@ -22,6 +40,11 @@ export async function POST(request) {
     let sheetsError = null;
 
     try {
+      // 0. Clear previous uploads for today to allow overwriting
+      await clearExistingDataForDate('DailyReports', today);
+      await clearExistingDataForDate('SalesDetail', today);
+      await clearExistingDataForDate('CategorySales', today);
+
       // 1. Daily summary row
       const dailySheet = await getSheet('DailyReports');
       await dailySheet.addRow({

@@ -44,12 +44,11 @@ export default function AccountantDashboardPage() {
   const filteredConferences = conferenceBookings.filter(c => c.status === "Confirmed" && isDateMatch(c.date));
   
   const roomRevenue = filteredBookings.reduce((s, b) => s + b.amount, 0);
-  const conferenceRevenue = filteredConferences.reduce((s, c) => s + (c.amount || 0), 0);
   
   const isPosMatch = dailySalesReport && isDateMatch(dailySalesReport.date);
   const diningRevenue = isPosMatch ? dailySalesReport.totalSales : 0;
 
-  const totalRevenue = roomRevenue + diningRevenue + conferenceRevenue;
+  const totalRevenue = roomRevenue + diningRevenue;
 
   return (
     <div className="print-container">
@@ -95,7 +94,6 @@ export default function AccountantDashboardPage() {
         <div className="space-y-8">
           <RevenueBar label="Room Bookings" value={roomRevenue} total={totalRevenue} color="bg-gold" />
           <RevenueBar label="Dining & Bar (POS)" value={diningRevenue} total={totalRevenue} color="bg-orange-400" />
-          <RevenueBar label="Conferences & Events" value={conferenceRevenue} total={totalRevenue} color="bg-blue-400" />
         </div>
       </div>
 
@@ -144,21 +142,19 @@ export default function AccountantDashboardPage() {
               <thead className="bg-white text-gray-400 border-b-2 border-gray-100 sticky top-0">
                 <tr>
                   <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Date</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Hall / Contact</th>
-                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs text-right">Amount</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-widest text-xs">Event Type / Contact</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredConferences.map((cb) => (
                   <tr key={cb.id} className="hover:bg-gold/5 transition-colors">
                     <td className="px-6 py-4 font-bold text-gray-500 text-xs">{cb.date}</td>
-                    <td className="px-6 py-4 font-bold text-gray-800">{cb.hall} <span className="text-xs font-normal text-gray-400 block">{cb.contactName}</span></td>
-                    <td className="px-6 py-4 font-black text-green-600 text-right">+RWF {(cb.amount || 0).toLocaleString()}</td>
+                    <td className="px-6 py-4 font-bold text-gray-800">{cb.eventType} <span className="text-xs font-normal text-gray-400 block">{cb.contactName}</span></td>
                   </tr>
                 ))}
                 {filteredConferences.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="px-6 py-8 text-center text-gray-400 font-medium">No conferences in this period.</td>
+                    <td colSpan={2} className="px-6 py-8 text-center text-gray-400 font-medium">No conferences in this period.</td>
                   </tr>
                 )}
               </tbody>

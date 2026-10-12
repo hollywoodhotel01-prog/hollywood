@@ -56,10 +56,7 @@ export default function AdminDashboardPage() {
       }
     });
     conferenceBookings.forEach(c => {
-      if (c.status === "Confirmed" && c.date) {
-        const month = c.date.substring(0, 7);
-        reportMap[month] = (reportMap[month] || 0) + (c.amount || 0);
-      }
+      // Conference revenue is handled separately now
     });
     return Object.entries(reportMap)
       .map(([month, revenue]) => ({ month, revenue }))
@@ -82,17 +79,15 @@ export default function AdminDashboardPage() {
   const todayBookings = bookings.filter(b => b.checkIn === today);
   const todayConferences = conferenceBookings.filter(b => b.date === today);
   const todayRevenue =
-    todayBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
-    todayConferences.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0);
+    todayBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
   const todayCheckouts = bookings.filter(b => b.checkOut === today);
 
   // Monthly
   const monthBookings = bookings.filter(b => b.checkIn.startsWith(thisMonth));
   const monthRevenue = monthBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
-  const monthConfRevenue = conferenceBookings.filter(b => b.date.startsWith(thisMonth) && b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
   const monthExpenses = expenses.filter(e => e.date.startsWith(thisMonth)).reduce((s, e) => s + (e.amount || 0), 0);
   const monthOtherRevenue = otherRevenues.filter(r => r.date.startsWith(thisMonth)).reduce((s, r) => s + (r.amount || 0), 0);
-  const monthTotalRevenue = monthRevenue + monthConfRevenue + monthOtherRevenue;
+  const monthTotalRevenue = monthRevenue + monthOtherRevenue;
   const monthProfit = monthTotalRevenue - monthExpenses;
 
   // Reception / Overall
@@ -111,7 +106,6 @@ export default function AdminDashboardPage() {
 
   const totalRevenueCalc =
     filteredBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
-    filteredConfBookings.filter(c => c.status === "Confirmed").reduce((s, c) => s + (c.amount || 0), 0) +
     filteredOtherRevenues.reduce((s, r) => s + (r.amount || 0), 0);
 
   const totalExpensesCalc = filteredExpenses.reduce((s, e) => s + (e.amount || 0), 0);
@@ -148,36 +142,36 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-      <div className="mb-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
+      <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6">
         <div>
-          <h1 className="text-4xl font-heading font-black text-black mb-2">{d.adminOverview}</h1>
-          <p className="text-gray-600 font-medium text-lg">{d.welcomeBack}. {d.fullControl}</p>
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-black leading-tight mb-1">{d.adminOverview}</h1>
+          <p className="text-gray-500 font-medium text-xs sm:text-base">{d.welcomeBack}. {d.fullControl}</p>
         </div>
 
         {/* Reports Button */}
         <button
           id="open-reports-btn"
           onClick={() => setShowReports(true)}
-          className="flex items-center gap-2.5 px-6 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:bg-gray-900 transition-all shadow-[0_8px_24px_rgba(0,0,0,0.18)] hover:shadow-[0_8px_24px_rgba(251,191,36,0.22)] group whitespace-nowrap self-start"
+          className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-black text-white rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm hover:bg-gray-900 transition-all shadow-sm hover:shadow-md group whitespace-nowrap self-start"
         >
-          <FileText size={17} className="text-gold group-hover:scale-110 transition-transform" />
+          <FileText size={15} className="text-gold group-hover:scale-110 transition-transform" />
           <span>{(d as any).reportsBtn || "Reports"}</span>
           <span className="ml-1 text-[10px] bg-gold text-black font-black px-1.5 py-0.5 rounded-full">3</span>
         </button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-12">
         {stats.map((stat, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
-            <Link href={stat.href} className="block bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-gold hover:shadow-[0_10px_30px_rgba(251,191,36,0.1)] transition-all h-full">
-              <div className="flex items-center gap-5">
-                <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} shadow-inner`}>
-                  <stat.icon size={28} strokeWidth={2.5} />
+            <Link href={stat.href} className="block bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-gold hover:shadow-[0_10px_30px_rgba(251,191,36,0.1)] transition-all h-full">
+              <div className="flex items-center gap-3.5 sm:gap-5">
+                <div className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl ${stat.bg} ${stat.color} shadow-inner shrink-0`}>
+                  <stat.icon size={22} className="sm:w-7 sm:h-7" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 font-bold uppercase tracking-widest mb-1">{stat.label}</p>
-                  <p className="text-3xl font-black text-black">{stat.value}</p>
+                  <p className="text-[11px] sm:text-sm text-gray-500 font-bold uppercase tracking-widest mb-0.5">{stat.label}</p>
+                  <p className="text-xl sm:text-3xl font-black text-black leading-tight">{stat.value}</p>
                 </div>
               </div>
             </Link>
@@ -456,10 +450,6 @@ export default function AdminDashboardPage() {
                           <div className="flex justify-between">
                             <span>{(d as any).roomBookings || "Room Bookings"}</span>
                             <span className="font-black">RWF {monthRevenue.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>{(d as any).conferenceRevenue || "Conference Revenue"}</span>
-                            <span className="font-black">RWF {monthConfRevenue.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between">
                             <span>{(d as any).otherRevenue || "Other Revenue"}</span>

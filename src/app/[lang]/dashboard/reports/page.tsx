@@ -57,12 +57,11 @@ export default function ReportsDashboardPage() {
 
   // 1. Calculate Revenues
   const roomRev = bookings.filter(b => b.status === "Confirmed" && isDateMatch(b.checkIn)).reduce((s, b) => s + b.amount, 0);
-  const confRev = conferenceBookings.filter(c => c.status === "Confirmed" && isDateMatch(c.date)).reduce((s, c) => s + (c.amount || 0), 0);
   const diningRev = dailySalesHistory?.filter(h => isDateMatch(h.date)).reduce((s, h) => s + h.totalSales, 0) || 0;
   const invoiceRev = receipts.filter(r => isDateMatch(r.payment_date)).reduce((s, r) => s + r.amount_received, 0);
   const otherRev = otherRevenues.filter(r => isDateMatch(r.date)).reduce((s, r) => s + r.amount, 0);
 
-  const grossRevenue = roomRev + confRev + diningRev + invoiceRev + otherRev;
+  const grossRevenue = roomRev + diningRev + invoiceRev + otherRev;
 
   // 2. Calculate Expenses
   const filteredExpenses = expenses.filter(e => isDateMatch(e.date));
@@ -73,7 +72,6 @@ export default function ReportsDashboardPage() {
   // Revenue Breakdown Array
   const revenueSources = [
     { label: d.roomBookings, value: roomRev, color: "bg-blue-500", text: "text-blue-600" },
-    { label: d.conferences, value: confRev, color: "bg-purple-500", text: "text-purple-600" },
     { label: d.diningPos, value: diningRev, color: "bg-orange-500", text: "text-orange-600" },
     { label: d.invoices || "Invoices (Paid)", value: invoiceRev, color: "bg-teal-500", text: "text-teal-600" },
     { label: d.otherCustom, value: otherRev, color: "bg-green-500", text: "text-green-600" },

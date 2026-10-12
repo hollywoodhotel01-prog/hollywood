@@ -44,9 +44,8 @@ export default function DailyFinanceDashboard() {
     return match ? match[0] === selectedDate : false;
   };
 
-  // Calculate Operational Revenue (Bookings + Conference + POS)
+  // Calculate Operational Revenue (Bookings + POS)
   const roomRevenue = bookings.filter(b => b.status === "Confirmed" && isDateMatch(b.checkIn)).reduce((s, b) => s + b.amount, 0);
-  const conferenceRevenue = conferenceBookings.filter(c => c.status === "Confirmed" && isDateMatch(c.date)).reduce((s, c) => s + (c.amount || 0), 0);
   
   // Real POS Data from daily sales history
   const diningRevenue = dailySalesHistory?.filter(h => isDateMatch(h.date)).reduce((s, h) => s + h.totalSales, 0) || 0;
@@ -54,7 +53,7 @@ export default function DailyFinanceDashboard() {
   // Paid Invoices (Receipts)
   const invoiceRevenue = receipts.filter(r => isDateMatch(r.payment_date)).reduce((s, r) => s + r.amount_received, 0);
 
-  const operationalRevenue = roomRevenue + conferenceRevenue + diningRevenue + invoiceRevenue;
+  const operationalRevenue = roomRevenue + diningRevenue + invoiceRevenue;
 
   // Calculate Other Revenue
   const filteredOtherRevenues = otherRevenues.filter(r => isDateMatch(r.date));
@@ -155,14 +154,10 @@ export default function DailyFinanceDashboard() {
       {/* Revenue Breakdown */}
       <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-sm">
         <h3 className="text-xl font-black text-black mb-4">{d.revenueBreakdown || "Revenue Breakdown"} ({selectedDate})</h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
             <p className="text-xs font-bold text-gray-500 uppercase mb-1">{d.accommodation || "Accommodation"}</p>
             <p className="text-xl font-black text-blue-600">RWF {roomRevenue.toLocaleString()}</p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-            <p className="text-xs font-bold text-gray-500 uppercase mb-1">{d.eventsConf || "Events & Conf."}</p>
-            <p className="text-xl font-black text-purple-600">RWF {conferenceRevenue.toLocaleString()}</p>
           </div>
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
             <p className="text-xs font-bold text-gray-500 uppercase mb-1">{d.cashierPos || "Cashier (POS)"}</p>

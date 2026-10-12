@@ -42,7 +42,7 @@ function BookingForm() {
         { type: "Standard Room", price: 50000 },
         { type: "Deluxe Room", price: 80000 },
         { type: "Executive Room", price: 120000 },
-        { type: "Luxury Room", price: 100000 },
+        { type: "Luxury Room", price: 200000 },
         { type: "Hollywood Suite", price: 180000 },
         { type: "Presidential Suite", price: 250000 },
       ];

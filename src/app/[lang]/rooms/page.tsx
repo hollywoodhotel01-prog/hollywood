@@ -13,7 +13,7 @@ export default function RoomsPage() {
     {
       name: "Luxury Room",
       description: "Experience ultimate comfort with our signature room featuring fresh air ventilation, a smart bathroom, seamless connectivity, and 24/7 full support to ensure a perfect stay.",
-      price: 150,
+      price: "200k",
       tag: "Premium",
       image: "/bed.webp",
       amenities: [
@@ -54,7 +54,7 @@ export default function RoomsPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:opacity-0 transition-opacity duration-500 z-10"></div>
                 <img src={room.image} alt={room.name} className="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-700 ease-out" />
                 <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-md px-6 py-2.5 rounded-2xl font-bold text-black shadow-lg z-20 border border-white/20">
-                  ${room.price} <span className="text-sm font-medium text-gray-500">{d.night}</span>
+                  {room.price} <span className="text-sm font-medium text-gray-500">{d.night}</span>
                 </div>
                 {room.tag && (
                   <div className="absolute top-6 left-6 bg-black/80 backdrop-blur-md text-gold px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest z-20 flex items-center gap-2">

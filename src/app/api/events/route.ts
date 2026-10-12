@@ -8,12 +8,10 @@ const EVENT_HEADERS = [
   'ContactName',
   'Phone',
   'EventType',
-  'Hall',
   'Guests',
   'Date',
   'Requirements',
   'Status',
-  'Amount',
   'PaymentMethod',
   'PaymentStatus',
   'CreatedAt',
@@ -41,10 +39,8 @@ export async function GET() {
         contactName: row.get('ContactName') || '',
         phone: row.get('Phone') || '',
         eventType: row.get('EventType') || '',
-        hall: row.get('Hall') || 'Conference Room',
         guests: parseInt(row.get('Guests') || '0', 10) || 0,
         date: row.get('Date') || '',
-        amount: parseFloat(row.get('Amount') || '0') || 0,
         requirements: row.get('Requirements') || '',
         status: (row.get('Status') || 'Pending') as 'Pending' | 'Confirmed' | 'Declined',
         paymentMethod: row.get('PaymentMethod') || 'Cash',
@@ -81,9 +77,7 @@ export async function POST(req: Request) {
     }
 
     const guests = parseInt(String(body.guests || '0'), 10) || 0;
-    const amount = body.amount !== undefined ? Number(body.amount) || 0 : guests * 50000;
     const status = body.status || 'Pending';
-    const hall = body.hall || 'Conference Room';
     const paymentMethod = body.paymentMethod || 'Cash';
     const paymentStatus = body.paymentStatus || 'Not Yet Paid';
     const createdAt = body.createdAt || new Date().toISOString();
@@ -93,10 +87,8 @@ export async function POST(req: Request) {
       ContactName: body.contactName || '',
       Phone: body.phone || '',
       EventType: body.eventType || '',
-      Hall: hall,
       Guests: guests,
       Date: body.date || '',
-      Amount: amount,
       Requirements: body.requirements || '',
       Status: status,
       PaymentMethod: paymentMethod,
@@ -109,10 +101,8 @@ export async function POST(req: Request) {
       contactName: body.contactName || '',
       phone: body.phone || '',
       eventType: body.eventType || '',
-      hall,
       guests,
       date: body.date || '',
-      amount,
       requirements: body.requirements || '',
       status,
       paymentMethod,
@@ -144,10 +134,8 @@ export async function PUT(req: Request) {
     if (body.contactName !== undefined) rowToUpdate.set('ContactName', body.contactName);
     if (body.phone !== undefined) rowToUpdate.set('Phone', body.phone);
     if (body.eventType !== undefined) rowToUpdate.set('EventType', body.eventType);
-    if (body.hall !== undefined) rowToUpdate.set('Hall', body.hall);
     if (body.guests !== undefined) rowToUpdate.set('Guests', body.guests);
     if (body.date !== undefined) rowToUpdate.set('Date', body.date);
-    if (body.amount !== undefined) rowToUpdate.set('Amount', body.amount);
     if (body.requirements !== undefined) rowToUpdate.set('Requirements', body.requirements);
     if (body.status !== undefined) rowToUpdate.set('Status', body.status);
     if (body.paymentMethod !== undefined) rowToUpdate.set('PaymentMethod', body.paymentMethod);

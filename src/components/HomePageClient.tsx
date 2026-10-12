@@ -37,7 +37,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
     {
       name: "Luxury Room",
       description: "Experience ultimate comfort with our signature room featuring fresh air ventilation, a smart bathroom, seamless connectivity, and 24/7 full support to ensure a perfect stay.",
-      price: 150,
+      price: "200k",
       image: "/bed.webp",
       amenities: ["Fresh Air", "High-Speed Wi-Fi", "Smart Bathroom", "Full Support"]
     }
@@ -172,7 +172,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                 <div className="h-64 relative overflow-hidden bg-gray-100">
                   <Image src={roomImage} alt={room.name} fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute top-4 right-4 bg-gold px-4 py-1.5 rounded-full font-black text-black text-sm shadow-md">
-                    ${room.price}/night
+                    {room.price}/night
                   </div>
                 </div>
                 <div className="p-8 flex flex-col flex-1">

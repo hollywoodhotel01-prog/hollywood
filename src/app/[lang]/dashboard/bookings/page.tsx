@@ -166,10 +166,10 @@ export default function BookingsManagementPage() {
               {activeTab === "events" && (
                 <tr>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Ref ID</th>
-                  <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Hall &amp; Event Type</th>
+                  <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Contact</th>
+                  <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Event Type</th>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Date</th>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Guests</th>
-                  <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">Amount</th>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs text-right">Status</th>
                 </tr>
               )}
@@ -246,8 +246,7 @@ export default function BookingsManagementPage() {
                       <p className="text-xs text-gray-400 font-medium">{booking.phone}</p>
                     </td>
                     <td className="px-8 py-5">
-                      <p className="font-bold text-black text-sm">{booking.hall || 'Conference Room'}</p>
-                      <p className="font-medium text-gray-700 text-xs">{booking.eventType}</p>
+                      <p className="font-bold text-black text-sm">{booking.eventType}</p>
                       {booking.requirements && (
                         <p className="text-xs text-gray-400 truncate max-w-[200px]" title={booking.requirements}>
                           {booking.requirements}
@@ -256,21 +255,6 @@ export default function BookingsManagementPage() {
                     </td>
                     <td className="px-8 py-5 font-medium text-gray-500">{booking.date}</td>
                     <td className="px-8 py-5 font-medium text-gray-600">{booking.guests} guests</td>
-                    <td className="px-8 py-5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const nextAmt = window.prompt("Update conference booking amount (RWF):", String(booking.amount || 0));
-                          if (nextAmt !== null) {
-                            updateConferenceBooking(booking.id, { amount: parseFloat(nextAmt) || 0 });
-                          }
-                        }}
-                        className="font-bold text-black hover:text-gold transition-colors text-left"
-                        title="Click to edit amount"
-                      >
-                        RWF {(booking.amount || 0).toLocaleString()}
-                      </button>
-                    </td>
                     <td className="px-8 py-5 text-right">
                       <select
                         value={booking.status}

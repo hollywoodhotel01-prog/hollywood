@@ -65,7 +65,6 @@ export default function ReceptionistDashboardPage() {
       const m = getM(c.date);
       if (!m) return;
       if (!map[m]) map[m] = { month: m, totalGuests: 0, totalAmount: 0, bookings: 0, events: 0, rawDate: new Date(c.date) };
-      map[m].totalAmount += c.amount || 0;
       map[m].events += 1;
       map[m].totalGuests += c.guests || 0;
     });
@@ -318,19 +317,6 @@ export default function ReceptionistDashboardPage() {
                           <option value="Pending">Pending</option>
                           <option value="Declined">Declined</option>
                         </select>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const nextAmt = window.prompt("Update conference booking amount (RWF):", String(cb.amount || 0));
-                            if (nextAmt !== null) {
-                              updateConferenceBooking(cb.id, { amount: parseFloat(nextAmt) || 0 });
-                            }
-                          }}
-                          className="text-xs font-black text-black hover:text-gold transition-colors"
-                          title="Click to edit amount"
-                        >
-                          RWF {(cb.amount || 0).toLocaleString()}
-                        </button>
                       </div>
                     </div>
                   </div>

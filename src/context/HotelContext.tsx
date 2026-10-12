@@ -53,7 +53,7 @@ export const ROOM_PRICES: Record<string, number> = {
   "Executive Room": 120000,
   "Hollywood Suite": 180000,
   "Presidential Suite": 250000,
-  "Luxury Room": 100000,
+  "Luxury Room": 200000,
 };
 
 export interface ConferenceBooking {
@@ -61,10 +61,8 @@ export interface ConferenceBooking {
   contactName: string;
   phone: string;
   eventType: string;
-  hall: string;
   guests: number;
   date: string;
-  amount: number;
   requirements: string;
   status: "Pending" | "Confirmed" | "Declined";
   paymentMethod?: string;

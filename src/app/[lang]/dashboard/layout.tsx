@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <ControlSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Dashboard Content Wrapper */}
-      <main id="main-content" className="flex-1 w-full max-w-full p-4 sm:p-6 md:p-12 overflow-x-hidden relative z-10 flex flex-col min-h-[calc(100vh-80px)]">
+      <main id="main-content" className="flex-1 w-full max-w-full px-3 py-2 sm:p-6 md:p-12 overflow-x-hidden relative z-10 flex flex-col min-h-[calc(100vh-80px)]">
         <div className="w-full">{children}</div>
         <footer className="mt-auto pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400 font-medium print:hidden">
           <p>&copy; {new Date().getFullYear()} Hollywood Hotel Management System. All rights reserved.</p>
