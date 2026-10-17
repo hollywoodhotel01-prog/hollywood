@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { Invoice, Receipt } from "@/types/finance";
 import { formatCurrency } from "@/lib/financeCalculations";
 import { X, Printer, Download, CheckCircle, Clock, AlertTriangle, Building2, User, CreditCard } from "lucide-react";
@@ -150,8 +151,14 @@ export default function PrintableDocumentModal({
             <div className="flex flex-col sm:flex-row justify-between items-start gap-6 pb-8 border-b-2 border-gray-100">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-gold font-serif font-black text-xl shadow-md">
-                    M
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm shrink-0 flex items-center justify-center">
+                    <Image
+                      src="/logo.png"
+                      alt="Hollywood Hotel Logo"
+                      width={48}
+                      height={48}
+                      className="object-cover w-full h-full"
+                    />
                   </div>
                   <div>
                     <div className="font-heading font-black text-2xl tracking-widest text-black">

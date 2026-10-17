@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Star, Quote, Sparkles, Users, Dumbbell } from "lucide-react";
+import { ArrowRight, Star, Quote, Sparkles, Users, Dumbbell, Wifi, Droplets, Shirt, Sun, Tv, Eye, Crown, Check, Tent, Heart, MapPin, Navigation } from "lucide-react";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import { useHotel } from "@/context/HotelContext";
+import { ROOM_CATEGORIES, getCategoryPrice } from "@/lib/roomCategories";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -18,6 +20,7 @@ const staggerContainer = {
 };
 
 export default function HomePageClient({ lang, dict }: { lang: string, dict: any }) {
+  const { roomsData } = useHotel();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const heroImages = [
     "/night.webp",
@@ -33,15 +36,6 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
-  const featuredRooms = [
-    {
-      name: "Luxury Room",
-      description: "Experience ultimate comfort with our signature room featuring fresh air ventilation, a smart bathroom, seamless connectivity, and 24/7 full support to ensure a perfect stay.",
-      price: "200k",
-      image: "/bed.webp",
-      amenities: ["Fresh Air", "High-Speed Wi-Fi", "Smart Bathroom", "Full Support"]
-    }
-  ];
   const testimonials = dict.reviews?.testimonials || [];
 
   return (
@@ -50,7 +44,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         <div className="absolute inset-0 bg-black/50 z-10" />
         <div className="absolute inset-0 z-0 bg-black">
           {heroImages.map((imgSrc, idx) => (
-            <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hollywood Hotel Rwimiyaga - Luxury Hotel in Rwanda (${idx + 1})`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
+            <Image key={`${imgSrc}-${idx}`} src={imgSrc} alt={`Hollywood in Nyagatare Hotels - Hollywood Hotel on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda (${idx + 1})`} fill priority={idx === 0} sizes="100vw" className="object-cover rounded-none pointer-events-none" style={{
                 opacity: idx === currentImageIndex ? 1 : 0,
                 transition: "opacity 2.5s ease-in-out"
               }} />
@@ -89,7 +83,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
       </section>
 
       {/* === ABOUT / BAR SECTION === */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-24 bg-white relative overflow-hidden" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-16 items-center">
 
@@ -102,22 +96,62 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               className="lg:w-1/2 order-2 lg:order-1"
             >
               <div className="inline-block px-4 py-1.5 bg-gray-100 rounded-full mb-6 border border-gray-200">
-                <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">
-                  {dict.why?.label || 'Kuki Hitamo Hollywood Hotel'}
+                <span className="text-sm font-bold text-gray-700 uppercase tracking-widest">
+                  {dict.why?.label || 'About Us • Hollywood in Nyagatare Hotels'}
                 </span>
               </div>
 
               <h2 className="text-4xl md:text-5xl font-heading font-black text-black mb-6 leading-tight">
-                {dict.why?.titleLine1 || 'Amahitamo meza'}<br />
+                {dict.why?.titleLine1 || 'A Grand Stage for'}<br />
                 <span className="relative inline-block text-black">
-                  {dict.why?.titleLine2 || 'igihe cyose'}
+                  {dict.why?.titleLine2 || 'Every Occasion'}
                   <span className="absolute left-0 -bottom-1 w-full h-[3px] bg-amber-400/70 rounded-full" />
                 </span>
               </h2>
 
-              <p className="text-gray-900 mb-10 leading-relaxed text-lg font-normal text-justify whitespace-pre-line">
+              {/* Location Badge / Callout */}
+              <div className="bg-amber-50/90 border border-amber-300/80 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+                <div className="flex items-start gap-3.5">
+                  <div className="p-2.5 bg-amber-400 text-black rounded-xl shrink-0 mt-0.5 shadow-xs">
+                    <MapPin size={22} className="stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <span className="text-xs uppercase font-extrabold tracking-wider text-amber-900 block mb-0.5">
+                      {dict.why?.locationLabel || 'Prime Location'}
+                    </span>
+                    <p className="text-base font-bold text-gray-950 leading-snug">
+                      {dict.why?.location || 'Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda'}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href="https://maps.google.com/?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Rwanda"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-black bg-white hover:bg-black hover:text-white border border-amber-300/80 px-3.5 py-2 rounded-xl transition-colors shrink-0 self-start sm:self-auto shadow-2xs"
+                >
+                  <Navigation size={13} className="text-amber-500" />
+                  <span>{dict.why?.locationDirections || 'View on Map'}</span>
+                </a>
+              </div>
+
+              <p className="text-gray-900 mb-8 leading-relaxed text-lg font-normal text-justify whitespace-pre-line">
                 {dict.why?.description}
               </p>
+
+              {/* Feature Highlights List */}
+              {Array.isArray(dict.why?.features) && dict.why.features.length > 0 && (
+                <ul className="space-y-2.5 mb-10 text-gray-700 text-sm font-medium">
+                  {dict.why.features.map((feat: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
+                        ✓
+                      </div>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
               <Link
                 href={`/${lang}/rooms`}
@@ -136,7 +170,14 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               transition={{ duration: 0.8 }}
               className="lg:w-1/2 relative order-1 lg:order-2 w-full"
             >
-              <Image src="/reception.webp" alt="Hollywood Hotel Reception" width={800} height={600} sizes="(max-width: 768px) 100vw, 50vw" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl" />
+              <Image
+                src="/reception.webp"
+                alt="Hollywood Hotel Reception - Premier Hollywood in Nyagatare Hotels on Kagitumba Road, Rwimiyaga, Eastern Province, Rwanda"
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl"
+              />
             </motion.div>
 
           </div>
@@ -157,90 +198,214 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               {dict.accommodations?.description}
             </p>
           </div>
-          <div className="grid grid-cols-1 max-w-3xl mx-auto gap-10">
-            {featuredRooms.map((room: any, index: number) => {
-              const roomImage = room.image || "/bed.webp";
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
+            {ROOM_CATEGORIES.map((cat, index) => {
+              const livePrice = getCategoryPrice(cat.id, roomsData);
               return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="group bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-gold hover:shadow-[0_20px_40px_rgba(251,191,36,0.15)] transition-all duration-300 flex flex-col"
-              >
-                <div className="h-64 relative overflow-hidden bg-gray-100">
-                  <Image src={roomImage} alt={room.name} fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute top-4 right-4 bg-gold px-4 py-1.5 rounded-full font-black text-black text-sm shadow-md">
-                    {room.price}/night
+                <motion.div
+                  key={cat.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                  className="group bg-white rounded-3xl overflow-hidden border-2 border-gray-100 hover:border-gold hover:shadow-[0_20px_45px_rgba(251,191,36,0.18)] transition-all duration-300 flex flex-col relative"
+                >
+                  <div className="h-64 relative overflow-hidden bg-gray-100">
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                    
+                    {/* Badge */}
+                    <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md text-gold border border-gold/30 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                      <Sparkles size={12} />
+                      {cat.badge}
+                    </div>
+
+                    {/* Price Pill - based on reception input */}
+                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-black border border-white/50 px-3.5 py-1.5 rounded-2xl font-black text-sm shadow-lg flex flex-col items-end leading-none">
+                      <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Per Night</span>
+                      <span className="text-black font-heading font-black text-base mt-0.5">RWF {livePrice.toLocaleString()}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="p-8 flex flex-col flex-1">
-                  <h4 className="text-2xl font-heading font-black text-black mb-3 group-hover:text-gold transition-colors">{room.name}</h4>
-                  <p className="text-gray-600 mb-6 flex-1 text-base">{room.description}</p>
-                  <div className="flex gap-2 flex-wrap mb-6">
-                    {room.amenities.map((amenity: string, i: number) => (
-                      <span key={i} className="text-xs font-bold bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-100 group-hover:bg-gold/5 group-hover:border-gold/20 transition-colors">
-                        {amenity}
-                      </span>
-                    ))}
+
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-2xl font-heading font-black text-black group-hover:text-gold transition-colors">
+                        {cat.name}
+                      </h4>
+                    </div>
+
+                    <p className="text-gray-600 mb-5 text-sm leading-relaxed min-h-[48px]">
+                      {cat.shortDescription}
+                    </p>
+
+                    <div className="flex gap-1.5 flex-wrap mb-6 mt-auto">
+                      {cat.amenities.slice(0, 3).map((amenity, i) => (
+                        <span
+                          key={i}
+                          className="text-[11px] font-bold bg-gray-50 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-100 group-hover:bg-gold/5 group-hover:border-gold/30 group-hover:text-black transition-colors"
+                        >
+                          {amenity.name}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="space-y-2 pt-2 border-t border-gray-100">
+                      <Link
+                        href={`/${lang}/book?room=${encodeURIComponent(cat.name)}`}
+                        className="w-full text-center bg-black hover:bg-gold hover:text-black text-white py-3 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2 text-sm group/btn"
+                      >
+                        <span>Explore & Checkout</span>
+                        <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+                      </Link>
+
+                      <Link
+                        href={`/${lang}/rooms`}
+                        className="w-full text-center text-xs font-bold text-gray-500 hover:text-black py-1.5 transition-colors block"
+                      >
+                        View room gallery & details →
+                      </Link>
+                    </div>
                   </div>
-                  <Link
-                    href={`/${lang}/book?room=${encodeURIComponent(room.name)}`}
-                    className="w-full text-center bg-black hover:bg-gold hover:text-black text-white py-3.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center gap-2"
-                  >
-                    <span>{dict.accommodations?.reserveNow}</span>
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </motion.div>
+                </motion.div>
               );
             })}
+          </div>
+
+          <div className="mt-14 text-center">
+            <Link
+              href={`/${lang}/rooms`}
+              className="inline-flex items-center gap-3 bg-gray-100 hover:bg-black hover:text-gold text-black px-8 py-3.5 rounded-full font-bold text-sm transition-all shadow-sm"
+            >
+              <span>Compare All 4 Room Categories & Full Amenities</span>
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* === CONFERENCE CENTER SECTION === */}
+      {/* === CONFERENCE & WEDDING VENUES SECTION === */}
       <section className="py-24 relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative rounded-[2rem] overflow-hidden shadow-2xl bg-black"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
-              <div className="lg:col-span-7 relative min-h-[400px] lg:min-h-[600px] order-2 lg:order-1">
-                <Image src="/salle.webp" alt="Hollywood Hotel Conference Center & Event Hall" fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent lg:bg-gradient-to-t lg:from-transparent lg:to-transparent"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent lg:hidden"></div>
-              </div>
-              <div className="lg:col-span-5 p-10 lg:p-16 flex flex-col justify-center relative order-1 lg:order-2 z-10">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-bl-full pointer-events-none"></div>
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20">
-                  <Users size={24} className="text-gold" />
-                </div>
-                <h4 className="text-3xl md:text-5xl font-heading font-black text-white mb-6 leading-tight">
-                  {dict.conferenceSection?.title || "Conference Center"}
-                </h4>
-                <p className="text-gray-300 mb-10 text-lg leading-relaxed">
-                  {dict.conferenceSection?.description}
-                </p>
-                <div className="mt-auto">
-                  <Link href={`/${lang}/conference`} className="group inline-flex items-center gap-4 text-white font-bold tracking-widest text-sm uppercase">
-                    <span className="relative">
-                      {dict.conferenceSection?.explore || "Explore Spaces"}
-                      <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gold group-hover:w-full transition-all duration-300"></span>
-                    </span>
-                    <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-gold group-hover:text-black transition-all duration-300">
-                      <ArrowRight size={16} />
-                    </div>
-                  </Link>
-                </div>
-              </div>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 bg-gold/15 text-black px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-4 border border-gold/30">
+              <Sparkles size={14} className="text-amber-600" />
+              <span>Event &amp; Celebration Venues</span>
             </div>
-          </motion.div>
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-black mb-5 tracking-tight">
+              {dict.conferenceSection?.title || "Conferences, Weddings & Events"}
+            </h3>
+            <p className="text-gray-600 text-lg leading-relaxed font-medium">
+              {dict.conferenceSection?.description}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+            {/* Card 1: Big Wedding & Party Marquee Tent */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="group relative rounded-3xl overflow-hidden shadow-xl bg-black border-2 border-gold/30 flex flex-col justify-between min-h-[460px]"
+            >
+              <div className="absolute inset-0">
+                <Image
+                  src="/weed.webp"
+                  alt="Hollywood Hotel Big Wedding & Party Tent Marquee"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+              </div>
+
+              <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between">
+                <span className="bg-white/95 backdrop-blur-md text-black px-3.5 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 shadow-md">
+                  <Heart size={13} className="text-red-500 fill-red-500" />
+                  <span>Weddings &amp; Celebrations</span>
+                </span>
+                <span className="bg-gold text-black px-3 py-1 rounded-full text-xs font-black shadow-md">
+                  500+ Guests
+                </span>
+              </div>
+
+              <div className="relative z-10 p-6 sm:p-8 mt-auto">
+                <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest mb-2">
+                  <Tent size={14} />
+                  <span>Outdoor Garden Marquee</span>
+                </div>
+                <h4 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3">
+                  Big Wedding &amp; Party Marquee Tent
+                </h4>
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 font-medium line-clamp-3">
+                  Specially crafted for fairytale weddings, bridal showers, milestone birthdays, and joyous celebrations on our landscaped lawns with romantic fairy lights and ceremony walkway.
+                </p>
+                <Link
+                  href={`/${lang}/conference`}
+                  className="inline-flex items-center gap-3 bg-gold hover:bg-white text-black px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-md group/btn"
+                >
+                  <span>Explore Wedding Tent &amp; Book</span>
+                  <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 2: Modern Conference Hall */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="group relative rounded-3xl overflow-hidden shadow-xl bg-black border-2 border-gray-800 flex flex-col justify-between min-h-[460px]"
+            >
+              <div className="absolute inset-0">
+                <Image
+                  src="/salle.webp"
+                  alt="Hollywood Hotel Modern Conference & Event Hall"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+              </div>
+
+              <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between">
+                <span className="bg-white/95 backdrop-blur-md text-black px-3.5 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 shadow-md">
+                  <Users size={13} className="text-gold" />
+                  <span>Corporate &amp; Seminars</span>
+                </span>
+                <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-black border border-white/30 shadow-md">
+                  150+ Guests
+                </span>
+              </div>
+
+              <div className="relative z-10 p-6 sm:p-8 mt-auto">
+                <div className="inline-flex items-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest mb-2">
+                  <Users size={14} />
+                  <span>Indoor Executive Hall</span>
+                </div>
+                <h4 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3">
+                  Modern Conference &amp; Event Hall
+                </h4>
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 font-medium line-clamp-3">
+                  Engineered for executive meetings, workshops, retreats, and business summits with high-speed fiber Wi-Fi, 4K Smart screens, and acoustic microphone sound systems.
+                </p>
+                <Link
+                  href={`/${lang}/conference`}
+                  className="inline-flex items-center gap-3 bg-white hover:bg-gold text-black px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-md group/btn"
+                >
+                  <span>Explore Conference Hall &amp; Book</span>
+                  <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

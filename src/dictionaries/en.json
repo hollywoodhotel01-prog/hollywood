@@ -1,19 +1,20 @@
 {
   "navigation": {
     "home": "Home",
-    "rooms": "Rooms & Suites",
+    "rooms": "Rooms",
+    "tour": "Tour",
     "dining": "Dining",
     "wellness": "Facilities",
     "facilities": "Facilities",
-    "conference": "Conference",
+    "conference": "Events",
     "contact": "Contact",
     "bookNow": "Book Now",
     "dashboard": "Dashboard"
   },
   "home": {
-    "welcome": "WELCOME TO",
+    "welcome": "WELCOME TO HOLLYWOOD HOTEL",
     "heroTitle": "HOLLYWOOD HOTEL",
-    "heroSubtitle": "",
+    "heroSubtitle": "The premier luxury hotel among Hollywood in Nyagatare hotels — located on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda.",
     "bookSuite": "Book Now",
     "planEvent": "Contact Us",
     "facilities": {
@@ -25,16 +26,20 @@
       "primeLocation": "Prime Location"
     },
     "why": {
-      "label": "Why Hollywood Hotel",
+      "label": "About Us • Hollywood in Nyagatare Hotels",
       "titleLine1": "A Grand Stage for",
-      "titleLine2": "Every Occasion",
-      "description": "Proudly located in Rwimiyaga City, Hollywood Hotel stands as the finest destination in the Eastern Province. We blend timeless elegance with modern luxury — offering meticulously designed suites, world-class amenities, and an unmatched level of hospitality that has made us the top choice for travelers across the region.",
+      "titleLine2": "Every Occasion in Nyagatare",
+      "locationLabel": "Prime Location",
+      "location": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
+      "locationDirections": "View on Map",
+      "description": "Conveniently situated along Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda, Hollywood Hotel stands as the leading luxury destination among Hollywood in Nyagatare hotels.\n\nWe blend timeless elegance with modern luxury — offering meticulously designed suites, executive conference facilities, Hollywood Bar, wellness spa, and an unmatched level of Rwandan hospitality that makes us the #1 choice for travelers searching for the best hotels in Nyagatare and the Eastern Province.",
       "features": [
-        "Over 100 luxury rooms and suites across 5 tiers",
-        "Three event halls for any occasion — from boardroom to grand gala",
-        "Hollywood Bar with cocktails and vibrant music",
-        "Full-service Spa, Pool & Wellness Centre",
-        "Shuttle service and prime city-centre location"
+        "Prime location along Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
+        "Over 100 luxury rooms and suites across 4 distinct categories",
+        "Three event & conference halls for corporate summits, retreats, and grand weddings",
+        "Famous Hollywood Bar with signature drinks, cocktails and weekend entertainment",
+        "Full-service Spa, Traditional Sauna, Modern Gym & Outdoor Swimming Pool",
+        "Complimentary secure parking and shuttle service across Nyagatare"
       ],
       "exploreSuites": "Explore our suites"
     },
@@ -102,9 +107,9 @@
       "button": "Book Your Stay Now"
     },
     "conferenceSection": {
-      "title": "Conference Center",
-      "description": "Host your events in our state-of-the-art facilities. Designed for productivity and elegance, our versatile spaces accommodate intimate meetings and large corporate gatherings with world-class catering and technology.",
-      "explore": "Explore Spaces"
+      "title": "Conferences, Weddings & Events",
+      "description": "Host memorable events in our world-class venues. From corporate summits in our high-tech indoor conference hall to dream weddings, birthday galas, and celebrations under our grand outdoor marquee tent.",
+      "explore": "Explore Venues & Spaces"
     },
     "wellnessSection": {
       "title": "Fitness & Wellness",
@@ -367,5 +372,26 @@
     "diningPos": "Dining & POS",
     "otherCustom": "Other / Custom",
     "uncategorized": "Uncategorized"
+  },
+  "tourPage": {
+    "badge": "Comprehensive Photographic Tour",
+    "title": "Explore Every Corner of Hollywood Hotel",
+    "subtitle": "Immerse yourself in our serene gardens, illuminated courtyard fountains, open-air sports lounge, luxurious suites, and grand event spaces in Rwimiyaga, Nyagatare.",
+    "allFilter": "All Photos",
+    "gardensFilter": "Gardens & Fountains",
+    "architectureFilter": "Architecture & Grounds",
+    "roomsFilter": "Rooms & Suites",
+    "diningFilter": "Dining & Lounge",
+    "eventsFilter": "Wellness & Events",
+    "searchPlaceholder": "Search by feature (e.g. garden, fountain, pool, balcony, suite, sauna)...",
+    "showing": "Showing",
+    "of": "of",
+    "photos": "hotel views",
+    "viewDetails": "Tap to expand view",
+    "bookRoom": "Book A Room",
+    "inquire": "Inquire / Contact Us",
+    "featuredNote": "Starting with our newest and most secluded highlights — lush gardens, courtyard fountains, grand facade, and open-air entertainment.",
+    "noResults": "No photos found matching your search. Try another keyword or reset the filter.",
+    "resetFilter": "Reset Filter"
   }
 }

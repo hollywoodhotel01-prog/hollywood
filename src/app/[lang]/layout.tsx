@@ -1,6 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "../globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#0B0B0B",
+  colorScheme: "dark light",
+};
 import { BookingProvider } from "@/context/BookingContext";
 import { FinanceProvider } from "@/context/FinanceContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -29,12 +34,12 @@ export async function generateMetadata({
   const isKinyarwanda = lang === "rw";
 
   const title = isKinyarwanda
-    ? "Hollywood Hotel | Icumbi ry'Ubwiza n'Umutuzo i Rwimiyaga, Rwanda"
-    : "Hollywood Hotel | Luxury Hotel & Suites in Rwimiyaga, Rwanda";
+    ? "Hollywood Hotel Nyagatare | Icumbi ry'Ubwiza i Rwimiyaga, Rwanda"
+    : "Hollywood Hotel Nyagatare | Luxury Hotel in Rwimiyaga, Rwanda";
 
   const description = isKinyarwanda
-    ? "Gira ibihe byiza muri Hollywood Hotel i Rwimiyaga, mu Ntara y'Iburasirazuba. Tubafitiye ibyumba byiza byo kuraramo, salle z'inama ziteguye neza, Hollywood Bar, pisine, spa na resitora ihebuje."
-    : "Experience luxury and elegance at Hollywood Hotel in Rwimiyaga, Eastern Province, Rwanda. Offering premium suites, state-of-the-art conference halls, Hollywood Bar, swimming pool, wellness spa, and exquisite dining.";
+    ? "Gira ibihe byiza muri Hollywood Hotel ku Muhanda wa Kagitumba, Rwimiyaga, Akarere ka Nyagatare, mu Ntara y'Iburasirazuba. Hoteli y'akataraboneka mu zizwi nka Hollywood muri hoteli z'i Nyagatare (Hollywood in Nyagatare hotels) ifite ibyumba byiza, salle z'inama, Hollywood Bar, pisine, spa na resitora ihebuje."
+    : "Experience premier luxury at Hollywood Hotel on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda. The #1 destination for Hollywood in Nyagatare hotels offering luxury suites, conference halls, Hollywood Bar, swimming pool, wellness spa, and exquisite dining.";
 
   return {
     metadataBase: new URL("https://hollywoodhotel.rw"),
@@ -49,12 +54,20 @@ export async function generateMetadata({
     publisher: "Hollywood Hotel",
     category: "travel",
     keywords: [
+      "hollywood in nyagatare hotels",
+      "hollywood hotel nyagatare",
+      "hollywood in nyagatare",
       "Hollywood Hotel",
       "Hollywood Hotel Rwanda",
       "Hollywood Hotel Rwimiyaga",
       "Rwimiyaga hotel",
       "Hotel in Rwimiyaga",
       "Nyagatare hotel Rwanda",
+      "Nyagatare hotels",
+      "hotels in nyagatare rwanda",
+      "best hotel in nyagatare",
+      "Kagitumba Road hotel",
+      "Kagitumba Road Rwimiyaga Nyagatare District Eastern Province Rwanda",
       "Eastern Province Rwanda hotel",
       "Luxury hotel Rwanda",
       "Rwanda hotel booking",
@@ -108,10 +121,25 @@ export async function generateMetadata({
       },
     },
     icons: {
-      icon: [{ url: "/favicon.ico" }],
-      shortcut: ["/favicon.ico"],
-      apple: [{ url: "/favicon.ico" }],
+      icon: [
+        { url: "/icon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/icon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/icon/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+        { url: "/favicon.ico", sizes: "any" },
+      ],
+      shortcut: ["/icon/favicon.ico"],
+      apple: [
+        { url: "/icon/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      ],
+      other: [
+        {
+          rel: "apple-touch-icon-precomposed",
+          url: "/icon/apple-touch-icon.png",
+        },
+      ],
     },
+    manifest: "/manifest.webmanifest",
   };
 }
 
@@ -132,20 +160,25 @@ export default async function RootLayout({
         "@type": "Hotel",
         "@id": "https://hollywoodhotel.rw/#hotel",
         "name": "Hollywood Hotel",
-        "alternateName": "Hollywood Hotel Rwimiyaga",
+        "alternateName": [
+          "Hollywood in Nyagatare Hotels",
+          "Hollywood Hotel Nyagatare",
+          "Hollywood Hotel Rwimiyaga"
+        ],
         "url": "https://hollywoodhotel.rw",
-        "logo": "https://hollywoodhotel.rw/hero.webp",
+        "logo": "https://hollywoodhotel.rw/logo.png",
         "image": [
           "https://hollywoodhotel.rw/hero.webp",
           "https://hollywoodhotel.rw/night.webp",
           "https://hollywoodhotel.rw/evening.webp",
+          "https://hollywoodhotel.rw/reception.webp",
           "https://hollywoodhotel.rw/bed.webp",
           "https://hollywoodhotel.rw/hollywood-bar.webp",
           "https://hollywoodhotel.rw/garden.webp",
-          "https://hollywoodhotel.rw/front.webp",
+          "https://hollywoodhotel.rw/front.webp"
         ],
         "description":
-          "Premier luxury hotel in Rwimiyaga, Eastern Province, Rwanda offering luxury accommodations, conference halls, Hollywood Bar, wellness spa, and exquisite dining.",
+          "Premier luxury hotel on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda. Top destination among Hollywood in Nyagatare hotels offering luxury accommodations, conference halls, Hollywood Bar, wellness spa, and exquisite dining.",
         "telephone": "+250788876479",
         "email": "hollywoodhotel01@gmail.com",
         "priceRange": "$$",
@@ -153,11 +186,12 @@ export default async function RootLayout({
         "paymentAccepted": "Cash, Credit Card, Mobile Money",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Rwimiyaga Center",
+          "streetAddress": "Kagitumba Road",
           "addressLocality": "Rwimiyaga",
-          "addressRegion": "Eastern Province",
-          "addressCountry": "RW",
+          "addressRegion": "Nyagatare District, Eastern Province",
+          "addressCountry": "RW"
         },
+        "keywords": "hollywood in nyagatare hotels, hollywood hotel nyagatare, nyagatare hotels, hotels in nyagatare rwanda, kagitumba road hotel",
         "geo": {
           "@type": "GeoCoordinates",
           "latitude": -1.45,
@@ -259,6 +293,17 @@ export default async function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased scroll-smooth`}
     >
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon/android-chrome-512x512.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/icon/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="apple-mobile-web-app-title" content="Hollywood Hotel" />
+        <meta name="application-name" content="Hollywood Hotel" />
+        <meta name="msapplication-TileColor" content="#0B0B0B" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

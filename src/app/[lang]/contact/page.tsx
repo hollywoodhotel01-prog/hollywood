@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -75,13 +75,13 @@ export default function ContactPage() {
                 {
                   icon: MapPin,
                   title: "Address",
-                  lines: ["Rwimiyaga, Nyagatare", "Eastern Province, Rwanda"],
+                  lines: ["Kagitumba Road, Rwimiyaga", "Nyagatare District, Eastern Province, Rwanda"],
                 },
                 {
                   icon: Bus,
                   title: "Getting Here",
                   lines: [
-                    "Conveniently situated in Rwimiyaga, Nyagatare.",
+                    "Conveniently situated along Kagitumba Road in Rwimiyaga, Nyagatare District, Eastern Province, Rwanda.",
                     "Complimentary parking and shuttle assistance available upon request. Contact reception to pre-book.",
                   ],
                 },

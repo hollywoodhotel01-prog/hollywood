@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Dumbbell, Car, Wifi, Clock, ShieldCheck, Flame, Sparkles } from "lucide-react";
+import { Dumbbell, Car, Wifi, Clock, ShieldCheck, Flame, Sparkles, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -9,6 +11,8 @@ const fadeIn = {
 };
 
 export default function FacilitiesPage() {
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
   return (
     <div className="pt-20 min-h-screen bg-white relative">
       <div className="bg-white py-16 text-center px-4 relative overflow-hidden border-b-2 border-gold/20">
@@ -87,9 +91,19 @@ export default function FacilitiesPage() {
                 </li>
               ))}
             </ul>
-            <div className="flex items-center gap-3 text-lg font-bold text-black bg-gold/20 border border-gold/40 w-fit px-6 py-3 rounded-full shadow-sm">
-              <Clock size={20} className="text-gold" />
-              <span>Whole Day</span>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-3 text-base font-bold text-black bg-gold/20 border border-gold/40 w-fit px-5 py-2.5 rounded-full shadow-sm">
+                <Clock size={18} className="text-gold" />
+                <span>Open Whole Day</span>
+              </div>
+              <Link
+                href={`/${lang}/sauna`}
+                className="flex items-center gap-2 bg-black hover:bg-gold hover:text-black text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 group"
+              >
+                <Flame size={18} className="text-gold group-hover:text-black transition-colors" />
+                <span>Book Sauna Session</span>
+                <ChevronRight size={16} />
+              </Link>
             </div>
           </div>
         </motion.div>

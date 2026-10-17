@@ -8,16 +8,30 @@ import {
   ClipboardList, CreditCard, UserCog, ChevronRight,
   TrendingUp, TrendingDown, BarChart3, X, FileText,
   Hotel, ConciergeBell, ArrowUpRight, ArrowDownRight,
-  Layers, CalendarDays, Star,
+  Layers, CalendarDays, Star, Flame,
+  Plus, Trash2, Key, Shield, AlertCircle, Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
 export default function AdminDashboardPage() {
-  const { bookings, inHouseGuests, roomsData, conferenceBookings, currentUser, expenses, otherRevenues } = useHotel();
+  const {
+    bookings, inHouseGuests, roomsData, conferenceBookings, currentUser,
+    expenses, otherRevenues, saunaBookings,
+    staffUsers, createStaffUser, deleteStaffUser,
+  } = useHotel();
   const { lang, dict } = useLanguage();
   const d = dict.dashboard;
-  const [addStaffMsg, setAddStaffMsg] = useState(false);
+
+  // ── Staff Management Modal State ─────────────────────────────────
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
+  const [newStaffEmail, setNewStaffEmail] = useState("");
+  const [newStaffPassword, setNewStaffPassword] = useState("");
+  const [newStaffRole, setNewStaffRole] = useState<"admin" | "manager" | "cashier" | "receptionist" | "accountant">("manager");
+  const [newStaffDisplayName, setNewStaffDisplayName] = useState("");
+  const [staffActionLoading, setStaffActionLoading] = useState(false);
+  const [staffModalError, setStaffModalError] = useState("");
+  const [staffModalSuccess, setStaffModalSuccess] = useState("");
 
   // ── Reports Panel ────────────────────────────────────────────────
   const [showReports, setShowReports] = useState(false);
@@ -35,6 +49,11 @@ export default function AdminDashboardPage() {
     if (selectedMonth === "all") return conferenceBookings;
     return conferenceBookings.filter(b => b.date.startsWith(selectedMonth));
   }, [conferenceBookings, selectedMonth]);
+
+  const filteredSaunaBookings = useMemo(() => {
+    if (selectedMonth === "all") return saunaBookings;
+    return saunaBookings.filter(s => s.date.startsWith(selectedMonth));
+  }, [saunaBookings, selectedMonth]);
 
   const filteredExpenses = useMemo(() => {
     if (selectedMonth === "all") return expenses;
@@ -55,13 +74,19 @@ export default function AdminDashboardPage() {
         reportMap[month] = (reportMap[month] || 0) + (b.amount || 0);
       }
     });
+    saunaBookings.forEach(s => {
+      if (s.status === "Confirmed" && s.date) {
+        const month = s.date.substring(0, 7);
+        reportMap[month] = (reportMap[month] || 0) + (s.amount || 0);
+      }
+    });
     conferenceBookings.forEach(c => {
       // Conference revenue is handled separately now
     });
     return Object.entries(reportMap)
       .map(([month, revenue]) => ({ month, revenue }))
       .sort((a, b) => b.month.localeCompare(a.month));
-  }, [bookings, conferenceBookings]);
+  }, [bookings, conferenceBookings, saunaBookings]);
 
   const maxMonthlyRevenue = Math.max(...monthlyReport.map(r => r.revenue), 1);
 
@@ -78,16 +103,21 @@ export default function AdminDashboardPage() {
   // Daily
   const todayBookings = bookings.filter(b => b.checkIn === today);
   const todayConferences = conferenceBookings.filter(b => b.date === today);
+  const todaySauna = saunaBookings.filter(s => s.date === today);
+  const todaySaunaRevenue = todaySauna.filter(s => s.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
   const todayRevenue =
-    todayBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
+    todayBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
+    todaySaunaRevenue;
   const todayCheckouts = bookings.filter(b => b.checkOut === today);
 
   // Monthly
   const monthBookings = bookings.filter(b => b.checkIn.startsWith(thisMonth));
+  const monthSauna = saunaBookings.filter(s => s.date.startsWith(thisMonth));
   const monthRevenue = monthBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
+  const monthSaunaRevenue = monthSauna.filter(s => s.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0);
   const monthExpenses = expenses.filter(e => e.date.startsWith(thisMonth)).reduce((s, e) => s + (e.amount || 0), 0);
   const monthOtherRevenue = otherRevenues.filter(r => r.date.startsWith(thisMonth)).reduce((s, r) => s + (r.amount || 0), 0);
-  const monthTotalRevenue = monthRevenue + monthOtherRevenue;
+  const monthTotalRevenue = monthRevenue + monthOtherRevenue + monthSaunaRevenue;
   const monthProfit = monthTotalRevenue - monthExpenses;
 
   // Reception / Overall
@@ -106,6 +136,7 @@ export default function AdminDashboardPage() {
 
   const totalRevenueCalc =
     filteredBookings.filter(b => b.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
+    filteredSaunaBookings.filter(s => s.status === "Confirmed").reduce((s, b) => s + (b.amount || 0), 0) +
     filteredOtherRevenues.reduce((s, r) => s + (r.amount || 0), 0);
 
   const totalExpensesCalc = filteredExpenses.reduce((s, e) => s + (e.amount || 0), 0);
@@ -116,7 +147,7 @@ export default function AdminDashboardPage() {
     { label: (d as any).totalExpenses || "Total Expenses", value: `RWF ${totalExpensesCalc.toLocaleString()}`, icon: TrendingDown, color: "text-red-600", bg: "bg-red-100", href: `/${lang}/dashboard/finance` },
     { label: (d as any).netProfit || "Net Profit", value: `RWF ${totalProfitCalc.toLocaleString()}`, icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-100", href: `/${lang}/dashboard/finance` },
     { label: d.inHouseGuests, value: inHouseGuests.length, icon: Users, color: "text-purple-600", bg: "bg-purple-100", href: `/${lang}/dashboard/receptionist` },
-    { label: d.totalBookings, value: filteredBookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100", href: `/${lang}/dashboard/bookings` },
+    { label: d.totalBookings, value: filteredBookings.length + filteredSaunaBookings.length, icon: Calendar, color: "text-black", bg: "bg-gray-100", href: `/${lang}/dashboard/bookings` },
   ];
 
   const shortcuts = [
@@ -198,50 +229,286 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Staff Accounts */}
+      {/* Staff Accounts Management */}
       <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
         <div className="p-6 md:p-8 border-b-2 border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50/50">
           <div className="flex items-center gap-3">
             <UserCog size={22} className="text-gold" />
-            <h2 className="text-2xl font-black text-black">{d.staffAccounts}</h2>
+            <div>
+              <h2 className="text-2xl font-black text-black">{d.staffAccounts}</h2>
+              <p className="text-xs text-gray-400 font-medium mt-0.5">Manage administrators, managers, cashiers, receptionists & accountants</p>
+            </div>
           </div>
-          <button onClick={() => setAddStaffMsg(true)} className="px-5 py-2.5 bg-black text-white rounded-xl font-bold text-sm hover:bg-gray-900 transition-colors shadow-md">
-            {d.addStaff}
-          </button>
+          {currentUser?.role === "admin" && (
+            <button
+              onClick={() => {
+                setShowAddStaffModal(true);
+                setStaffModalError("");
+                setStaffModalSuccess("");
+              }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl font-bold text-sm hover:bg-gold hover:text-black transition-all shadow-md group"
+            >
+              <Plus size={16} className="text-gold group-hover:text-black transition-colors" />
+              <span>{d.addStaff}</span>
+            </button>
+          )}
         </div>
-        {addStaffMsg && (
-          <div className="px-8 py-4 bg-gold/10 border-b border-gold/20 text-sm font-medium text-black flex items-center gap-2">
-            <CheckCircle size={16} className="text-gold" />
-            {(d as any).staffModuleComing}
-          </div>
-        )}
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-white text-gray-400 border-b-2 border-gray-100">
               <tr>
-                <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">{d.role}</th>
-                <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs">{d.email}</th>
-                <th className="px-8 py-5 font-bold uppercase tracking-widest text-xs text-right">Dashboard</th>
+                <th className="px-6 py-5 font-bold uppercase tracking-widest text-xs">Name / Display</th>
+                <th className="px-6 py-5 font-bold uppercase tracking-widest text-xs">{d.role}</th>
+                <th className="px-6 py-5 font-bold uppercase tracking-widest text-xs">{d.email}</th>
+                <th className="px-6 py-5 font-bold uppercase tracking-widest text-xs text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {demoStaff.map((staff, i) => (
-                <tr key={i} className="hover:bg-gold/5 transition-colors">
-                  <td className="px-8 py-5">
-                    <span className="inline-block px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-black text-gold">{(d as any)[staff.roleKey] || staff.roleKey}</span>
-                  </td>
-                  <td className="px-8 py-5 text-gray-500 font-medium">{staff.email}</td>
-                  <td className="px-8 py-5 text-right">
-                    <Link href={staff.href} className="text-xs font-bold text-gold hover:underline">
-                      {d.view} →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+              {(staffUsers && staffUsers.length > 0 ? staffUsers : demoStaff.map((s) => ({
+                uid: s.email,
+                email: s.email,
+                displayName: s.email.split("@")[0],
+                role: s.roleKey as any,
+              }))).map((staff) => {
+                const roleHrefMap: Record<string, string> = {
+                  admin: `/${lang}/dashboard`,
+                  manager: `/${lang}/dashboard`,
+                  cashier: `/${lang}/dashboard/cashier`,
+                  receptionist: `/${lang}/dashboard/receptionist`,
+                  accountant: `/${lang}/dashboard/finance`,
+                };
+                const dashboardHref = roleHrefMap[staff.role] || `/${lang}/dashboard`;
+
+                return (
+                  <tr key={staff.email} className="hover:bg-gold/5 transition-colors">
+                    <td className="px-6 py-5 font-bold text-black flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-black text-white text-xs font-black flex items-center justify-center shrink-0">
+                        {staff.displayName ? staff.displayName.charAt(0).toUpperCase() : staff.email.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="truncate max-w-[180px]">{staff.displayName || staff.email.split("@")[0]}</span>
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider ${
+                        staff.role === "admin" ? "bg-amber-500/20 text-amber-700 border border-amber-300" :
+                        staff.role === "manager" ? "bg-purple-500/20 text-purple-700 border border-purple-300" :
+                        staff.role === "cashier" ? "bg-blue-500/20 text-blue-700 border border-blue-300" :
+                        staff.role === "receptionist" ? "bg-emerald-500/20 text-emerald-700 border border-emerald-300" :
+                        "bg-gray-100 text-gray-800 border border-gray-300"
+                      }`}>
+                        {(d as any)[staff.role] || staff.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 text-gray-600 font-medium">{staff.email}</td>
+                    <td className="px-6 py-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={dashboardHref}
+                          className="px-2.5 py-1 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gold hover:text-black rounded-lg transition-colors"
+                        >
+                          {d.view} →
+                        </Link>
+                        {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
+                          <Link
+                            href={`/${lang}/dashboard/change-password?email=${encodeURIComponent(staff.email)}`}
+                            title="Reset password for this user"
+                            className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg border border-amber-200 transition-colors"
+                          >
+                            <Key size={14} />
+                          </Link>
+                        )}
+                        {currentUser?.role === "admin" && staff.email !== "admin@hollywoodhotel.rw" && (
+                          <button
+                            onClick={async () => {
+                              if (confirm(`Are you sure you want to delete staff account ${staff.email}?`)) {
+                                try {
+                                  await deleteStaffUser(staff.uid, staff.email);
+                                } catch (err: any) {
+                                  alert(err.message || "Failed to delete user");
+                                }
+                              }
+                            }}
+                            title="Delete staff account"
+                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg border border-red-200 transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Add Staff Modal */}
+      <AnimatePresence>
+        {showAddStaffModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl max-w-md w-full shadow-2xl border-2 border-gray-100 overflow-hidden"
+            >
+              <div className="p-6 bg-black text-white flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-gold text-black rounded-xl">
+                    <UserCog size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-black text-lg">Add New Staff User</h3>
+                    <p className="text-xs text-gray-400">e.g. manager1, manager2, cashier2</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAddStaffModal(false)}
+                  className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setStaffModalError("");
+                  setStaffModalSuccess("");
+                  if (!newStaffEmail || !newStaffPassword) {
+                    setStaffModalError("Email and password are required.");
+                    return;
+                  }
+                  if (newStaffPassword.length < 6) {
+                    setStaffModalError("Password must be at least 6 characters.");
+                    return;
+                  }
+
+                  setStaffActionLoading(true);
+                  try {
+                    await createStaffUser({
+                      email: newStaffEmail,
+                      password: newStaffPassword,
+                      displayName: newStaffDisplayName || newStaffEmail.split("@")[0],
+                      role: newStaffRole,
+                    });
+                    setStaffModalSuccess("Staff account created successfully!");
+                    setNewStaffEmail("");
+                    setNewStaffPassword("");
+                    setNewStaffDisplayName("");
+                    setTimeout(() => setShowAddStaffModal(false), 1200);
+                  } catch (err: any) {
+                    setStaffModalError(err.message || "Failed to create staff account.");
+                  } finally {
+                    setStaffActionLoading(false);
+                  }
+                }}
+                className="p-6 space-y-4"
+              >
+                {staffModalError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2">
+                    <AlertCircle size={16} className="shrink-0" />
+                    <span>{staffModalError}</span>
+                  </div>
+                )}
+                {staffModalSuccess && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl flex items-center gap-2">
+                    <CheckCircle size={16} className="shrink-0" />
+                    <span>{staffModalSuccess}</span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                    Role
+                  </label>
+                  <select
+                    value={newStaffRole}
+                    onChange={(e) => setNewStaffRole(e.target.value as any)}
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm font-bold text-gray-900 focus:border-gold outline-none"
+                  >
+                    <option value="manager">Manager (e.g. manager1, manager2)</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="receptionist">Receptionist</option>
+                    <option value="accountant">Accountant</option>
+                    <option value="admin">Administrator</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="manager1@hollywoodhotel.rw"
+                    value={newStaffEmail}
+                    onChange={(e) => setNewStaffEmail(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-900 focus:border-gold outline-none"
+                  />
+                  <p className="text-[11px] text-gray-400 mt-1">
+                    Users can have unique emails like manager1@..., manager2@...
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                    Display Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Manager 1 (Duty Manager)"
+                    value={newStaffDisplayName}
+                    onChange={(e) => setNewStaffDisplayName(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-900 focus:border-gold outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                    Initial Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Min 6 characters"
+                    value={newStaffPassword}
+                    onChange={(e) => setNewStaffPassword(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-900 focus:border-gold outline-none"
+                  />
+                </div>
+
+                <div className="pt-3 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddStaffModal(false)}
+                    className="flex-1 py-3 text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={staffActionLoading}
+                    className="flex-1 py-3 text-sm font-black text-black bg-gold hover:bg-gold-dark rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {staffActionLoading ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Creating…</span>
+                      </>
+                    ) : (
+                      <span>Create Account</span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Monthly Financial Report Bar Chart */}
       <div className="mt-12 mb-12 bg-white rounded-3xl border-2 border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
@@ -452,6 +719,10 @@ export default function AdminDashboardPage() {
                             <span className="font-black">RWF {monthRevenue.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between">
+                            <span>Sauna & Spa</span>
+                            <span className="font-black">RWF {monthSaunaRevenue.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
                             <span>{(d as any).otherRevenue || "Other Revenue"}</span>
                             <span className="font-black">RWF {monthOtherRevenue.toLocaleString()}</span>
                           </div>
@@ -624,6 +895,46 @@ export default function AdminDashboardPage() {
                             c.status === "Confirmed" ? "bg-emerald-100 text-emerald-700" :
                             c.status === "Pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
                           }`}>{c.status}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Sauna Summary */}
+                    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <Flame size={15} className="text-amber-500" />
+                          <p className="text-xs font-black uppercase tracking-wider text-gray-500">Sauna & Wellness Sessions</p>
+                        </div>
+                        <span className="text-xs font-black text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                          {saunaBookings.filter(s => s.status === "Pending").length} Pending
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                        {[
+                          { label: (d as any).total || "Total", value: saunaBookings.length, color: "text-black" },
+                          { label: (d as any).confirmed || "Confirmed", value: saunaBookings.filter(s => s.status === "Confirmed").length, color: "text-emerald-600" },
+                          { label: (d as any).pending || "Pending", value: saunaBookings.filter(s => s.status === "Pending").length, color: "text-amber-500" },
+                        ].map((item, i) => (
+                          <div key={i} className="bg-gray-50 rounded-xl py-3">
+                            <p className={`text-2xl font-black ${item.color}`}>{item.value}</p>
+                            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide mt-0.5">{item.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {saunaBookings.length === 0 && (
+                        <p className="text-xs text-gray-400 text-center font-medium py-1">No sauna bookings on record.</p>
+                      )}
+                      {saunaBookings.slice(0, 3).map((s, i) => (
+                        <div key={i} className="flex items-center justify-between py-2 border-t border-gray-50">
+                          <div>
+                            <p className="text-sm font-bold text-black">{s.guestName}</p>
+                            <p className="text-[11px] text-gray-400">{s.sessionType} · {s.date} ({s.timeSlot})</p>
+                          </div>
+                          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                            s.status === "Confirmed" ? "bg-emerald-100 text-emerald-700" :
+                            s.status === "Pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
+                          }`}>{s.status}</span>
                         </div>
                       ))}
                     </div>

@@ -21,6 +21,8 @@ const labelToImageMap: Record<string, string> = {
   
   // Conference Page
   "Conference Setup: U-Shape": "/salle.webp",
+  "Wedding & Party Tent": "/weed.webp",
+  "Outdoor Marquee Event": "/weed.webp",
   
   // Dining Page
   "Restaurant Dining Area": "/lunch.png",

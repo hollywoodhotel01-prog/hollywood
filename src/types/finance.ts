@@ -116,3 +116,19 @@ export interface PaymentSubmission {
   payment_date?: string;
   notes?: string;
 }
+
+export interface CustomerAdvance {
+  id: string;
+  guestName: string;
+  phone?: string;
+  bookingId?: string;
+  depositDate: string;
+  totalAmount: number;
+  consumedAmount: number;
+  balanceRemaining: number;
+  paymentMethod: PaymentMethod | string;
+  status: "Active" | "Fully Consumed" | "Refunded";
+  notes?: string;
+  createdAt?: string;
+}
+

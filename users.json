@@ -1,2 +1,39 @@
-{"users": [
-]}
+{
+  "users": [
+    {
+      "uid": "DCH2fsfPI2hE8jVPXgsp7wtBOjA2",
+      "email": "admin@hollywoodhotel.rw",
+      "displayName": "Victor Adonis (Admin)",
+      "role": "admin",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    },
+    {
+      "uid": "y2u5ylGOhqYGEX5oJyInmM5p7YE3",
+      "email": "manager@hollywoodhotel.rw",
+      "displayName": "Hotel Manager",
+      "role": "manager",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    },
+    {
+      "uid": "teMyx7hA19aSuExSwCN0sb8vMXd2",
+      "email": "cashier@hollywoodhotel.rw",
+      "displayName": "Sandra Mbeki (Cashier)",
+      "role": "cashier",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    },
+    {
+      "uid": "0054ATkscleXMZK3tQpgYl06WlG3",
+      "email": "reception@hollywoodhotel.rw",
+      "displayName": "James Osei (Receptionist)",
+      "role": "receptionist",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    },
+    {
+      "uid": "Arztp0LSugf5mVm8FXNUAkzp8Be2",
+      "email": "accounts@hollywoodhotel.rw",
+      "displayName": "Grace Mutua (Accountant)",
+      "role": "accountant",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

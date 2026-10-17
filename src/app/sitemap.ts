@@ -32,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.8,
       images: [
-        `${baseUrl}/hollywood-bar.webp`,
+        `${baseUrl}/bar.webp`,
         `${baseUrl}/food.png`,
         `${baseUrl}/drinks.png`,
       ],
@@ -41,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path: "/conference",
       changeFrequency: "weekly" as const,
       priority: 0.8,
-      images: [`${baseUrl}/salle.webp`],
+      images: [`${baseUrl}/salle.webp`, `${baseUrl}/weed.webp`],
     },
     {
       path: "/facilities",

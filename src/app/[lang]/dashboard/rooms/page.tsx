@@ -6,7 +6,7 @@ import { useHotel } from "@/context/HotelContext";
 import { RoomRecord, RoomStatus } from "@/context/HotelContext";
 import { useState } from "react";
 
-const ROOM_TYPES = ["Standard Room", "Deluxe Room", "Executive Room", "Hollywood Suite", "Presidential Suite"];
+const ROOM_TYPES = ["Standard Room", "Superior Room", "Deluxe Room", "Executive Suite", "Hollywood Suite", "Presidential Suite"];
 const STATUSES: RoomStatus[] = ["Available", "Occupied", "Booked", "Maintenance"];
 
 const emptyForm = { id: "", type: "Standard Room", status: "Available" as RoomStatus, housekeeper: "", price: 50000 };

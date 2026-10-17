@@ -70,6 +70,7 @@ export const CANONICAL_SHEETS = [
   'DailyReports',
   'SalesDetail',
   'CategorySales',
+  'SaunaBookings',
 ];
 
 // Fallback aliases for backward compatibility
@@ -86,6 +87,7 @@ const SHEET_ALIASES = {
   'OtherRevenues':    ['OtherRevenues', '📈 OtherRevenues'],
   'SalesDetail':      ['SalesDetail'],
   'CategorySales':    ['CategorySales'],
+  'SaunaBookings':    ['SaunaBookings', 'Sauna', '🧖 SaunaBookings', '🧖‍♀️ Sauna'],
 };
 
 /**
@@ -140,6 +142,22 @@ export async function getSheet(name) {
   }
 
   throw new Error(`Sheet "${name}" not found. Available sheets: ${Object.keys(doc.sheetsByTitle).join(', ')}`);
+}
+
+/**
+ * Retrieve a worksheet by name, creating it if it doesn't exist.
+ * @param {string} name
+ * @param {string[]} defaultHeaders
+ * @returns {Promise<import('google-spreadsheet').GoogleSpreadsheetWorksheet>}
+ */
+export async function getOrCreateSheet(name, defaultHeaders = []) {
+  const doc = await getDoc();
+  try {
+    return await getSheet(name);
+  } catch {
+    const newSheet = await doc.addSheet({ title: name, headerValues: defaultHeaders });
+    return newSheet;
+  }
 }
 
 /**

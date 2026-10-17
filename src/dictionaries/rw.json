@@ -2,18 +2,19 @@
   "navigation": {
     "home": "Ahabanza",
     "rooms": "Ibyumba",
+    "tour": "Tour",
     "dining": "Amafunguro",
     "wellness": "Ibikorwaremezo",
     "facilities": "Ibikorwaremezo",
-    "conference": "Inama",
+    "conference": "Ibirori",
     "contact": "Twandikire",
     "bookNow": "Saba Icyumba",
     "dashboard": "Ubuyobozi"
   },
   "home": {
-    "welcome": "IKAZE MURI",
+    "welcome": "IKAZE MURI HOLLYWOOD HOTEL",
     "heroTitle": "HOLLYWOOD HOTEL",
-    "heroSubtitle": "",
+    "heroSubtitle": "Hoteli y'akataraboneka mu zizwi nka Hollywood muri hoteli z'i Nyagatare — ku Muhanda wa Kagitumba, Rwimiyaga, Akarere ka Nyagatare, Intara y'Iburasirazuba, u Rwanda.",
     "bookSuite": "Bookinga",
     "planEvent": "Twandikire",
     "facilities": {
@@ -25,12 +26,16 @@
       "primeLocation": "Ahantu heza mu mujyi"
     },
     "why": {
-      "label": "Kuki Hitamo Hollywood Hotel",
+      "label": "Abo Turi Bo • Hoteli ya Hollywood i Nyagatare",
       "titleLine1": "Amahitamo meza",
-      "titleLine2": "igihe cyose",
-      "description": "Duherereye mu Mujyi wa Rwimiyaga, Hollywood Hotel itewe ishema no kuba ari yo hoteli yambere mu Ntara y'Iburasirazuba.\n\nDuhuza ubwiza buhebuje n'ibigezweho by'akataraboneka — tubagezaho ibyumba byateguranywe ubuhanga budasanzwe, ibikorwaremezo byo ku rwego rw'isi, ndetse n'urwego rwo kwakira abashyitsi rutagereranywa. Ibi ni byo byatumye tuba amahitamo ya mbere y'abagenzi bose basura aka karere.",
+      "titleLine2": "igihe cyose i Nyagatare",
+      "locationLabel": "Aho Duherereye",
+      "location": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
+      "locationDirections": "Kureba Ikarita",
+      "description": "Duherereye ku Muhanda wa Kagitumba, Rwimiyaga, mu Karere ka Nyagatare, mu Ntara y'Iburasirazuba, mu Rwanda (Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda), Hollywood Hotel itewe ishema no kuba ari yo hoteli y'icyitegererezo mu zizwi nka Hollywood muri hoteli z'i Nyagatare (Hollywood in Nyagatare hotels).\n\nDuhuza ubwiza buhebuje n'ibigezweho by'akataraboneka — tubagezaho ibyumba byateguranywe ubuhanga budasanzwe, ibyumba by'inama n'ibirori bikoze neza, Hollywood Bar ibafitiye ibyo kunywa byiza, spa n'ikigo cy'imyitozo, ndetse n'urwego rwo kwakira abashyitsi rutagereranywa. Ibi ni byo bituma tuba amahitamo ya mbere y'abagenzi n'abashaka amacumbi n'amahoteli meza muri Nyagatare.",
       "features": [
-        "Ibyumba bisaga 100 byiza byo mu byiciro 5",
+        "Aho iherereye heza cyane: Kagitumba Road, Rwimiyaga, Akarere ka Nyagatare, Intara y'Iburasirazuba, Rwanda",
+        "Ibyumba bisaga 100 byiza byo mu byiciro 4 bitandukanye",
         "Ibyumba by'inama bitatu kuri buri gikorwa — kuva ku nama z'ubuyobozi kugeza ku birori binini",
         "Hollywood Bar ifite ibinyobwa byiza n'umuziki ushimishije",
         "Spa, Pisine & Ikigo cy'ubuzima bwiza (Wellness Centre) byuzuye",
@@ -102,9 +107,9 @@
       "button": "Saba Umwanya Wawe Ubu"
     },
     "conferenceSection": {
-      "title": "Ibyumba by'Inama n'Ibirori",
-      "description": "Tegurira inama cyangwa ibirori byawe mu byumba byacu by'akataraboneka kandi bigezweho. Bifite ikoranabuhanga rihanitse kugira ngo bitange umusaruro, ibyumba byacu bishobora guhindurwa bitewe n'ibyo mukeneye—yaba inama, ubukwe cyangwa ibindi birori byubwoko bwose.",
-      "explore": "Sura Ibyumba By'Inama"
+      "title": "Inama, Ubukwe n'Ibirori",
+      "description": "Tegurira inama cyangwa ibirori byawe mu bibanza byacu by'akataraboneka. Yaba inama zikomeye mu cyumba kigezweho cyangwa ubukwe n'ibirori by'umunezero mu ihema rinini (Tent) rigezweho riri mu busitani.",
+      "explore": "Sura Ibyumba n'Ihema ry'Ibirori"
     },
     "wellnessSection": {
       "title": "Kuruhuka",
@@ -366,5 +371,26 @@
     "diningPos": "Amafunguro na POS",
     "otherCustom": "Ibindi",
     "uncategorized": "Ibitazwi"
+  },
+  "tourPage": {
+    "badge": "Umutambagiro mu Mafoto y'Ubwiza",
+    "title": "Tembera Buri Nguni ya Hollywood Hotel",
+    "subtitle": "Irebere ubusitani bwiza bwuje amahumbezi, amariba y'amazi arimbishijwe amatara, ahabanza ho kwidagadurira na pool table, ibyumba by'agaciro n'ahantu h'ibirori i Rwimiyaga, Nyagatare.",
+    "allFilter": "Amafoto Yose",
+    "gardensFilter": "Ubusitani n'Amariba",
+    "architectureFilter": "Inyubako n'Imbuga",
+    "roomsFilter": "Ibyumba by'Ubwiza",
+    "diningFilter": "Amafunguro na Hollywood Bar",
+    "eventsFilter": "Sawuna, Gym n'Ibirori",
+    "searchPlaceholder": "Shakisha ikintu (urugero: ubusitani, iriba, uburiri, barukoni, sawuna)...",
+    "showing": "Hagaragaye",
+    "of": "kuri",
+    "photos": "amafoto ya hoteli",
+    "viewDetails": "Kanda urebe ifoto nini",
+    "bookRoom": "Saba Icyumba",
+    "inquire": "Tubaze / Twandikire",
+    "featuredNote": "Duhereye ku bice byiza byihariye — ubusitani bwiza, amariba y'amazi, inyubako nshya n'ahantu ho kwidagadurira.",
+    "noResults": "Nta foto ibonetse ihuye n'ibyo ushakishije. Gerageza irindi jambo.",
+    "resetFilter": "Tangira Bushya"
   }
 }

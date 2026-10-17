@@ -36,7 +36,8 @@ export const SCHEMA = {
   ],
   DailyReports: ['Date', 'PeriodFrom', 'PeriodTo', 'TotalSales', 'TotalItemsSold', 'UploadedAt'],
   SalesDetail: ['Date', 'ItemName', 'Quantity', 'Amount'],
-  CategorySales: ['Date', 'Category', 'PercentOfAmount', 'Amount']
+  CategorySales: ['Date', 'Category', 'PercentOfAmount', 'Amount'],
+  SaunaBookings: ['BookingID', 'GuestName', 'Phone', 'Date', 'TimeSlot', 'Guests', 'SessionType', 'Status', 'Price', 'Amount', 'PaymentMethod', 'PaymentStatus', 'Notes', 'RoomNumber', 'CreatedAt']
 };
 
 async function run() {

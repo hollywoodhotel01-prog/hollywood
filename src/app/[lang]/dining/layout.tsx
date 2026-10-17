@@ -25,7 +25,7 @@ export async function generateMetadata({
       url: `https://hollywoodhotel.rw/${lang}/dining`,
       images: [
         {
-          url: "/hollywood-bar.webp",
+          url: "/bar.webp",
           width: 1200,
           height: 800,
           alt: "Hollywood Hotel - Dining and Hollywood Bar",

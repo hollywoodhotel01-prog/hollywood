@@ -9,7 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { isThisWeek, isThisMonth, parseISO } from "date-fns";
 
 export default function ReportsDashboardPage() {
-  const { bookings, conferenceBookings, dailySalesHistory, expenses, otherRevenues } = useHotel();
+  const { bookings, conferenceBookings, dailySalesHistory, expenses, otherRevenues, saunaBookings, customerAdvances } = useHotel();
   const { receipts } = useFinance();
   const { dict } = useLanguage();
   
@@ -56,12 +56,21 @@ export default function ReportsDashboardPage() {
   };
 
   // 1. Calculate Revenues
-  const roomRev = bookings.filter(b => b.status === "Confirmed" && isDateMatch(b.checkIn)).reduce((s, b) => s + b.amount, 0);
+  const roomRev = bookings
+    .filter(b => b.status !== "Cancelled" && (isDateMatch(b.advanceDate || b.checkIn) || isDateMatch(b.checkIn)))
+    .reduce((s, b) => {
+      const adv = b.advancePaid !== undefined ? b.advancePaid : (b.paymentStatus === "Full Paid" ? b.amount : 0);
+      return s + (adv > 0 ? adv : b.amount);
+    }, 0);
+
+  const advancesRev = (customerAdvances || []).filter(a => isDateMatch(a.depositDate)).reduce((s, a) => s + (a.totalAmount || 0), 0);
+  const conferenceRev = (conferenceBookings || []).filter(c => c.status !== "Declined" && isDateMatch(c.date)).reduce((s, c) => s + ((c as any).amount || 0), 0);
+  const saunaRev = saunaBookings.filter(s => s.status === "Confirmed" && isDateMatch(s.date)).reduce((s, b) => s + (b.amount || 0), 0);
   const diningRev = dailySalesHistory?.filter(h => isDateMatch(h.date)).reduce((s, h) => s + h.totalSales, 0) || 0;
   const invoiceRev = receipts.filter(r => isDateMatch(r.payment_date)).reduce((s, r) => s + r.amount_received, 0);
   const otherRev = otherRevenues.filter(r => isDateMatch(r.date)).reduce((s, r) => s + r.amount, 0);
 
-  const grossRevenue = roomRev + diningRev + invoiceRev + otherRev;
+  const grossRevenue = roomRev + advancesRev + conferenceRev + saunaRev + diningRev + invoiceRev + otherRev;
 
   // 2. Calculate Expenses
   const filteredExpenses = expenses.filter(e => isDateMatch(e.date));
@@ -72,6 +81,9 @@ export default function ReportsDashboardPage() {
   // Revenue Breakdown Array
   const revenueSources = [
     { label: d.roomBookings, value: roomRev, color: "bg-blue-500", text: "text-blue-600" },
+    { label: "Customer Advance Deposits", value: advancesRev, color: "bg-indigo-500", text: "text-indigo-600" },
+    { label: "Conference & Events", value: conferenceRev, color: "bg-purple-500", text: "text-purple-600" },
+    { label: "Sauna & Wellness", value: saunaRev, color: "bg-amber-500", text: "text-amber-600" },
     { label: d.diningPos, value: diningRev, color: "bg-orange-500", text: "text-orange-600" },
     { label: d.invoices || "Invoices (Paid)", value: invoiceRev, color: "bg-teal-500", text: "text-teal-600" },
     { label: d.otherCustom, value: otherRev, color: "bg-green-500", text: "text-green-600" },

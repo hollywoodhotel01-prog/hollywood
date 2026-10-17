@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Calendar, BedDouble, DollarSign, Users, ClipboardList, Hotel, LogOut, CreditCard, X, FileText, Receipt, KeyRound, LineChart, PieChart } from "lucide-react";
+import { LayoutDashboard, Calendar, BedDouble, DollarSign, Users, ClipboardList, LogOut, CreditCard, X, FileText, Receipt, KeyRound, LineChart, PieChart } from "lucide-react";
 import { useHotel } from "@/context/HotelContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -15,11 +16,14 @@ interface ControlSidebarProps {
 export default function ControlSidebar({ isOpen = false, onClose }: ControlSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { currentUser, logout, bookings, conferenceBookings } = useHotel();
+  const { currentUser, logout, bookings, conferenceBookings, saunaBookings } = useHotel();
   const { lang, dict } = useLanguage();
   const d = dict.dashboard;
   
-  const pendingCount = bookings.filter(b => b.status === "Pending").length + conferenceBookings.filter(b => b.status === "Pending").length;
+  const pendingCount =
+    bookings.filter(b => b.status === "Pending").length +
+    conferenceBookings.filter(b => b.status === "Pending").length +
+    saunaBookings.filter(b => b.status === "Pending").length;
 
   useEffect(() => {
     onClose?.();
@@ -90,8 +94,14 @@ export default function ControlSidebar({ isOpen = false, onClose }: ControlSideb
       {/* Brand Header */}
       <div className="p-6 border-b border-white/10 flex items-center justify-between">
         <Link href={`/${lang}`} onClick={handleLinkClick} className="flex items-center gap-3 group">
-          <div className="bg-gold p-2.5 rounded-xl text-black shadow-[0_0_15px_rgba(251,191,36,0.3)] group-hover:scale-105 transition-transform">
-            <Hotel size={22} strokeWidth={2.5} />
+          <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-gold/30 bg-white shadow-[0_0_15px_rgba(251,191,36,0.3)] group-hover:scale-105 transition-transform shrink-0 flex items-center justify-center">
+            <Image
+              src="/logo.png"
+              alt="Hollywood Hotel Logo"
+              width={40}
+              height={40}
+              className="object-cover w-full h-full"
+            />
           </div>
           <div>
             <span className="font-heading font-black text-base text-gold block leading-tight tracking-wide">
@@ -153,7 +163,7 @@ export default function ControlSidebar({ isOpen = false, onClose }: ControlSideb
                     }`}
                   />
                   <span>{link.name}</span>
-                  {link.name === d.allBookings && pendingCount > 0 && (
+                  {(link.name === d.allBookings || link.name === d.frontDesk) && pendingCount > 0 && (
                     <span className="ml-auto bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
                       {pendingCount}
                     </span>
@@ -165,9 +175,9 @@ export default function ControlSidebar({ isOpen = false, onClose }: ControlSideb
         </div>
       </div>
 
-      {/* Admin: Change Password + Logout Footer */}
+      {/* Change Password + Logout Footer */}
       <div className="p-5 border-t border-white/10 bg-black space-y-2.5">
-        {currentUser?.role === "admin" && (
+        {currentUser && (
           <Link
             href={changePasswordHref}
             onClick={handleLinkClick}

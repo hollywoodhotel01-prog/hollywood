@@ -6,21 +6,37 @@ export async function GET() {
     const sheet = await getSheet('Bookings');
     await sheet.loadHeaderRow();
     const rows = await sheet.getRows();
-    const bookings = rows.map((row: any) => ({
-      id: row.get('BookingID'),
-      guestName: row.get('GuestName'),
-      roomType: row.get('RoomType'),
-      numberOfRooms: parseInt(row.get('NumberOfRooms') || '1', 10),
-      checkIn: row.get('CheckInDate'),
-      checkOut: row.get('CheckOutDate'),
-      price: parseFloat(row.get('Price') || '0') || 0,
-      days: parseInt(row.get('Days') || '1', 10) || 1,
-      discount: parseFloat(row.get('Discount') || '0') || 0,
-      amount: parseFloat(row.get('Amount') || '0'),
-      status: row.get('Status') || 'Pending',
-      paymentMethod: row.get('PaymentMethod') || 'Cash',
-      paymentStatus: row.get('PaymentStatus') || 'Full Paid',
-    }));
+    const bookings = rows.map((row: any) => {
+      const amount = parseFloat(row.get('Amount') || '0') || 0;
+      const paymentStatus = row.get('PaymentStatus') || 'Full Paid';
+      let advancePaid = parseFloat(row.get('AdvancePaid') || '0');
+      if (isNaN(advancePaid) || advancePaid === 0) {
+        if (paymentStatus === 'Full Paid') {
+          advancePaid = amount;
+        }
+      }
+      const advanceDate = row.get('AdvanceDate') || row.get('CheckInDate') || '';
+      const consumedAmount = parseFloat(row.get('ConsumedAmount') || '0') || 0;
+
+      return {
+        id: row.get('BookingID'),
+        guestName: row.get('GuestName'),
+        roomType: row.get('RoomType'),
+        numberOfRooms: parseInt(row.get('NumberOfRooms') || '1', 10),
+        checkIn: row.get('CheckInDate'),
+        checkOut: row.get('CheckOutDate'),
+        price: parseFloat(row.get('Price') || '0') || 0,
+        days: parseInt(row.get('Days') || '1', 10) || 1,
+        discount: parseFloat(row.get('Discount') || '0') || 0,
+        amount,
+        status: row.get('Status') || 'Pending',
+        paymentMethod: row.get('PaymentMethod') || 'Cash',
+        paymentStatus,
+        advancePaid,
+        advanceDate,
+        consumedAmount,
+      };
+    });
     return NextResponse.json({ success: true, bookings });
   } catch (e: any) {
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
@@ -32,10 +48,15 @@ export async function POST(req: Request) {
     const body = await req.json();
     const sheet = await getSheet('Bookings');
     await sheet.loadHeaderRow();
-    const needed = ['Price', 'Days', 'Discount'].filter(h => !sheet.headerValues.includes(h));
+    const needed = ['Price', 'Days', 'Discount', 'AdvancePaid', 'AdvanceDate', 'ConsumedAmount'].filter(h => !sheet.headerValues.includes(h));
     if (needed.length > 0) {
       await sheet.setHeaderRow([...sheet.headerValues, ...needed]);
     }
+    const amount = body.amount !== undefined ? body.amount : 0;
+    const paymentStatus = body.paymentStatus || 'Full Paid';
+    const advancePaid = body.advancePaid !== undefined ? body.advancePaid : (paymentStatus === 'Full Paid' ? amount : 0);
+    const advanceDate = body.advanceDate || body.checkIn || new Date().toISOString().split('T')[0];
+
     await sheet.addRow({
       BookingID: body.id,
       GuestName: body.guestName,
@@ -43,13 +64,16 @@ export async function POST(req: Request) {
       NumberOfRooms: body.numberOfRooms || 1,
       CheckInDate: body.checkIn,
       CheckOutDate: body.checkOut,
-      Amount: body.amount,
+      Amount: amount,
       Status: body.status || 'Pending',
       PaymentMethod: body.paymentMethod || 'Cash',
-      PaymentStatus: body.paymentStatus || 'Full Paid',
+      PaymentStatus: paymentStatus,
       Price: body.price !== undefined ? body.price : 0,
       Days: body.days !== undefined ? body.days : 1,
       Discount: body.discount !== undefined ? body.discount : 0,
+      AdvancePaid: advancePaid,
+      AdvanceDate: advanceDate,
+      ConsumedAmount: body.consumedAmount || 0,
     });
     return NextResponse.json({ success: true });
   } catch (e: any) {
@@ -62,7 +86,7 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const sheet = await getSheet('Bookings');
     await sheet.loadHeaderRow();
-    const needed = ['Price', 'Days', 'Discount'].filter(h => !sheet.headerValues.includes(h));
+    const needed = ['Price', 'Days', 'Discount', 'AdvancePaid', 'AdvanceDate', 'ConsumedAmount'].filter(h => !sheet.headerValues.includes(h));
     if (needed.length > 0) {
       await sheet.setHeaderRow([...sheet.headerValues, ...needed]);
     }
@@ -78,6 +102,9 @@ export async function PUT(req: Request) {
       if (body.discount !== undefined) rowToUpdate.set('Discount', body.discount);
       if (body.paymentMethod) rowToUpdate.set('PaymentMethod', body.paymentMethod);
       if (body.paymentStatus) rowToUpdate.set('PaymentStatus', body.paymentStatus);
+      if (body.advancePaid !== undefined) rowToUpdate.set('AdvancePaid', body.advancePaid);
+      if (body.advanceDate) rowToUpdate.set('AdvanceDate', body.advanceDate);
+      if (body.consumedAmount !== undefined) rowToUpdate.set('ConsumedAmount', body.consumedAmount);
       await rowToUpdate.save();
       return NextResponse.json({ success: true });
     } else {

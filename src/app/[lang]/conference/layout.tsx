@@ -8,10 +8,12 @@ export async function generateMetadata({
   const { lang } = await params;
   const isKinyarwanda = lang === "rw";
 
-  const title = isKinyarwanda ? "Ibyumba by'Inama n'Ibirori" : "Conference & Event Halls";
+  const title = isKinyarwanda
+    ? "Inama, Ubukwe n'Ibirori | Hollywood Hotel"
+    : "Conferences, Weddings & Events | Hollywood Hotel";
   const description = isKinyarwanda
-    ? "Tegura inama zikomeye, ubukwe n'ibirori muri salle zigezweho za Hollywood Hotel i Rwimiyaga. Ibyuma bifata amajwi n'amashusho bigezweho hamwe n'abategura amafunguro b'inzobere."
-    : "Host successful conferences, executive board meetings, banquets, and weddings at Hollywood Hotel, Rwimiyaga. Modern audiovisual systems, high-speed Wi-Fi, and expert catering.";
+    ? "Tegura inama zikomeye, ubukwe bw'akataraboneka mu ihema rinini (Tent) ryo mu busitani n'ibirori bitandukanye muri salle nshya za Hollywood Hotel i Rwimiyaga."
+    : "Host conferences, corporate meetings, dream weddings under our grand garden marquee tent, and celebration parties at Hollywood Hotel, Rwimiyaga. Modern audiovisual systems, luxury tent setup, and expert catering.";
 
   return {
     title,
@@ -20,15 +22,21 @@ export async function generateMetadata({
       canonical: `/${lang}/conference`,
     },
     openGraph: {
-      title: `${title} | Hollywood Hotel`,
+      title,
       description,
       url: `https://hollywoodhotel.rw/${lang}/conference`,
       images: [
         {
+          url: "/weed.webp",
+          width: 1200,
+          height: 800,
+          alt: "Hollywood Hotel - Grand Wedding & Party Marquee Tent",
+        },
+        {
           url: "/salle.webp",
           width: 1200,
           height: 800,
-          alt: "Hollywood Hotel - Conference and Event Halls",
+          alt: "Hollywood Hotel - Modern Conference & Event Hall",
         },
       ],
     },

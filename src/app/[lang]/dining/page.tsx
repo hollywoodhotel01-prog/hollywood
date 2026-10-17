@@ -57,7 +57,7 @@ export default function DiningPage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-gold/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
           <div className="relative z-10 order-2">
-            <Image src="/hollywood-bar.webp" alt="Hollywood Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
+            <Image src="/bar.webp" alt="Hollywood Bar" width={800} height={450} className="w-full aspect-video rounded-3xl shadow-xl border-4 border-white/10 object-cover" />
           </div>
           <div className="relative z-10 order-1">
             <div className="flex items-center gap-4 mb-6">

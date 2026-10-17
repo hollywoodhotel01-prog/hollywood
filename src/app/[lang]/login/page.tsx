@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Hotel, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useHotel } from "@/context/HotelContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -55,8 +56,15 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4 shadow-[0_0_30px_rgba(251,191,36,0.2)]">
-              <Hotel size={32} className="text-gold" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl mb-4 shadow-[0_0_30px_rgba(251,191,36,0.2)] border border-gray-200 overflow-hidden p-1">
+              <Image
+                src="/logo.png"
+                alt="Hollywood Hotel Logo"
+                width={72}
+                height={72}
+                priority
+                className="object-cover w-full h-full rounded-xl"
+              />
             </div>
             <h1 className="text-3xl font-heading font-black text-black">{d.hotelControlSystem}</h1>
             <p className="text-gray-500 font-medium mt-2">{d.staffAccessOnly}</p>

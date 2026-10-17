@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -38,8 +39,14 @@ export default function DashboardSidebar() {
       {/* Header / Brand */}
       <div className="p-6 border-b border-gray-100 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="bg-black p-2 rounded-xl text-gold group-hover:bg-gold group-hover:text-black transition-colors shadow-md">
-            <Hotel size={20} strokeWidth={2.5} />
+          <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-black/10 bg-white group-hover:scale-105 transition-all shadow-md shrink-0 flex items-center justify-center">
+            <Image
+              src="/logo.png"
+              alt="Hollywood Hotel Logo"
+              width={40}
+              height={40}
+              className="object-cover w-full h-full"
+            />
           </div>
           <div>
             <span className="font-heading font-black text-lg text-black block leading-none">

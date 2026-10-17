@@ -17,17 +17,54 @@ export async function GET() {
       otherRevenuesSheet.getRows()
     ]);
 
+    let saunaRows: any[] = [];
+    try {
+      const saunaSheet = await getSheet('SaunaBookings');
+      saunaRows = await saunaSheet.getRows();
+    } catch {
+      // Sauna sheet might not exist yet if empty
+    }
+
+    let advanceRows: any[] = [];
+    try {
+      const advSheet = await getSheet('CustomerAdvances');
+      advanceRows = await advSheet.getRows();
+    } catch {
+      // CustomerAdvances sheet might not exist yet
+    }
+
     // CSV Header
     let csv = "Date,Type,Category/Source,Description,Amount (RWF)\n";
 
-    // Bookings (Revenues)
+    // Bookings (Revenues / Advances)
     bookingsRows.forEach((row: any) => {
-      if (row.get('Status') === 'Confirmed') {
+      if (row.get('Status') !== 'Cancelled') {
         const checkIn = row.get('CheckInDate') || row.get('CheckIn') || '';
         const roomType = row.get('RoomType') || '';
         const guestName = row.get('GuestName') || '';
         const amount = row.get('Amount') || '0';
-        csv += `"${checkIn}","Revenue","Room Booking","${roomType} - ${guestName}","${amount}"\n`;
+        const adv = row.get('AdvancePaid') || (row.get('PaymentStatus') === 'Full Paid' ? amount : '0');
+        csv += `"${checkIn}","Revenue","Room Booking","${roomType} - ${guestName} (Advance: RWF ${adv})","${amount}"\n`;
+      }
+    });
+
+    // Customer Advances (Deposits)
+    advanceRows.forEach((row: any) => {
+      const date = row.get('DepositDate') || '';
+      const guestName = row.get('GuestName') || '';
+      const amount = row.get('TotalAmount') || '0';
+      const notes = row.get('Notes') || 'Customer Advance Deposit';
+      csv += `"${date}","Advance Deposit","Customer Advance","${guestName} - ${notes}","${amount}"\n`;
+    });
+
+    // Sauna Sessions (Revenues)
+    saunaRows.forEach((row: any) => {
+      if (row.get('Status') === 'Confirmed') {
+        const date = row.get('Date') || '';
+        const sessionType = row.get('SessionType') || 'Sauna';
+        const guestName = row.get('GuestName') || '';
+        const amount = row.get('Amount') || row.get('Price') || '0';
+        csv += `"${date}","Revenue","Sauna & Spa","${sessionType} - ${guestName}","${amount}"\n`;
       }
     });
 

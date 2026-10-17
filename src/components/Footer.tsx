@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Hotel, MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 export default function Footer({ lang, dict }: { lang: string, dict: any }) {
   const pathname = usePathname();
@@ -16,9 +17,15 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-1">
-            <Link href={`/${lang}`} className="flex items-center gap-2 mb-4 group">
-              <div className="bg-white p-1.5 rounded-lg text-black group-hover:bg-gold transition-colors">
-                <Hotel size={20} />
+            <Link href={`/${lang}`} className="flex items-center gap-3 mb-4 group">
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-white/20 bg-white group-hover:scale-105 transition-all shrink-0 flex items-center justify-center">
+                <Image
+                  src="/logo.png"
+                  alt="Hollywood Hotel Logo"
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <span className="font-heading font-black text-xl tracking-tight text-white">
                 Hollywood Hotel
@@ -34,6 +41,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
             <ul className="space-y-3">
               <li><Link href={`/${lang}`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.home}</Link></li>
               <li><Link href={`/${lang}/rooms`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.rooms}</Link></li>
+              <li><Link href={`/${lang}/tour`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.tour || "Tour"}</Link></li>
               <li><Link href={`/${lang}/conference`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.conference}</Link></li>
               <li><Link href={`/${lang}/dining`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.dining}</Link></li>
               <li><Link href={`/${lang}/facilities`} className="text-gray-400 font-medium hover:text-white transition-colors text-sm">{dict.facilities || dict.wellness}</Link></li>
@@ -47,7 +55,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: any }) {
                 <div className="bg-white/10 p-1.5 rounded-md mt-0.5">
                   <MapPin className="text-gold shrink-0" size={16} />
                 </div>
-                <span className="text-sm mt-1">Rwimiyaga, Nyagatare<br />Eastern Province, Rwanda</span>
+                <span className="text-sm mt-1">Kagitumba Road, Rwimiyaga<br />Nyagatare District, Eastern Province, Rwanda</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 font-medium">
                 <div className="bg-white/10 p-1.5 rounded-md">
