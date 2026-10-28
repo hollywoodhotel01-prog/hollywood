@@ -110,16 +110,16 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               </h2>
 
               {/* Location Badge / Callout */}
-              <div className="bg-amber-50/90 border border-amber-300/80 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+              <div className="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
                 <div className="flex items-start gap-3.5">
-                  <div className="p-2.5 bg-amber-400 text-black rounded-xl shrink-0 mt-0.5 shadow-xs">
-                    <MapPin size={22} className="stroke-[2.5]" />
+                  <div className="p-2.5 bg-black text-white rounded-xl shrink-0 mt-0.5 shadow-xs">
+                    <MapPin size={20} className="stroke-[2.2]" />
                   </div>
                   <div>
-                    <span className="text-xs uppercase font-extrabold tracking-wider text-amber-900 block mb-0.5">
+                    <span className="text-[11px] uppercase font-bold tracking-wider text-gray-500 block mb-0.5">
                       {dict.why?.locationLabel || 'Prime Location'}
                     </span>
-                    <p className="text-base font-bold text-gray-950 leading-snug">
+                    <p className="text-sm sm:text-base font-bold text-neutral-900 leading-snug">
                       {dict.why?.location || 'Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda'}
                     </p>
                   </div>
@@ -128,38 +128,26 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                   href="https://maps.google.com/?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Rwanda"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-black bg-white hover:bg-black hover:text-white border border-amber-300/80 px-3.5 py-2 rounded-xl transition-colors shrink-0 self-start sm:self-auto shadow-2xs"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 bg-white hover:bg-black hover:text-white border border-neutral-200 px-3.5 py-2 rounded-xl transition-colors shrink-0 self-start sm:self-auto shadow-2xs"
                 >
-                  <Navigation size={13} className="text-amber-500" />
+                  <Navigation size={13} className="text-amber-600" />
                   <span>{dict.why?.locationDirections || 'View on Map'}</span>
                 </a>
               </div>
 
-              <p className="text-gray-900 mb-8 leading-relaxed text-lg font-normal text-justify whitespace-pre-line">
+              <p className="text-gray-700 mb-8 leading-relaxed text-base sm:text-lg font-normal">
                 {dict.why?.description}
               </p>
 
-              {/* Feature Highlights List */}
-              {Array.isArray(dict.why?.features) && dict.why.features.length > 0 && (
-                <ul className="space-y-2.5 mb-10 text-gray-700 text-sm font-medium">
-                  {dict.why.features.map((feat: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2.5">
-                      <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
-                        ✓
-                      </div>
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <Link
-                href={`/${lang}/rooms`}
-                className="inline-flex items-center gap-3 font-bold text-black border-b-2 border-gray-300 hover:border-black pb-1 transition-colors uppercase tracking-widest text-sm group"
-              >
-                {dict.why?.exploreSuites || 'Sura Ibyumba Byacu'}
-                <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-              </Link>
+              <div>
+                <Link
+                  href={`/${lang}/rooms`}
+                  className="inline-flex items-center gap-3 font-bold text-black border-b-2 border-gray-300 hover:border-black pb-1 transition-colors uppercase tracking-widest text-sm group"
+                >
+                  {dict.why?.exploreSuites || (lang === 'rw' ? 'Sura ibyumba byacu' : 'Explore our suites')}
+                  <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+                </Link>
+              </div>
             </motion.div>
 
             {/* Image — right */}
@@ -184,21 +172,32 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         </div>
       </section>
 
-      <section className="py-24 bg-white relative overflow-hidden border-t-2 border-gold/15">
-        <div className="absolute top-1/3 left-0 w-80 h-80 bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+      <section className="py-24 bg-white relative overflow-hidden border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1.5 bg-gold/10 rounded-full mb-4 border border-gold/20">
-              <h2 className="text-sm font-bold text-gold uppercase tracking-widest">{dict.accommodations?.label}</h2>
+            <div className="inline-block px-4 py-1.5 bg-neutral-100 rounded-full mb-4 border border-neutral-200">
+              <h2 className="text-xs font-bold text-neutral-800 uppercase tracking-widest">{dict.accommodations?.label}</h2>
             </div>
             <h3 className="text-4xl md:text-5xl font-heading font-black text-black">
               {dict.accommodations?.title}
             </h3>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto font-medium">
+            <p className="text-gray-500 mt-4 max-w-xl mx-auto font-normal text-base sm:text-lg">
               {dict.accommodations?.description}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
+
+          {/* Mobile horizontal swipe indicator */}
+          <div className="md:hidden flex items-center justify-between mb-4 px-1">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles size={13} className="text-gold" />
+              Swipe Rooms Horizontally
+            </span>
+            <span className="text-xs font-black text-black bg-gold/20 px-2.5 py-0.5 rounded-full border border-gold/40">
+              4 Room Classes →
+            </span>
+          </div>
+
+          <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none gap-5 md:gap-7 pb-6 md:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 md:grid-cols-2 lg:grid-cols-4 no-scrollbar scroll-smooth">
             {ROOM_CATEGORIES.map((cat, index) => {
               const livePrice = getCategoryPrice(cat.id, roomsData);
               return (
@@ -208,8 +207,9 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.6 }}
-                  className="group bg-white rounded-3xl overflow-hidden border-2 border-gray-100 hover:border-gold hover:shadow-[0_20px_45px_rgba(251,191,36,0.18)] transition-all duration-300 flex flex-col relative"
+                  className="group bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-black/30 hover:shadow-xl transition-all duration-300 flex flex-col relative w-[82vw] max-w-[310px] md:w-auto md:max-w-none shrink-0 snap-center"
                 >
+                  {/* Clean photo without any word overlays */}
                   <div className="h-64 relative overflow-hidden bg-gray-100">
                     <Image
                       src={cat.image}
@@ -218,27 +218,24 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                    
-                    {/* Badge */}
-                    <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md text-gold border border-gold/30 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                      <Sparkles size={12} />
-                      {cat.badge}
-                    </div>
-
-                    {/* Price Pill - based on reception input */}
-                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md text-black border border-white/50 px-3.5 py-1.5 rounded-2xl font-black text-sm shadow-lg flex flex-col items-end leading-none">
-                      <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Per Night</span>
-                      <span className="text-black font-heading font-black text-base mt-0.5">RWF {livePrice.toLocaleString()}</span>
-                    </div>
                   </div>
 
                   <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-2xl font-heading font-black text-black group-hover:text-gold transition-colors">
-                        {cat.name}
-                      </h4>
+                    {/* Clean metadata row */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/80">
+                        <Sparkles size={11} className="text-amber-600" />
+                        {cat.badge}
+                      </span>
+                      <div className="text-right leading-none">
+                        <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider mb-0.5">Per Night</span>
+                        <span className="text-sm font-heading font-black text-black">RWF {livePrice.toLocaleString()}</span>
+                      </div>
                     </div>
+
+                    <h4 className="text-2xl font-heading font-black text-black group-hover:text-amber-600 transition-colors mb-2">
+                      {cat.name}
+                    </h4>
 
                     <p className="text-gray-600 mb-5 text-sm leading-relaxed min-h-[48px]">
                       {cat.shortDescription}
@@ -248,7 +245,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                       {cat.amenities.slice(0, 3).map((amenity, i) => (
                         <span
                           key={i}
-                          className="text-[11px] font-bold bg-gray-50 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-100 group-hover:bg-gold/5 group-hover:border-gold/30 group-hover:text-black transition-colors"
+                          className="text-[11px] font-medium bg-gray-50 text-gray-700 px-2.5 py-1 rounded-lg border border-gray-100 group-hover:bg-amber-50/50 group-hover:border-amber-200/50 group-hover:text-black transition-colors"
                         >
                           {amenity.name}
                         </span>
@@ -258,7 +255,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                     <div className="space-y-2 pt-2 border-t border-gray-100">
                       <Link
                         href={`/${lang}/book?room=${encodeURIComponent(cat.name)}`}
-                        className="w-full text-center bg-black hover:bg-gold hover:text-black text-white py-3 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2 text-sm group/btn"
+                        className="w-full text-center bg-black hover:bg-neutral-800 text-white py-3 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center gap-2 text-sm group/btn"
                       >
                         <span>Explore & Checkout</span>
                         <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -266,7 +263,7 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
 
                       <Link
                         href={`/${lang}/rooms`}
-                        className="w-full text-center text-xs font-bold text-gray-500 hover:text-black py-1.5 transition-colors block"
+                        className="w-full text-center text-xs font-semibold text-gray-500 hover:text-black py-1.5 transition-colors block"
                       >
                         View room gallery & details →
                       </Link>
@@ -275,6 +272,16 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                 </motion.div>
               );
             })}
+          </div>
+
+          {/* Mobile pagination indicators */}
+          <div className="md:hidden flex justify-center items-center gap-2 mt-4">
+            {ROOM_CATEGORIES.map((_, i) => (
+              <span
+                key={i}
+                className="w-2 h-2 rounded-full bg-gold/40 first:bg-gold first:w-5 transition-all"
+              />
+            ))}
           </div>
 
           <div className="mt-14 text-center">
@@ -290,31 +297,43 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
       </section>
 
       {/* === CONFERENCE & WEDDING VENUES SECTION === */}
-      <section className="py-24 relative overflow-hidden bg-white">
+      <section className="py-24 relative overflow-hidden bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-gold/15 text-black px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-4 border border-gold/30">
-              <Sparkles size={14} className="text-amber-600" />
+            <div className="inline-flex items-center gap-2 bg-neutral-100 text-neutral-800 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-neutral-200">
+              <Sparkles size={13} className="text-amber-600" />
               <span>Event &amp; Celebration Venues</span>
             </div>
-            <h3 className="text-3xl md:text-5xl font-heading font-black text-black mb-5 tracking-tight">
+            <h3 className="text-3xl md:text-5xl font-heading font-black text-black mb-4 tracking-tight">
               {dict.conferenceSection?.title || "Conferences, Weddings & Events"}
             </h3>
-            <p className="text-gray-600 text-lg leading-relaxed font-medium">
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed font-normal">
               {dict.conferenceSection?.description}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+          {/* Mobile horizontal swipe indicator */}
+          <div className="lg:hidden flex items-center justify-between mb-4 px-1">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles size={13} className="text-gold" />
+              Swipe Venues Horizontally
+            </span>
+            <span className="text-xs font-black text-black bg-gold/20 px-2.5 py-0.5 rounded-full border border-gold/40">
+              2 Event Spaces →
+            </span>
+          </div>
+
+          <div className="flex lg:grid overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-6 lg:gap-8 pb-6 lg:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 lg:grid-cols-2 no-scrollbar scroll-smooth">
             {/* Card 1: Big Wedding & Party Marquee Tent */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="group relative rounded-3xl overflow-hidden shadow-xl bg-black border-2 border-gold/30 flex flex-col justify-between min-h-[460px]"
+              className="group relative rounded-3xl overflow-hidden bg-white border border-gray-200 hover:border-black/30 hover:shadow-xl transition-all duration-300 flex flex-col w-[85vw] max-w-[380px] lg:w-auto lg:max-w-none shrink-0 snap-center"
             >
-              <div className="absolute inset-0">
+              {/* Clean, pure photograph with zero word overlays */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
                 <Image
                   src="/weed.webp"
                   alt="Hollywood Hotel Big Wedding & Party Tent Marquee"
@@ -322,37 +341,43 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
               </div>
 
-              <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between">
-                <span className="bg-white/95 backdrop-blur-md text-black px-3.5 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 shadow-md">
-                  <Heart size={13} className="text-red-500 fill-red-500" />
-                  <span>Weddings &amp; Celebrations</span>
-                </span>
-                <span className="bg-gold text-black px-3 py-1 rounded-full text-xs font-black shadow-md">
-                  500+ Guests
-                </span>
-              </div>
+              <div className="p-6 sm:p-8 flex flex-col flex-1 justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <span className="bg-rose-50 text-rose-900 border border-rose-200/80 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
+                      <Heart size={13} className="text-rose-500 fill-rose-500" />
+                      <span>Weddings &amp; Celebrations</span>
+                    </span>
+                    <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-bold">
+                      500+ Guests
+                    </span>
+                  </div>
 
-              <div className="relative z-10 p-6 sm:p-8 mt-auto">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest mb-2">
-                  <Tent size={14} />
-                  <span>Outdoor Garden Marquee</span>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 uppercase tracking-widest mb-1.5">
+                    <Tent size={14} />
+                    <span>Outdoor Garden Marquee</span>
+                  </div>
+
+                  <h4 className="text-2xl sm:text-3xl font-heading font-black text-black mb-3">
+                    Big Wedding &amp; Party Marquee Tent
+                  </h4>
+
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
+                    Specially crafted for fairytale weddings, bridal showers, milestone birthdays, and joyous celebrations on our landscaped lawns with romantic fairy lights and ceremony walkway.
+                  </p>
                 </div>
-                <h4 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3">
-                  Big Wedding &amp; Party Marquee Tent
-                </h4>
-                <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 font-medium line-clamp-3">
-                  Specially crafted for fairytale weddings, bridal showers, milestone birthdays, and joyous celebrations on our landscaped lawns with romantic fairy lights and ceremony walkway.
-                </p>
-                <Link
-                  href={`/${lang}/conference`}
-                  className="inline-flex items-center gap-3 bg-gold hover:bg-white text-black px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-md group/btn"
-                >
-                  <span>Explore Wedding Tent &amp; Book</span>
-                  <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
+
+                <div>
+                  <Link
+                    href={`/${lang}/conference`}
+                    className="inline-flex items-center gap-2.5 bg-black hover:bg-neutral-800 text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-sm group/btn"
+                  >
+                    <span>Explore Wedding Tent &amp; Book</span>
+                    <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
 
@@ -362,9 +387,10 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="group relative rounded-3xl overflow-hidden shadow-xl bg-black border-2 border-gray-800 flex flex-col justify-between min-h-[460px]"
+              className="group relative rounded-3xl overflow-hidden bg-white border border-gray-200 hover:border-black/30 hover:shadow-xl transition-all duration-300 flex flex-col w-[85vw] max-w-[380px] lg:w-auto lg:max-w-none shrink-0 snap-center"
             >
-              <div className="absolute inset-0">
+              {/* Clean, pure photograph with zero word overlays */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
                 <Image
                   src="/salle.webp"
                   alt="Hollywood Hotel Modern Conference & Event Hall"
@@ -372,82 +398,87 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
               </div>
 
-              <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between">
-                <span className="bg-white/95 backdrop-blur-md text-black px-3.5 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 shadow-md">
-                  <Users size={13} className="text-gold" />
-                  <span>Corporate &amp; Seminars</span>
-                </span>
-                <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-black border border-white/30 shadow-md">
-                  150+ Guests
-                </span>
-              </div>
+              <div className="p-6 sm:p-8 flex flex-col flex-1 justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <span className="bg-blue-50 text-blue-900 border border-blue-200/80 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
+                      <Users size={13} className="text-blue-600" />
+                      <span>Corporate &amp; Seminars</span>
+                    </span>
+                    <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-bold">
+                      150+ Guests
+                    </span>
+                  </div>
 
-              <div className="relative z-10 p-6 sm:p-8 mt-auto">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest mb-2">
-                  <Users size={14} />
-                  <span>Indoor Executive Hall</span>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 uppercase tracking-widest mb-1.5">
+                    <Users size={14} />
+                    <span>Indoor Executive Hall</span>
+                  </div>
+
+                  <h4 className="text-2xl sm:text-3xl font-heading font-black text-black mb-3">
+                    Modern Conference &amp; Event Hall
+                  </h4>
+
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
+                    Engineered for executive meetings, workshops, retreats, and business summits with high-speed fiber Wi-Fi, 4K Smart screens, and acoustic microphone sound systems.
+                  </p>
                 </div>
-                <h4 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3">
-                  Modern Conference &amp; Event Hall
-                </h4>
-                <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 font-medium line-clamp-3">
-                  Engineered for executive meetings, workshops, retreats, and business summits with high-speed fiber Wi-Fi, 4K Smart screens, and acoustic microphone sound systems.
-                </p>
-                <Link
-                  href={`/${lang}/conference`}
-                  className="inline-flex items-center gap-3 bg-white hover:bg-gold text-black px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-md group/btn"
-                >
-                  <span>Explore Conference Hall &amp; Book</span>
-                  <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
+
+                <div>
+                  <Link
+                    href={`/${lang}/conference`}
+                    className="inline-flex items-center gap-2.5 bg-black hover:bg-neutral-800 text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-sm group/btn"
+                  >
+                    <span>Explore Conference Hall &amp; Book</span>
+                    <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
+          </div>
+
+          {/* Mobile pagination indicators */}
+          <div className="lg:hidden flex justify-center items-center gap-2 mt-4">
+            <span className="w-5 h-2 rounded-full bg-gold transition-all" />
+            <span className="w-2 h-2 rounded-full bg-gold/40 transition-all" />
           </div>
         </div>
       </section>
 
       {/* === WELLNESS & GYM SECTION === */}
-      <section className="py-24 relative overflow-hidden bg-gray-50 border-t border-gray-200">
-        <div className="absolute right-0 top-0 w-1/2 h-full bg-gold/5 pointer-events-none hidden lg:block rounded-l-[5rem]"></div>
+      <section className="py-24 relative overflow-hidden bg-gray-50 border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
             <div className="order-2 lg:order-1 relative">
               <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-[2px] bg-gold"></div>
-                  <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Wellness</span>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-xs font-bold">
+                    <Dumbbell size={13} className="text-amber-600" />
+                    <span>Premium Equipment</span>
+                  </span>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Wellness</span>
                 </div>
-                <h4 className="text-4xl md:text-6xl font-heading font-black text-black mb-8 leading-[1.1]">
+                <h3 className="text-4xl md:text-5xl font-heading font-black text-black mb-6 leading-tight">
                   {dict.wellnessSection?.title || "Fitness & Wellness"}
-                </h4>
-                <p className="text-gray-600 mb-10 text-xl leading-relaxed">
+                </h3>
+                <p className="text-gray-600 mb-8 text-base sm:text-lg leading-relaxed font-normal">
                   {dict.wellnessSection?.description}
                 </p>
                 
-                <Link href={`/${lang}/facilities`} className="inline-flex items-center justify-center bg-transparent border-2 border-black text-black hover:bg-black hover:text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 gap-3 group">
+                <Link href={`/${lang}/facilities`} className="inline-flex items-center justify-center bg-black hover:bg-neutral-800 text-white px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 gap-2.5 shadow-sm group">
                   <span>{dict.wellnessSection?.explore || "View Facilities"}</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
             </div>
 
-            <div className="order-1 lg:order-2 relative h-[450px] lg:h-[650px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
-               <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="absolute inset-0">
+            {/* Clean, pure gym photo without words or dark tints */}
+            <div className="order-1 lg:order-2 relative aspect-[4/3] lg:aspect-[5/4] w-full rounded-3xl overflow-hidden shadow-lg bg-gray-100">
+               <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="absolute inset-0">
                 <Image src="/gym.webp" alt="Hollywood Hotel Fitness & Wellness Center" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="absolute bottom-6 left-6 lg:bottom-10 lg:left-10 bg-white/95 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl flex items-center gap-4">
-                  <div className="bg-gold/20 p-3 rounded-full text-gold">
-                    <Dumbbell size={24} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-black text-sm uppercase tracking-wider">Premium</p>
-                    <p className="text-gray-500 text-xs font-medium">Equipment</p>
-                  </div>
-                </div>
                </motion.div>
             </div>
             
@@ -554,27 +585,27 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         </div>
       </section>
 
-      <section className="py-24 bg-white relative overflow-hidden border-t-2 border-gold/20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-full bg-gold/10 blur-[120px] rounded-full pointer-events-none" />
+      <section className="py-24 bg-neutral-900 text-white relative overflow-hidden">
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="bg-white p-12 md:p-16 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-t-4 border-gold"
+            className="p-8 sm:p-14 rounded-3xl"
           >
-            <h2 className="text-4xl md:text-5xl font-heading font-black text-black mb-6">{dict.cta?.title}</h2>
-            <p className="text-gray-600 mb-10 text-xl">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 mb-3 block">
+              Reservations &amp; Stays
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-heading font-black text-white mb-5 tracking-tight">{dict.cta?.title}</h2>
+            <p className="text-gray-300 mb-10 text-base sm:text-lg max-w-2xl mx-auto font-normal">
               {dict.cta?.description}
             </p>
             <Link
               href={`/${lang}/book`}
-              className="group relative inline-flex items-center justify-center bg-black hover:bg-gray-900 text-white px-10 py-5 rounded-full font-bold text-xl transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] overflow-hidden"
+              className="inline-flex items-center justify-center bg-white hover:bg-neutral-100 text-black px-9 py-4 rounded-full font-bold text-base transition-all shadow-lg hover:-translate-y-0.5"
             >
-              <span className="relative z-10">{dict.cta?.button}</span>
-              <div className="absolute inset-0 h-full w-full bg-gold/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out" />
+              <span>{dict.cta?.button}</span>
             </Link>
           </motion.div>
         </div>

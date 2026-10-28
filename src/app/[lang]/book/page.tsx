@@ -184,6 +184,12 @@ function BookingCheckoutContent() {
               Status: Pending Receptionist Confirmation
             </div>
 
+            {typeof navigator !== "undefined" && !navigator.onLine && (
+              <div className="mb-4 inline-flex items-center gap-2 px-4 py-1.5 bg-yellow-100 text-yellow-900 rounded-full text-xs font-bold border border-yellow-300">
+                <span>⚡ Offline Mode: Stored locally &amp; queued for automatic Wi-Fi sync</span>
+              </div>
+            )}
+
             <h2 className="text-3xl md:text-5xl font-heading font-black text-black mb-3">
               Reservation Confirmed!
             </h2>
@@ -276,7 +282,7 @@ function BookingCheckoutContent() {
       {/* 4 Category Selector Bar */}
       <div className="mb-10">
         <div className="text-center mb-6">
-          <span className="text-xs font-black text-gold uppercase tracking-[0.2em] block mb-1">
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-[0.2em] block mb-1">
             Choose Your Category
           </span>
           <h2 className="text-2xl md:text-3xl font-heading font-black text-black">
@@ -293,30 +299,30 @@ function BookingCheckoutContent() {
                 key={cat.id}
                 type="button"
                 onClick={() => handleSelectCategory(cat)}
-                className={`relative p-4 rounded-3xl text-left border-2 transition-all flex flex-col justify-between overflow-hidden group ${
+                className={`relative p-4 rounded-3xl text-left border transition-all flex flex-col justify-between overflow-hidden group cursor-pointer ${
                   isSelected
-                    ? "bg-black text-white border-gold shadow-[0_15px_30px_rgba(251,191,36,0.25)] scale-[1.02]"
-                    : "bg-white text-black border-gray-200 hover:border-gold/60 hover:shadow-md"
+                    ? "bg-black text-white border-black shadow-md scale-[1.01]"
+                    : "bg-white text-black border-gray-200 hover:border-black/30 hover:shadow-xs"
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                    isSelected ? "bg-gold text-black" : "bg-gray-100 text-gray-600"
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    isSelected ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-600"
                   }`}>
                     Option 0{idx + 1}
                   </span>
                   {isSelected && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-gold animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
                   )}
                 </div>
 
                 <div>
                   <h3 className={`font-heading font-black text-lg sm:text-xl mb-1 ${
-                    isSelected ? "text-gold" : "text-black group-hover:text-gold transition-colors"
+                    isSelected ? "text-white" : "text-black group-hover:text-amber-600 transition-colors"
                   }`}>
                     {cat.name}
                   </h3>
-                  <p className={`text-xs font-medium line-clamp-1 mb-3 ${
+                  <p className={`text-xs font-normal line-clamp-1 mb-3 ${
                     isSelected ? "text-gray-300" : "text-gray-500"
                   }`}>
                     {cat.badge}
@@ -345,38 +351,38 @@ function BookingCheckoutContent() {
             {/* Category Header & Tag */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
               <div>
-                <span className="text-xs font-black text-gold uppercase tracking-widest block mb-1">
+                <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest block mb-1">
                   Selected Accommodation
                 </span>
                 <h1 className="text-3xl md:text-4xl font-heading font-black text-black">
                   {selectedCategory.name}
                 </h1>
               </div>
-              <div className="bg-black text-gold px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-wider border border-gold/30 flex items-center gap-2">
-                <Sparkles size={14} />
+              <div className="bg-neutral-100 text-neutral-800 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-neutral-200 flex items-center gap-2">
+                <Sparkles size={13} className="text-amber-600" />
                 {selectedCategory.badge}
               </div>
             </div>
 
-            {/* MANDATORY USER CHECKOUT OFFER BANNER */}
-            <div className="bg-amber-500/10 border-2 border-gold/40 rounded-2xl p-4 sm:p-5 mb-6 relative overflow-hidden">
+            {/* Room Inclusions Banner */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 sm:p-5 mb-6 relative overflow-hidden">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-gold rounded-xl text-black shadow-sm shrink-0">
-                  <Check size={18} strokeWidth={3} />
+                <div className="p-2 bg-black text-white rounded-xl shadow-xs shrink-0">
+                  <Check size={16} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 block mb-0.5">
-                    What is Offered With This Room:
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 block mb-0.5">
+                    Included With This Room:
                   </span>
-                  <p className="text-base sm:text-lg font-bold text-black leading-snug">
+                  <p className="text-base sm:text-lg font-bold text-neutral-900 leading-snug">
                     {selectedCategory.checkoutOffer}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Main Interactive High-Res Photo Viewer */}
-            <div className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden bg-black shadow-lg mb-4 group/viewer">
+            {/* Main Interactive High-Res Photo Viewer - 100% clean without word overlays */}
+            <div className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden bg-gray-100 shadow-md group/viewer">
               <Image
                 src={activePhoto}
                 alt={selectedCategory.name}
@@ -385,30 +391,30 @@ function BookingCheckoutContent() {
                 sizes="(max-width: 1024px) 100vw, 700px"
                 className="object-cover group-hover/viewer:scale-105 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
-              
-              {/* Active Photo Tag */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
-                <div className="bg-black/80 backdrop-blur-md px-4 py-1.5 rounded-xl border border-white/20 text-white font-bold text-xs flex items-center gap-2">
-                  <Sparkles size={14} className="text-gold" />
-                  <span>Viewing: {activePhotoTag}</span>
-                </div>
-                <button
-                  onClick={() => setLightboxOpen(true)}
-                  className="bg-white/90 hover:bg-gold hover:text-black text-black p-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 text-xs font-bold"
-                >
-                  <Maximize2 size={16} /> Expand
-                </button>
-              </div>
+            </div>
+
+            {/* Clean Status & Controls below photo */}
+            <div className="flex items-center justify-between text-xs py-2.5 px-1 mb-4 border-b border-gray-100">
+              <span className="font-semibold text-gray-700 flex items-center gap-1.5">
+                <Sparkles size={13} className="text-amber-600" />
+                Viewing: <strong className="text-black">{activePhotoTag}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(true)}
+                className="font-bold text-black hover:text-amber-600 flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Maximize2 size={14} /> Expand
+              </button>
             </div>
 
             {/* Amenity & Feature Photo Gallery Strip */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-gold" /> Click any photo to preview detail:
+                  <Sparkles size={14} className="text-amber-600" /> Click any photo to preview detail:
                 </span>
-                <span className="text-[11px] font-bold text-gold-dark">
+                <span className="text-[11px] font-bold text-amber-700">
                   {selectedCategory.gallery.length} Verified Photos
                 </span>
               </div>
@@ -420,21 +426,18 @@ function BookingCheckoutContent() {
                     <button
                       key={gIdx}
                       type="button"
+                      title={item.title}
                       onClick={() => {
                         setActivePhoto(item.image);
                         setActivePhotoTag(item.tag);
                       }}
-                      className={`relative aspect-[4/3] rounded-2xl overflow-hidden border-2 transition-all ${
+                      className={`relative aspect-[4/3] rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
                         isCurrentActive
-                          ? "border-gold ring-4 ring-gold/20 scale-105 shadow-md"
+                          ? "border-black ring-2 ring-black/10 scale-105 shadow-sm"
                           : "border-gray-200 opacity-80 hover:opacity-100 hover:border-gray-400"
                       }`}
                     >
                       <Image src={item.image} alt={item.title} fill sizes="120px" className="object-cover" />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent" />
-                      <span className="absolute bottom-1 left-1 right-1 text-[9px] font-bold text-white bg-black/80 px-1 py-0.5 rounded truncate text-center">
-                        {item.tag}
-                      </span>
                     </button>
                   );
                 })}

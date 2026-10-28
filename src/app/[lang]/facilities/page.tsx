@@ -15,12 +15,15 @@ export default function FacilitiesPage() {
   const lang = (params?.lang as string) || "en";
   return (
     <div className="pt-20 min-h-screen bg-white relative">
-      <div className="bg-white py-16 text-center px-4 relative overflow-hidden border-b-2 border-gold/20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-full bg-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="bg-white py-16 text-center px-4 relative overflow-hidden border-b border-gray-100">
         <div className="relative z-10 max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Facilities</h1>
-          <p className="text-gray-600 text-xl font-medium">
+          <div className="inline-block px-4 py-1.5 bg-neutral-100 rounded-full mb-4 border border-neutral-200">
+            <span className="text-xs font-bold text-neutral-800 uppercase tracking-widest">
+              Wellness &amp; Amenities
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-heading font-black text-black mb-4">Facilities</h1>
+          <p className="text-gray-600 text-lg md:text-xl font-normal max-w-2xl mx-auto">
             Restore your body and mind, and enjoy seamless convenience. Our world-class facilities are open to all Hollywood Hotel guests.
           </p>
         </div>
@@ -29,55 +32,53 @@ export default function FacilitiesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 space-y-24">
 
         {/* Fitness Center */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="bg-white rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border-2 border-gray-100 relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gold/20 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 relative z-10">
-            <div className="p-10 md:p-16 flex flex-col justify-center">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-black rounded-xl text-gold shadow-md">
-                  <Dumbbell size={28} />
+            <div className="p-8 md:p-14 flex flex-col justify-center">
+              <div className="flex items-center gap-3.5 mb-6">
+                <div className="p-2.5 bg-black rounded-xl text-white shadow-xs">
+                  <Dumbbell size={24} />
                 </div>
-                <h2 className="text-4xl font-heading font-black text-black">Fitness Center</h2>
+                <h2 className="text-3xl sm:text-4xl font-heading font-black text-black">Fitness Center</h2>
               </div>
-              <p className="text-gray-600 mb-8 leading-relaxed text-lg font-medium">
-                Stay at the top of your game during your stay. Our fully-equipped fitness center features premium cardio machines, a free-weight zone, and a dedicated stretching area — all with natural light and city views.
+              <p className="text-gray-600 mb-6 leading-relaxed text-base sm:text-lg font-normal">
+                Stay at the top of your game during your stay. Our fully-equipped fitness center features premium cardio machines, a free-weight zone, and a dedicated stretching area — all with natural light and peaceful views.
               </p>
-              <div className="mb-8 p-6 bg-gray-50 rounded-2xl border-l-4 border-gold">
-                <h3 className="font-bold text-black mb-4 text-lg">Equipment Available:</h3>
-                <ul className="space-y-3 text-black font-medium">
+              <div className="mb-6 p-5 bg-neutral-50 rounded-2xl border border-neutral-200/80">
+                <h3 className="font-bold text-black mb-3 text-sm uppercase tracking-wider">Equipment Available:</h3>
+                <ul className="space-y-2 text-neutral-800 text-sm font-medium">
                   {["Treadmills & Ellipticals", "Stationary Bikes", "Free Weights & Dumbbells", "Cable Machines & Racks", "Yoga & Pilates Mats"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-gold"></span>{item}</li>
+                    <li key={i} className="flex items-center gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>{item}</li>
                   ))}
                 </ul>
               </div>
-              <div className="flex items-center gap-3 text-lg font-bold text-black bg-gold/20 border border-gold/40 w-fit px-6 py-3 rounded-full shadow-sm">
-                <Clock size={20} className="text-gold" />
-                <span>Whole Day</span>
+              <div className="flex items-center gap-2 text-sm font-bold text-neutral-800 bg-neutral-100 border border-neutral-200 w-fit px-4 py-2 rounded-full">
+                <Clock size={16} className="text-amber-600" />
+                <span>Open Whole Day</span>
               </div>
             </div>
-            <div className="relative min-h-[400px] lg:min-h-full">
+            <div className="relative min-h-[320px] lg:min-h-full overflow-hidden bg-gray-100">
               <img src="/gym.webp" alt="Fitness Center" className="object-cover w-full h-full" />
             </div>
           </div>
         </motion.div>
 
         {/* Sauna */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gold/10 rounded-3xl -z-10 rotate-3"></div>
-            <img src="/sauna.webp" alt="Sauna" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl border-4 border-white" />
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="relative overflow-hidden rounded-3xl shadow-sm border border-gray-200 bg-gray-100 aspect-[4/3]">
+            <img src="/sauna.webp" alt="Sauna" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
           </div>
           <div>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-black rounded-xl text-gold shadow-md">
-                <Flame size={28} />
+            <div className="flex items-center gap-3.5 mb-6">
+              <div className="p-2.5 bg-black rounded-xl text-white shadow-xs">
+                <Flame size={24} className="text-amber-400" />
               </div>
-              <h2 className="text-4xl font-heading font-black text-black">Sauna</h2>
+              <h2 className="text-3xl sm:text-4xl font-heading font-black text-black">Sauna</h2>
             </div>
-            <p className="text-gray-600 mb-8 leading-relaxed text-lg font-medium">
+            <p className="text-gray-600 mb-6 leading-relaxed text-base sm:text-lg font-normal">
               Unwind and detoxify in our tranquil wooden sauna. Designed for deep relaxation and muscle recovery, our soothing heat therapy melts away stress and leaves you feeling refreshed and invigorated.
             </p>
-            <ul className="space-y-4 text-black font-medium text-lg mb-8">
+            <ul className="space-y-3 text-neutral-800 font-medium text-sm sm:text-base mb-8">
               {[
                 "Traditional dry heat & steam sauna experience",
                 "Promotes detoxification and muscle recovery",
@@ -85,45 +86,44 @@ export default function FacilitiesPage() {
                 "Private relaxation lounge and shower facilities",
                 "Complimentary herbal infusions and hydration station"
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-gold"></span>
+                <li key={i} className="flex items-center gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                   {item}
                 </li>
               ))}
             </ul>
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-3 text-base font-bold text-black bg-gold/20 border border-gold/40 w-fit px-5 py-2.5 rounded-full shadow-sm">
-                <Clock size={18} className="text-gold" />
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-neutral-800 bg-neutral-100 border border-neutral-200 w-fit px-4 py-2 rounded-full">
+                <Clock size={16} className="text-amber-600" />
                 <span>Open Whole Day</span>
               </div>
               <Link
                 href={`/${lang}/sauna`}
-                className="flex items-center gap-2 bg-black hover:bg-gold hover:text-black text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 group"
+                className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-sm group"
               >
-                <Flame size={18} className="text-gold group-hover:text-black transition-colors" />
+                <Flame size={15} className="text-amber-400" />
                 <span>Book Sauna Session</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={14} />
               </Link>
             </div>
           </div>
         </motion.div>
 
         {/* Massage */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center bg-black rounded-[3rem] p-8 lg:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gold/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center bg-neutral-900 rounded-3xl p-8 lg:p-14 shadow-md overflow-hidden text-white">
           <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-gold rounded-xl text-black shadow-md">
-                <Sparkles size={28} />
+            <div className="flex items-center gap-3.5 mb-6">
+              <div className="p-2.5 bg-white text-black rounded-xl shadow-xs">
+                <Sparkles size={24} className="text-amber-600" />
               </div>
-              <h2 className="text-4xl font-heading font-black text-white">Massage</h2>
+              <h2 className="text-3xl sm:text-4xl font-heading font-black text-white">Massage</h2>
             </div>
-            <p className="text-gray-300 mb-8 leading-relaxed text-lg font-medium">
+            <p className="text-gray-300 mb-6 leading-relaxed text-base sm:text-lg font-normal">
               The ultimate escape. Our massage and wellness sanctuary offers a menu of rejuvenating treatments designed to leave you completely restored. From deep-tissue massages and hot stone therapy to aromatherapy and relaxing body treatments, every session is performed by our certified therapists in a serene, candlelit environment.
             </p>
-            <div className="mb-8">
-              <h3 className="text-sm font-bold text-gold uppercase tracking-widest mb-4">Signature Treatments</h3>
-              <ul className="space-y-3">
+            <div className="mb-6">
+              <h3 className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3">Signature Treatments</h3>
+              <ul className="space-y-2.5">
                 {[
                   "Deep Tissue & Hot Stone Massage",
                   "Swedish Relaxation Massage",
@@ -131,39 +131,38 @@ export default function FacilitiesPage() {
                   "Head, Neck & Shoulder Tension Relief",
                   "Couples Retreat Massage Package"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-300 font-medium">
-                    <span className="w-2 h-2 rounded-full bg-gold shrink-0"></span>
+                  <li key={i} className="flex items-center gap-2.5 text-gray-300 font-normal text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="inline-flex items-center gap-3 bg-gold/20 border border-gold/40 px-5 py-3 rounded-full text-gold font-bold text-sm">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full text-white font-medium text-xs">
               By appointment — Book at reception
             </div>
           </div>
-          <div className="relative z-10">
-            <img src="/massage.webp" alt="Massage" className="w-full aspect-video object-cover rounded-3xl shadow-xl border-4 border-white/10" />
+          <div className="relative z-10 overflow-hidden rounded-2xl shadow-lg aspect-video bg-neutral-800">
+            <img src="/massage.webp" alt="Massage" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
           </div>
         </motion.div>
 
         {/* Parking */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gold/10 rounded-3xl -z-10 -rotate-2"></div>
-            <img src="/parking.webp" alt="Parking" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-xl border-4 border-white" />
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="relative overflow-hidden rounded-3xl shadow-sm border border-gray-200 bg-gray-100 aspect-[4/3]">
+            <img src="/parking.webp" alt="Parking" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
           </div>
           <div>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-black rounded-xl text-gold shadow-md">
-                <Car size={28} />
+            <div className="flex items-center gap-3.5 mb-6">
+              <div className="p-2.5 bg-black rounded-xl text-white shadow-xs">
+                <Car size={24} />
               </div>
-              <h2 className="text-4xl font-heading font-black text-black">Parking</h2>
+              <h2 className="text-3xl sm:text-4xl font-heading font-black text-black">Parking</h2>
             </div>
-            <p className="text-gray-600 mb-8 leading-relaxed text-lg font-medium">
+            <p className="text-gray-600 mb-6 leading-relaxed text-base sm:text-lg font-normal">
               Enjoy complete peace of mind with our spacious, on-site secure parking facility. Designed to accommodate both individual hotel guests and large conference or event delegations, our parking area is monitored around the clock.
             </p>
-            <ul className="space-y-4 text-black font-medium text-lg mb-8">
+            <ul className="space-y-3 text-neutral-800 font-medium text-sm sm:text-base mb-8">
               {[
                 "Complimentary parking for all hotel guests & event attendees",
                 "24/7 CCTV surveillance and dedicated security personnel",
@@ -171,14 +170,14 @@ export default function FacilitiesPage() {
                 "Well-lit, paved area with direct access to reception",
                 "VIP and accessible parking spaces near the main entrance"
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-gold"></span>
+                <li key={i} className="flex items-center gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                   {item}
                 </li>
               ))}
             </ul>
-            <div className="flex items-center gap-3 text-lg font-bold text-black bg-gold/20 border border-gold/40 w-fit px-6 py-3 rounded-full shadow-sm">
-              <Clock size={20} className="text-gold" />
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-neutral-800 bg-neutral-100 border border-neutral-200 w-fit px-4 py-2 rounded-full">
+              <Clock size={16} className="text-amber-600" />
               <span>Open 24/7 — Complimentary</span>
             </div>
           </div>

@@ -151,8 +151,8 @@ export default function CashierDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [expandedPastEntry, setExpandedPastEntry] = useState<string | null>(null);
 
-  // hotel context for service payments (e.g. sauna)
-  const { saunaBookings, updateSaunaBooking } = useHotel();
+  // hotel context for service payments (e.g. sauna) & offline history
+  const { saunaBookings, updateSaunaBooking, dailySalesHistory } = useHotel();
   const [saunaUpdatingId, setSaunaUpdatingId] = useState<string | null>(null);
 
   const handleMarkSaunaPaid = async (booking: any) => {
@@ -241,10 +241,18 @@ export default function CashierDashboardPage() {
             setShowUploadBox(true);
           }
         } else {
-          setHistoryError("Could not load history.");
+          if (dailySalesHistory && dailySalesHistory.length > 0) {
+            setHistory([...dailySalesHistory].reverse());
+          } else {
+            setHistoryError("Working offline. No past reports stored locally.");
+          }
         }
       } catch {
-        setHistoryError("Could not load history.");
+        if (dailySalesHistory && dailySalesHistory.length > 0) {
+          setHistory([...dailySalesHistory].reverse());
+        } else {
+          setHistoryError("Working offline. No past reports stored locally.");
+        }
       } finally {
         setHistoryLoading(false);
       }

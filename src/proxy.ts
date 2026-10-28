@@ -8,12 +8,14 @@ export function proxy(request: NextRequest) {
   // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
 
-  // Skip static assets, sitemaps, robots, and manifests
+  // Skip static assets, sitemaps, robots, manifests, service workers, and offline pages
   if (
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
     pathname === "/manifest.webmanifest" ||
-    /\.(png|jpg|jpeg|svg|webp|gif|ico|avif|txt|xml|webmanifest)$/i.test(pathname)
+    pathname === "/sw.js" ||
+    pathname === "/offline.html" ||
+    /\.(png|jpg|jpeg|svg|webp|gif|ico|avif|txt|xml|webmanifest|js|html)$/i.test(pathname)
   ) {
     return;
   }
@@ -31,7 +33,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next), api routes, sitemaps, robots, manifest, and static assets
-    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.webp|.*\\.gif|.*\\.ico|.*\\.avif|.*\\.txt|.*\\.xml|.*\\.webmanifest).*)",
+    // Skip all internal paths (_next), api routes, sitemaps, robots, manifest, sw.js, offline.html, and static assets
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|sw.js|offline.html|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.webp|.*\\.gif|.*\\.ico|.*\\.avif|.*\\.txt|.*\\.xml|.*\\.webmanifest|.*\\.js).*)",
   ],
 };

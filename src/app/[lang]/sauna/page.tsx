@@ -116,21 +116,17 @@ export default function SaunaBookingPage() {
 
   return (
     <div className="pt-24 pb-20 min-h-screen bg-white relative">
-      {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-full h-[350px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold/10 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-700 font-bold text-xs uppercase tracking-wider mb-4 shadow-sm">
-            <Flame size={14} className="text-amber-600 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-neutral-100 border border-neutral-200 rounded-full text-neutral-800 font-bold text-xs uppercase tracking-wider mb-4">
+            <Flame size={14} className="text-amber-600" />
             <span>Hollywood Wellness &amp; Spa</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-heading font-black text-black tracking-tight mb-4">
             Book Your Sauna Session
           </h1>
-          <p className="text-gray-600 text-lg font-medium">
+          <p className="text-gray-600 text-base sm:text-lg font-normal">
             Immerse yourself in dry wood and eucalyptus steam therapy. Fill in the reservation form below.
             Our Front Desk <strong>Sauna Controller (Receptionist)</strong> will fix your personalized rate and confirm your slot.
           </p>

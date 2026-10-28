@@ -39,6 +39,21 @@ export default function ContactPage() {
       setFormStatus("success");
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (err: any) {
+      // If offline or network failed, queue in offline sync engine so it sends when Wi-Fi is back!
+      if (!navigator.onLine || err?.message?.includes("Failed to fetch") || err?.message?.includes("NetworkError")) {
+        try {
+          const { syncEngine } = await import("@/lib/syncEngine");
+          await syncEngine.queueMutation(
+            "/api/contact",
+            "POST",
+            formData,
+            `Contact message from ${formData.name}`
+          );
+          setFormStatus("success");
+          setFormData({ name: "", email: "", phone: "", message: "" });
+          return;
+        } catch (_) {}
+      }
       setErrorMessage(err.message || "An unexpected error occurred. Please try again.");
       setFormStatus("error");
     }
@@ -46,13 +61,15 @@ export default function ContactPage() {
 
   return (
     <div className="pt-20 min-h-screen bg-white relative">
-      <div className="absolute top-0 right-0 w-full h-96 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none border-b border-gold/10"></div>
-
-      <div className="bg-white py-16 text-center px-4 relative overflow-hidden z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-full bg-gold/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="bg-white py-16 text-center px-4 relative overflow-hidden border-b border-gray-100">
         <div className="relative z-10 max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-heading font-black text-black mb-4">Location &amp; Contact</h1>
-          <p className="text-gray-600 text-xl font-medium">
+          <div className="inline-block px-4 py-1.5 bg-neutral-100 rounded-full mb-4 border border-neutral-200">
+            <span className="text-xs font-bold text-neutral-800 uppercase tracking-widest">
+              Direct Inquiries
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-heading font-black text-black mb-4">Location &amp; Contact</h1>
+          <p className="text-gray-600 text-lg md:text-xl font-normal max-w-2xl mx-auto">
             Centrally located and easily accessible — we are always happy to assist you.
           </p>
         </div>

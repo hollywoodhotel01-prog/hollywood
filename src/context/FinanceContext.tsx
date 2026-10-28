@@ -1,13 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import {
   CurrencyCode,
   Invoice,
   InvoiceLineItem,
   InvoiceStatus,
-  InvoiceSummary,
-  PaymentMethod,
   PaymentSubmission,
   Receipt,
   VendorInfo,
@@ -22,6 +20,14 @@ import {
   round2,
 } from "@/lib/financeCalculations";
 import { Booking } from "./BookingContext";
+import {
+  STORES,
+  getAllFromStore,
+  replaceStoreData,
+  putItemToStore,
+  deleteItemFromStore,
+} from "@/lib/offlineDb";
+import { syncEngine } from "@/lib/syncEngine";
 
 interface CreateInvoiceInput {
   invoice_number?: string;
@@ -71,48 +77,82 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   const [vendorConfig, setVendorConfig] = useState<VendorInfo>(DEFAULT_VENDOR);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  // Fetch from Google Sheets on mount
+  // 1. Initial Local Cache Hydration (IndexedDB)
   useEffect(() => {
-    async function loadFinanceData() {
+    async function loadLocalFinance() {
       try {
-        const safeJson = async (res: Response) => {
-          try {
-            return await res.json();
-          } catch (e) {
-            return {};
-          }
-        };
-        const [invRes, recRes] = await Promise.all([
-          fetch('/api/invoices'),
-          fetch('/api/receipts')
+        const [cachedInvoices, cachedReceipts] = await Promise.all([
+          getAllFromStore<Invoice>(STORES.INVOICES),
+          getAllFromStore<Receipt>(STORES.RECEIPTS),
         ]);
-        const [invJson, recJson] = await Promise.all([
-          safeJson(invRes),
-          safeJson(recRes)
-        ]);
-        if (invJson.success && Array.isArray(invJson.invoices)) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const updatedInvoices = invJson.invoices.map((inv: Invoice) => {
-            if (
-              (inv.status === "UNPAID" || inv.status === "PARTIALLY_PAID" || inv.status === "ISSUED") &&
-              inv.due_date < todayStr &&
-              inv.summary.balance_due > 0
-            ) {
-              return { ...inv, status: "OVERDUE" as InvoiceStatus };
-            }
-            return inv;
-          });
-          setInvoices(updatedInvoices);
-        }
-        if (recJson.success && Array.isArray(recJson.receipts)) setReceipts(recJson.receipts);
-      } catch (e) {
-        console.error("Failed to load finance data", e);
-      } finally {
-        setDataLoaded(true);
+        if (cachedInvoices.length > 0) setInvoices(cachedInvoices);
+        if (cachedReceipts.length > 0) setReceipts(cachedReceipts);
+      } catch (err) {
+        console.warn("Could not load local finance data from IndexedDB:", err);
       }
     }
-    loadFinanceData();
+    loadLocalFinance();
   }, []);
+
+  // 2. Fetch live data from backend
+  const loadFinanceData = useCallback(async () => {
+    try {
+      const safeJson = async (res: Response): Promise<any> => {
+        try {
+          return await res.json();
+        } catch (e) {
+          return {};
+        }
+      };
+
+      const [invRes, recRes] = await Promise.all([
+        fetch("/api/invoices"),
+        fetch("/api/receipts"),
+      ]);
+
+      const [invJson, recJson] = await Promise.all([
+        safeJson(invRes),
+        safeJson(recRes),
+      ]);
+
+      if (invJson.success && Array.isArray(invJson.invoices)) {
+        const todayStr = new Date().toISOString().split("T")[0];
+        const updatedInvoices = invJson.invoices.map((inv: Invoice) => {
+          if (
+            (inv.status === "UNPAID" || inv.status === "PARTIALLY_PAID" || inv.status === "ISSUED") &&
+            inv.due_date < todayStr &&
+            inv.summary.balance_due > 0
+          ) {
+            return { ...inv, status: "OVERDUE" as InvoiceStatus };
+          }
+          return inv;
+        });
+        setInvoices(updatedInvoices);
+        replaceStoreData(STORES.INVOICES, updatedInvoices).catch(console.error);
+      }
+
+      if (recJson.success && Array.isArray(recJson.receipts)) {
+        setReceipts(recJson.receipts);
+        replaceStoreData(STORES.RECEIPTS, recJson.receipts).catch(console.error);
+      }
+    } catch (e) {
+      console.warn("Could not load live finance data (offline fallback active):", e);
+    } finally {
+      setDataLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadFinanceData();
+  }, [loadFinanceData]);
+
+  // Hook syncEngine onSyncComplete to reload server data when Wi-Fi returns
+  useEffect(() => {
+    const unsub = syncEngine.onSyncComplete(async () => {
+      await loadFinanceData();
+    });
+    return unsub;
+  }, [loadFinanceData]);
 
   const createInvoice = (input: CreateInvoiceInput): Invoice => {
     const calculatedItems = input.items.map((it) => calculateLineItem(it));
@@ -156,7 +196,15 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     };
 
     setInvoices((prev) => [newInvoice, ...prev]);
-    fetch('/api/invoices', { method: 'POST', body: JSON.stringify(newInvoice) }).catch(e => console.error("Failed to save invoice", e));
+    putItemToStore(STORES.INVOICES, newInvoice).catch(console.error);
+
+    syncEngine.queueMutation(
+      "/api/invoices",
+      "POST",
+      newInvoice,
+      `Create invoice ${newInvoice.invoice_number} for ${newInvoice.customer.name}`
+    ).catch(console.error);
+
     return newInvoice;
   };
 
@@ -218,25 +266,43 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     );
 
     if (updated) {
-      fetch('/api/invoices', { method: 'PUT', body: JSON.stringify(updated) }).catch(e => console.error("Failed to update invoice", e));
+      putItemToStore(STORES.INVOICES, updated).catch(console.error);
+      syncEngine.queueMutation(
+        "/api/invoices",
+        "PUT",
+        updated,
+        `Update invoice ${(updated as Invoice).invoice_number}`
+      ).catch(console.error);
     }
+
     return updated;
   };
 
   const cancelInvoice = (id: string): boolean => {
     let success = false;
+    let targetInv: Invoice | null = null;
+
     setInvoices((prev) =>
       prev.map((inv) => {
         if (inv.id === id) {
           success = true;
-          return { ...inv, status: "CANCELLED", updated_at: new Date().toISOString() };
+          targetInv = { ...inv, status: "CANCELLED", updated_at: new Date().toISOString() };
+          return targetInv;
         }
         return inv;
       })
     );
-    if (success) {
-      fetch('/api/invoices', { method: 'PUT', body: JSON.stringify({ id, status: 'CANCELLED' }) }).catch(e => console.error("Failed to cancel invoice", e));
+
+    if (targetInv) {
+      putItemToStore(STORES.INVOICES, targetInv).catch(console.error);
+      syncEngine.queueMutation(
+        "/api/invoices",
+        "PUT",
+        { id, status: "CANCELLED" },
+        `Cancel invoice ${(targetInv as Invoice).invoice_number}`
+      ).catch(console.error);
     }
+
     return success;
   };
 
@@ -250,22 +316,20 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       }
       return prev;
     });
+
     if (success) {
-      fetch(`/api/invoices?id=${id}`, { method: 'DELETE' }).catch(e => console.error("Failed to delete invoice", e));
+      deleteItemFromStore(STORES.INVOICES, id).catch(console.error);
+      syncEngine.queueMutation(
+        `/api/invoices?id=${id}`,
+        "DELETE",
+        null,
+        `Delete invoice ${id}`
+      ).catch(console.error);
     }
+
     return success;
   };
 
-  /**
-   * Section 5 Workflow & State Transition Logic:
-   * Validation: amount_received > 0
-   * Update Invoice:
-   *  - total_paid_to_date += amount_received
-   *  - balance_due = grand_total - total_paid_to_date
-   *  - If balance_due <= 0 -> Set Invoice Status to PAID
-   *  - If balance_due > 0 -> Set Invoice Status to PARTIALLY_PAID
-   * Issue Receipt: Generate immutable Receipt document referencing invoice_number
-   */
   const recordPayment = (payment: PaymentSubmission): Receipt | null => {
     if (!payment.amount_received || payment.amount_received <= 0) {
       throw new Error("Payment amount must be greater than 0.");
@@ -284,26 +348,27 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const newBalanceDue = round2(Math.max(0, targetInvoice.summary.grand_total - newTotalPaid));
     const newStatus: InvoiceStatus = newBalanceDue <= 0 ? "PAID" : "PARTIALLY_PAID";
 
-    // Update target invoice
+    // Update target invoice in state
+    const updatedInvoice: Invoice = {
+      ...targetInvoice,
+      status: newStatus,
+      summary: {
+        ...targetInvoice.summary,
+        amount_paid: newTotalPaid,
+        balance_due: newBalanceDue,
+      },
+      updated_at: new Date().toISOString(),
+    };
+
     setInvoices((prev) =>
-      prev.map((inv) => {
-        if (inv.invoice_number !== payment.invoice_number) return inv;
-        return {
-          ...inv,
-          status: newStatus,
-          summary: {
-            ...inv.summary,
-            amount_paid: newTotalPaid,
-            balance_due: newBalanceDue,
-          },
-          updated_at: new Date().toISOString(),
-        };
-      })
+      prev.map((inv) => (inv.invoice_number === payment.invoice_number ? updatedInvoice : inv))
     );
+    putItemToStore(STORES.INVOICES, updatedInvoice).catch(console.error);
 
     // Format current date-time for payment
     const now = new Date();
-    const formattedDate = payment.payment_date || now.toISOString().replace("T", " ").substring(0, 19);
+    const formattedDate =
+      payment.payment_date || now.toISOString().replace("T", " ").substring(0, 19);
 
     const receiptNumber = generateReceiptNumber(receipts);
     const txnRef = payment.transaction_reference || generateTxnReference(payment.payment_method);
@@ -328,19 +393,30 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     };
 
     setReceipts((prev) => [newReceipt, ...prev]);
+    putItemToStore(STORES.RECEIPTS, newReceipt).catch(console.error);
 
-    // Save receipt
-    fetch('/api/receipts', { method: 'POST', body: JSON.stringify(newReceipt) }).catch(e => console.error("Failed to save receipt", e));
-    // Update invoice
-    fetch('/api/invoices', { method: 'PUT', body: JSON.stringify({
-      invoice_number: targetInvoice.invoice_number,
-      status: newStatus,
-      summary: {
-        ...targetInvoice.summary,
-        amount_paid: newTotalPaid,
-        balance_due: newBalanceDue,
-      }
-    }) }).catch(e => console.error("Failed to update invoice payment", e));
+    // Queue mutations for sync
+    syncEngine.queueMutation(
+      "/api/receipts",
+      "POST",
+      newReceipt,
+      `Issue receipt ${newReceipt.receipt_number} for invoice ${targetInvoice.invoice_number}`
+    ).catch(console.error);
+
+    syncEngine.queueMutation(
+      "/api/invoices",
+      "PUT",
+      {
+        invoice_number: targetInvoice.invoice_number,
+        status: newStatus,
+        summary: {
+          ...targetInvoice.summary,
+          amount_paid: newTotalPaid,
+          balance_due: newBalanceDue,
+        },
+      },
+      `Update invoice ${targetInvoice.invoice_number} payment status`
+    ).catch(console.error);
 
     return newReceipt;
   };
@@ -355,13 +431,18 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       created_at: now.toISOString(),
     };
     setReceipts((prev) => [newReceipt, ...prev]);
-    fetch('/api/receipts', { method: 'POST', body: JSON.stringify(newReceipt) }).catch(e => console.error("Failed to save direct receipt", e));
+    putItemToStore(STORES.RECEIPTS, newReceipt).catch(console.error);
+
+    syncEngine.queueMutation(
+      "/api/receipts",
+      "POST",
+      newReceipt,
+      `Direct receipt ${newReceipt.receipt_number}`
+    ).catch(console.error);
+
     return newReceipt;
   };
 
-  /**
-   * 1-Click Invoice Generation from a Booking reservation
-   */
   const generateInvoiceFromBooking = (booking: Booking, customNotes?: string): Invoice => {
     const d1 = new Date(booking.checkIn);
     const d2 = new Date(booking.checkOut);
@@ -370,13 +451,16 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const prices: Record<string, number> = {
       "Luxury Room": 200000,
     };
-    
+
     const roomsCount = booking.numberOfRooms || 1;
-    const unitPrice = prices[booking.roomType] || Math.round(booking.amount / (nights * roomsCount));
+    const unitPrice =
+      prices[booking.roomType] || Math.round(booking.amount / (nights * roomsCount));
 
     const itemInput = {
       item_id: `ROOM-${booking.roomType.substring(0, 2).toUpperCase()}`,
-      description: `${roomsCount}x ${booking.roomType} Accommodation (${nights} Night${nights > 1 ? "s" : ""}: ${booking.checkIn} to ${booking.checkOut})`,
+      description: `${roomsCount}x ${booking.roomType} Accommodation (${nights} Night${
+        nights > 1 ? "s" : ""
+      }: ${booking.checkIn} to ${booking.checkOut})`,
       quantity: nights * roomsCount,
       unit_price: unitPrice,
       discount_amount: 0,

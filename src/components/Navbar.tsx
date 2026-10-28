@@ -57,13 +57,13 @@ export default function Navbar({ lang, dict }: { lang: string, dict: any }) {
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-3 xl:gap-5 2xl:gap-6">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-sm xl:text-base 2xl:text-[17px] font-medium transition-colors hover:text-gold whitespace-nowrap ${
-                  pathname === link.href ? "text-gold font-bold" : "text-gray-800"
+                className={`text-sm xl:text-[15px] transition-colors whitespace-nowrap ${
+                  pathname === link.href ? "text-black font-bold" : "text-neutral-600 hover:text-black font-medium"
                 }`}
               >
                 {link.name}
@@ -71,15 +71,15 @@ export default function Navbar({ lang, dict }: { lang: string, dict: any }) {
             ))}
             <Link
               href={`/${lang}/book`}
-              className="bg-gold hover:bg-gold-light text-black px-4 xl:px-6 py-2 xl:py-2.5 rounded-full font-bold text-sm xl:text-base transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 whitespace-nowrap"
+              className="bg-black hover:bg-neutral-800 text-white px-5 xl:px-6 py-2.5 rounded-full font-bold text-sm transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5 whitespace-nowrap"
             >
               {dict.bookNow}
             </Link>
             <button
               onClick={switchLanguage}
-              className="flex items-center gap-1.5 text-sm xl:text-base font-medium text-gray-800 hover:text-gold transition-colors border border-black/20 px-2.5 xl:px-3 py-1.5 rounded-full whitespace-nowrap"
+              className="flex items-center gap-1.5 text-xs font-bold text-neutral-700 hover:text-black transition-colors border border-neutral-300 hover:border-black px-3 py-1.5 rounded-full whitespace-nowrap cursor-pointer"
             >
-              <Globe size={16} />
+              <Globe size={14} />
               {lang === "en" ? "RW" : "EN"}
             </button>
           </nav>
@@ -87,13 +87,13 @@ export default function Navbar({ lang, dict }: { lang: string, dict: any }) {
           <div className="lg:hidden flex items-center gap-3">
             <button
               onClick={switchLanguage}
-              className="flex items-center gap-1 text-sm font-semibold text-gray-800 hover:text-gold transition-colors border border-black/20 px-2.5 py-1 rounded-full"
+              className="flex items-center gap-1 text-xs font-bold text-neutral-700 hover:text-black transition-colors border border-neutral-300 px-2.5 py-1 rounded-full cursor-pointer"
             >
-              <Globe size={14} />
+              <Globe size={13} />
               {lang === "en" ? "RW" : "EN"}
             </button>
             <button
-              className="p-2 text-black hover:text-gold transition-colors"
+              className="p-2 text-black hover:text-neutral-600 transition-colors cursor-pointer"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -109,22 +109,22 @@ export default function Navbar({ lang, dict }: { lang: string, dict: any }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-gray-200"
+            className="lg:hidden bg-white border-t border-gray-100"
           >
             <div className="px-4 pt-2 pb-6 space-y-1 shadow-lg">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`block px-3 py-3.5 text-lg font-medium border-b border-gray-100 ${
-                    pathname === link.href ? "text-gold font-bold" : "text-gray-800"
+                  className={`block px-3 py-3 text-base border-b border-gray-100 ${
+                    pathname === link.href ? "text-black font-bold" : "text-neutral-600 font-medium"
                   }`}
                 >
                   {link.name}
                 </Link>
               ))}
               <div className="pt-4">
-                <Link href={`/${lang}/book`} className="block w-full text-center bg-gold text-black px-6 py-3 rounded-lg font-bold text-base sm:text-lg shadow-md">
+                <Link href={`/${lang}/book`} className="block w-full text-center bg-black hover:bg-neutral-800 text-white px-6 py-3 rounded-xl font-bold text-base shadow-sm">
                   {dict.bookNow}
                 </Link>
               </div>

@@ -32,15 +32,7 @@
       "locationLabel": "Prime Location",
       "location": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
       "locationDirections": "View on Map",
-      "description": "Conveniently situated along Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda, Hollywood Hotel stands as the leading luxury destination among Hollywood in Nyagatare hotels.\n\nWe blend timeless elegance with modern luxury — offering meticulously designed suites, executive conference facilities, Hollywood Bar, wellness spa, and an unmatched level of Rwandan hospitality that makes us the #1 choice for travelers searching for the best hotels in Nyagatare and the Eastern Province.",
-      "features": [
-        "Prime location along Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
-        "Over 100 luxury rooms and suites across 4 distinct categories",
-        "Three event & conference halls for corporate summits, retreats, and grand weddings",
-        "Famous Hollywood Bar with signature drinks, cocktails and weekend entertainment",
-        "Full-service Spa, Traditional Sauna, Modern Gym & Outdoor Swimming Pool",
-        "Complimentary secure parking and shuttle service across Nyagatare"
-      ],
+      "description": "Conveniently located along Kagitumba Road in Rwimiyaga, Hollywood Hotel is Nyagatare's premier destination, blending modern luxury with warm Rwandan hospitality across our premium suites, event venues, dining, and wellness facilities.",
       "exploreSuites": "Explore our suites"
     },
     "accommodations": {
@@ -374,24 +366,22 @@
     "uncategorized": "Uncategorized"
   },
   "tourPage": {
-    "badge": "Comprehensive Photographic Tour",
-    "title": "Explore Every Corner of Hollywood Hotel",
-    "subtitle": "Immerse yourself in our serene gardens, illuminated courtyard fountains, open-air sports lounge, luxurious suites, and grand event spaces in Rwimiyaga, Nyagatare.",
-    "allFilter": "All Photos",
+    "title": "Photo Tour",
+    "subtitle": "A visual journey through the spaces, suites, and gardens of Hollywood Hotel.",
+    "allFilter": "All",
     "gardensFilter": "Gardens & Fountains",
-    "architectureFilter": "Architecture & Grounds",
+    "architectureFilter": "Architecture",
     "roomsFilter": "Rooms & Suites",
-    "diningFilter": "Dining & Lounge",
+    "diningFilter": "Dining & Bar",
     "eventsFilter": "Wellness & Events",
-    "searchPlaceholder": "Search by feature (e.g. garden, fountain, pool, balcony, suite, sauna)...",
+    "searchPlaceholder": "Search photos...",
     "showing": "Showing",
     "of": "of",
-    "photos": "hotel views",
-    "viewDetails": "Tap to expand view",
+    "photos": "photos",
+    "viewDetails": "View full size",
     "bookRoom": "Book A Room",
-    "inquire": "Inquire / Contact Us",
-    "featuredNote": "Starting with our newest and most secluded highlights — lush gardens, courtyard fountains, grand facade, and open-air entertainment.",
-    "noResults": "No photos found matching your search. Try another keyword or reset the filter.",
-    "resetFilter": "Reset Filter"
+    "inquire": "Contact",
+    "noResults": "No photos found matching your search.",
+    "resetFilter": "Show All"
   }
 }

@@ -11,6 +11,8 @@ import { FinanceProvider } from "@/context/FinanceContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import OfflineSyncBanner from "@/components/OfflineSyncBanner";
 import { getDictionary, Locale } from "@/dictionaries";
 
 const inter = Inter({
@@ -313,9 +315,11 @@ export default async function RootLayout({
         <LanguageProvider lang={lang as Locale} dict={dict}>
           <BookingProvider>
             <FinanceProvider>
+              <ServiceWorkerRegister />
               <Navbar lang={lang} dict={dict.navigation} />
               <main className="flex-1">{children}</main>
               <Footer lang={lang} dict={dict.navigation} />
+              <OfflineSyncBanner />
             </FinanceProvider>
           </BookingProvider>
         </LanguageProvider>
