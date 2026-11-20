@@ -173,13 +173,6 @@ export default async function RootLayout({
         "@id": "https://hollywoodhotel.rw/#hotel",
         "name": "Hollywood Hotel",
         "alternateName": [
-          "Best Hotel in Nyagatare",
-          "Hotels in Nyagatare Rwanda",
-          "Best Hotel in Rwimiyaga Nyagatare",
-          "Hollywood Hotel Eastern Province",
-          "Premier Hotel in Eastern Province Rwanda",
-          "Hotels in Eastern Province Rwanda",
-          "Hollywood in Nyagatare Hotels",
           "Hollywood Hotel Nyagatare",
           "Hollywood Hotel Rwimiyaga"
         ],
@@ -406,12 +399,14 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Hollywood Hotel" />
         <meta name="application-name" content="Hollywood Hotel" />
         <meta name="msapplication-TileColor" content="#0B0B0B" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <LanguageProvider lang={lang as Locale} dict={dict}>
           <BookingProvider>
             <FinanceProvider>
