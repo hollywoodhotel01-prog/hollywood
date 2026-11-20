@@ -77,28 +77,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const route of routes) {
-    // Canonical root route entry
-    entries.push({
-      url: `${baseUrl}${route.path}`,
-      lastModified: now,
-      changeFrequency: route.changeFrequency,
-      priority: route.priority,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/en${route.path}`,
-          rw: `${baseUrl}/rw${route.path}`,
-          "x-default": `${baseUrl}/en${route.path}`,
-        },
-      },
-      images: route.images,
-    });
-
-    // English localized route
+    // English localized route (primary canonical)
     entries.push({
       url: `${baseUrl}/en${route.path}`,
       lastModified: now,
       changeFrequency: route.changeFrequency,
-      priority: Number((route.priority * 0.95).toFixed(2)),
+      priority: route.priority,
       alternates: {
         languages: {
           en: `${baseUrl}/en${route.path}`,

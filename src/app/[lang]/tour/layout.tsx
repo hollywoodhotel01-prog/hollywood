@@ -8,19 +8,26 @@ export async function generateMetadata({
   const { lang } = await params;
   const isKinyarwanda = lang === "rw";
 
-  const title = isKinyarwanda ? "Umutambagiro w'Amafoto | Hollywood Hotel" : "Tour & Photo Gallery | Hollywood Hotel";
+  const title = isKinyarwanda
+    ? "Umutambagiro w'Amafoto mu Ntara y'Iburasirazuba & Nyagatare"
+    : "Tour & Photo Gallery in Eastern Province & Nyagatare";
   const description = isKinyarwanda
-    ? "Tembera ubusitani bwiza, amariba y'amazi, ibyumba by'akataraboneka, salon ya VIP, n'ahantu hose h'agaciro muri Hollywood Hotel i Rwimiyaga, Nyagatare."
-    : "Explore every corner of Hollywood Hotel in Rwimiyaga, Nyagatare. Take a virtual photographic tour through our lush gardens, water fountains, luxury suites, bar, and amenities.";
+    ? "Tembera ubusitani bwiza, amariba y'amazi, ibyumba by'akataraboneka, salon ya VIP, n'ahantu hose h'agaciro muri Hollywood Hotel i Rwimiyaga, Nyagatare mu Ntara y'Iburasirazuba."
+    : "Explore every corner of Hollywood Hotel in Rwimiyaga, Nyagatare District, Eastern Province, Rwanda. Virtual photographic tour of our lush gardens, water fountains, luxury suites, bar, and amenities.";
 
   return {
     title,
     description,
     alternates: {
       canonical: `/${lang}/tour`,
+      languages: {
+        en: "/en/tour",
+        rw: "/rw/tour",
+        "x-default": "/en/tour",
+      },
     },
     openGraph: {
-      title: `${title} | Hollywood Hotel`,
+      title: `${title} | Hollywood Hotel — Eastern Province, Rwanda`,
       description,
       url: `https://hollywoodhotel.rw/${lang}/tour`,
       images: [
@@ -28,7 +35,7 @@ export async function generateMetadata({
           url: "/garden.webp",
           width: 1200,
           height: 800,
-          alt: "Hollywood Hotel Rwimiyaga - Scenic Gardens and Photo Tour",
+          alt: "Hollywood Hotel Rwimiyaga Nyagatare - Scenic Gardens in Eastern Province, Rwanda",
         },
       ],
     },

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Bus, ArrowUpRight } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Bus, ArrowUpRight, Navigation, Compass } from "lucide-react";
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -296,6 +296,62 @@ export default function ContactPage() {
               )}
             </div>
           </motion.div>
+        </div>
+
+        {/* Interactive Eastern Province Map & Regional Travel Routes */}
+        <div className="mt-20 bg-neutral-950 text-white rounded-3xl p-7 md:p-10 border border-neutral-800 shadow-2xl overflow-hidden relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest mb-4">
+                  <Compass size={14} className="text-amber-400" />
+                  <span>Eastern Province Regional Gateway</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3 leading-tight">
+                  Directions &amp; Travel Routes Across Eastern Province, Rwanda
+                </h2>
+                <p className="text-gray-300 text-sm leading-relaxed mb-6">
+                  Strategically positioned on Kagitumba Road in Rwimiyaga, Nyagatare District — serving travelers across Rwanda&apos;s Eastern Province with effortless tarmac road access.
+                </p>
+
+                <div className="space-y-3">
+                  {[
+                    { route: "Kigali → Rwamagana → Kayonza → Rwimiyaga", detail: "Direct paved national highway corridor" },
+                    { route: "Gatsibo & Gabiro → Rwimiyaga", detail: "Fast highway connection (~25–45 mins)" },
+                    { route: "Nyagatare Town & Kagitumba One-Stop Border", detail: "Main commercial road corridor (~25 mins)" },
+                    { route: "Akagera National Park Northern & Eastern Routes", detail: "Preferred luxury safari & spa stay base" },
+                  ].map((item, idx) => (
+                    <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="text-sm font-bold text-amber-300">{item.route}</div>
+                      <div className="text-xs text-gray-300 mt-0.5">{item.detail}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <a
+                href="https://maps.google.com/?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Eastern+Province+Rwanda"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2.5 bg-gold hover:bg-gold-light text-black px-6 py-4 rounded-2xl font-black text-sm transition-all shadow-lg"
+              >
+                <Navigation size={16} />
+                <span>Open Live Google Map Directions</span>
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+
+            <div className="lg:col-span-7 min-h-[340px] md:min-h-[420px] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
+              <iframe
+                title="Hollywood Hotel Kagitumba Road Rwimiyaga Nyagatare Eastern Province Rwanda Map"
+                src="https://maps.google.com/maps?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Eastern+Province+Rwanda&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full min-h-[340px] md:min-h-[420px] border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

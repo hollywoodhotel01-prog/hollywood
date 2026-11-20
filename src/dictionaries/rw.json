@@ -12,9 +12,11 @@
     "dashboard": "Ubuyobozi"
   },
   "home": {
-    "welcome": "IKAZE MURI HOLLYWOOD HOTEL",
+    "welcome": "HOTELI YA MBERE I NYAGATARE • MU NTARA Y'IBURASIRAZUBA, RWANDA",
     "heroTitle": "HOLLYWOOD HOTEL",
-    "heroSubtitle": "Hoteli y'akataraboneka mu zizwi nka Hollywood muri hoteli z'i Nyagatare — ku Muhanda wa Kagitumba, Rwimiyaga, Akarere ka Nyagatare, Intara y'Iburasirazuba, u Rwanda.",
+    "heroSubtitle": "Hoteli ya mbere i Nyagatare (best hotel in Nyagatare) n'icyitegererezo mu mahoteli yo mu Ntara y'Iburasirazuba — ku Muhanda wa Kagitumba, Rwimiyaga, hafi ya Pariki y'Akagera.",
+    "heroBadge": "Hoteli ya Mbere i Nyagatare • Intara y'Iburasirazuba • 4.9 ★",
+    "heroLocationTag": "Kagitumba Road • Rwimiyaga • Nyagatare • Intara y'Iburasirazuba",
     "bookSuite": "Bookinga",
     "planEvent": "Twandikire",
     "facilities": {
@@ -26,13 +28,13 @@
       "primeLocation": "Ahantu heza mu mujyi"
     },
     "why": {
-      "label": "Abo Turi Bo • Hoteli ya Hollywood i Nyagatare",
-      "titleLine1": "Amahitamo meza",
-      "titleLine2": "igihe cyose i Nyagatare",
-      "locationLabel": "Aho Duherereye",
+      "label": "Abo Turi Bo • Hoteli ya Mbere i Nyagatare & Mu Ntara y'Iburasirazuba",
+      "titleLine1": "Hoteli ya Mbere i Nyagatare",
+      "titleLine2": "& Ikitegererezo mu Burasirazuba",
+      "locationLabel": "Aho Duherereye i Nyagatare & mu Ntara y'Iburasirazuba",
       "location": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
       "locationDirections": "Kureba Ikarita",
-      "description": "Iherereye ku Muhanda wa Kagitumba i Rwimiyaga, Hollywood Hotel ni yo hoteli y'icyitegererezo muri Nyagatare, ikaba ibahuza n'amacumbi meza, ibyumba by'inama n'ibirori, amafunguro n'ahagenewe kwiyitaho, byose bikoranywe urugwiro n'umuco mwiza bya Kinyarwanda.",
+      "description": "Iherereye ku Muhanda wa Kagitumba i Rwimiyaga mu Karere ka Nyagatare, Hollywood Hotel ni yo hoteli ya mbere i Nyagatare (best hotel in Nyagatare) kandi iyoboye mu Ntara y'Iburasirazuba, ibahuza n'ibyumba 100+ byiza, salle z'inama, Hollywood Bar, amafunguro na spa byose bikoranywe ubunyamwuga n'urugwiro bya Kinyarwanda.",
       "exploreSuites": "Sura ibyumba byacu"
     },
     "accommodations": {
@@ -107,6 +109,97 @@
       "title": "Kuruhuka",
       "description": "Komeza gahunda yawe yo kwita ku buzima bwiza mu nzu yacu y'imyitozo (Gym) igezweho kandi yuzuye ibikoresho. Uhasanga ibikoresho by'ikoranabuhanga rigezweho byo kongera imbaraga no gutuma amaraso atembera neza",
       "explore": "Reba Ibikorwa"
+    },
+    "easternProvinceHub": {
+      "badge": "Hoteli ya Mbere i Nyagatare • Ihuriro ry'Intara y'Iburasirazuba",
+      "title": "Impamvu Hollywood Hotel Ari Yo Hoteli ya Mbere i Nyagatare no mu Ntara y'Iburasirazuba",
+      "subtitle": "Waba uje i Nyagatare, gusura Pariki y'Akagera, mu nama i Gatsibo cyangwa Kayonza, cyangwa uvuye ku mupaka wa Kagitumba, Hollywood Hotel ni yo hoteli ya mbere i Nyagatare n'ingoro y'ubwiza mu Ntara y'Iburasirazuba.",
+      "nyagatareHighlights": [
+        "🏆 Hoteli ya #1 i Nyagatare",
+        "📍 Rwimiyaga • Ku Muhanda wa Kagitumba",
+        "🏛️ Ihuriro ry'Akarere ka Nyagatare & Kaminuza",
+        "⭐ Amahitamo ya mbere: Hollywood in Nyagatare Hotels"
+      ],
+      "stats": [
+        { "value": "100+", "label": "Ibyumba & Suites Byiza" },
+        { "value": "500+", "label": "Ubushobozi bw'Inama n'Ibirori" },
+        { "value": "24/7", "label": "Kwakira Abashyitsi & Umutekano" },
+        { "value": "#1", "label": "Mu Ntara y'Iburasirazuba" }
+      ],
+      "corridors": [
+        {
+          "tag": "Icyicaro Gikuru",
+          "metric": "0 min • Ku Muhanda Mukuru",
+          "title": "Ihuriro rya Nyagatare & Rwimiyaga",
+          "description": "Iherereye neza ku muhanda wa kaburimbo wa Kagitumba i Rwimiyaga, ikorohereza abayigana kwinjira, guhagarika imodoka mu mutekano no kugera i Nyagatare."
+        },
+        {
+          "tag": "Ubukerarugendo",
+          "metric": "Safari • Amajyaruguru/Iburasirazuba",
+          "title": "Irembo rya Pariki y'Igihugu y'Akagera",
+          "description": "Ahantu heza cyane abasura Pariki y'Akagera bacumbika bashaka ibyumba byiza, amazi ashyushye, amafunguro meza na spa yo kuruhukiramo."
+        },
+        {
+          "tag": "Inama & Imiryango",
+          "metric": "25–45 min • Kaburimbo",
+          "title": "Inzira ya Gatsibo, Gabiro & Kayonza",
+          "description": "Ikorohereza abayobozi, abakozi b'imiryango mpuzamahanga n'abitabira inama bakorera hagati ya Gabiro, Gatsibo, Kayonza na Nyagatare."
+        },
+        {
+          "tag": "Umupaka wa Kagitumba",
+          "metric": "~25 min • Kagitumba",
+          "title": "Umupaka wa Kagitumba (One-Stop Border)",
+          "description": "Hoteli ya mbere ku banyamahanga, abacuruzi bakomeye n'abadiplomate binjira mu Rwanda banyuze mu muhanda wa Uganda–Rwanda."
+        },
+        {
+          "tag": "Umuhanda wa Kigali",
+          "metric": "Kaburimbo Nziza",
+          "title": "Inzira ya Rwamagana & Kigali",
+          "description": "Umuhanda mwiza wa kaburimbo uhuza Kigali, Rwamagana, Kayonza n'ibigo by'ubucuruzi byo mu Ntara y'Iburasirazuba ukagera kuri Hollywood Hotel."
+        },
+        {
+          "tag": "Ibirori & Inama",
+          "metric": "Abashyitsi 150–500+",
+          "title": "Inama z'Intara n'Ubukwe Bwiza",
+          "description": "Ikibanza cyizewe mu Ntara y'Iburasirazuba ku nama za minisiteri, amahugurwa n'ubukwe bukomeye mu ihema ryo mu busitani."
+        }
+      ],
+      "mapBadge": "Ikarita ya Google Yemejwe • Intara y'Iburasirazuba, Rwanda",
+      "mapTitle": "Sanga Hollywood Hotel ku Muhanda wa Kagitumba, Rwimiyaga",
+      "mapDescription": "Iherereye rwagati ku muhanda wa Kagitumba i Rwimiyaga, mu Karere ka Nyagatare mu Ntara y'Iburasirazuba — hafi y'ibikorwa by'ubucuruzi n'ubukerarugendo hamwe na parikingi y'ubuntu 24/7.",
+      "mapAddress": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
+      "directionsButton": "Fungura Ikarita ya Google",
+      "whatsappButton": "Vugana na Reception kuri WhatsApp",
+      "instantBookingButton": "Saba Icyumba Online",
+      "faqLabel": "Ibibazo Bikunze Kubazwa",
+      "faqTitle": "Ibyo Wamenya ku Mahoteli mu Ntara y'Iburasirazuba & Nyagatare",
+      "faqSubtitle": "Ibisubizo ku byo abashyitsi, abakerarugendo n'abategura inama babaza igihe bahitamo hoteli ya mbere mu Ntara y'Iburasirazuba.",
+      "faqs": [
+        {
+          "question": "Ni ukubera iki Hollywood Hotel ifatwa nka hoteli ya mbere i Nyagatare (best hotel in Nyagatare) no mu Ntara y'Iburasirazuba?",
+          "answer": "Hollywood Hotel i Rwimiyaga mu Karere ka Nyagatare ni yo hoteli ya mbere i Nyagatare n'iy'icyitegererezo mu Ntara y'Iburasirazuba, ihuza ibyumba 100+ byiza na VIP suites, salle z'inama zigezweho, ihema ry'ubukwe ryakira abantu 500+, Hollywood Bar, resitora, gym, sauna na spa."
+        },
+        {
+          "question": "Hollywood Hotel iherereye hehe mu Ntara y'Iburasirazuba?",
+          "answer": "Hollywood Hotel iherereye ku Muhanda wa Kagitumba i Rwimiyaga, Akarere ka Nyagatare, mu Ntara y'Iburasirazuba, u Rwanda — byoroshye kuyigeraho uvuye i Kigali, Rwamagana, Kayonza, Gatsibo, mu mujyi wa Nyagatare no ku mupaka wa Kagitumba."
+        },
+        {
+          "question": "Hollywood Hotel iri kure hangana iki uvuye kuri Pariki y'Akagera, Nyagatare, Gatsibo, Kayonza n'Umupaka wa Kagitumba?",
+          "answer": "Iherereye ku muhanda mukuru wa kaburimbo wa Kagitumba mu Ntara y'Iburasirazuba, Hollywood Hotel ikorohereza kugera vuba mu mujyi wa Nyagatare, i Gabiro na Gatsibo, Kayonza na Rwamagana, ku mupaka wa Kagitumba no ku marembo y'uburasirazuba n'amajyaruguru ya Pariki y'Akagera."
+        },
+        {
+          "question": "Ni ayahe moko y'ibyumba n'ibiciro Hollywood Hotel itanga mu Ntara y'Iburasirazuba?",
+          "answer": "Dutanga ibyiciro bine by'ibyumba bifite ibiciro bisobanutse mu mafaranga y'u Rwanda: Standard (kuva kuri 50,000 RWF/ijoro), Superior (kuva kuri 80,000 RWF/ijoro), Deluxe ifite balcony n'ibiro (kuva kuri 120,000 RWF/ijoro), na Executive Suite (kuva kuri 200,000 RWF/ijoro), byose birimo Wi-Fi yihuta na serivisi ya 24/7."
+        },
+        {
+          "question": "Ese Hollywood Hotel yakira inama, ibirori n'ubukwe mu Ntara y'Iburasirazuba?",
+          "answer": "Yego. Hollywood Hotel ifite salle y'inama igezweho yakira abantu 150+ ifite ikoranabuhanga ry'amashusho ya 4K na Wi-Fi yihuta, ndetse n'ihema rinini ryo mu busitani ry'ubukwe n'ibirori ryakira abantu 500+."
+        },
+        {
+          "question": "Nabona nte icyumba cyangwa nkabika umwanya w'inama muri Hollywood Hotel?",
+          "answer": "Ushobora gusaba icyumba online 24/7 unyuze kuri hollywoodhotel.rw/rw/book cyangwa ukavugana ako kanya n'abakozi bacu kuri telefoni/WhatsApp +250 788 876 479 cyangwa imeyili hollywoodhotel01@gmail.com."
+        }
+      ]
     }
   },
   "booking": {

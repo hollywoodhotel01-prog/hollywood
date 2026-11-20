@@ -12,9 +12,11 @@
     "dashboard": "Dashboard"
   },
   "home": {
-    "welcome": "WELCOME TO HOLLYWOOD HOTEL",
+    "welcome": "BEST HOTEL IN NYAGATARE • EASTERN PROVINCE'S #1 LUXURY HOTEL",
     "heroTitle": "HOLLYWOOD HOTEL",
-    "heroSubtitle": "The premier luxury hotel among Hollywood in Nyagatare hotels — located on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda.",
+    "heroSubtitle": "Rated the best hotel in Nyagatare and the flagship among hotels in Eastern Province, Rwanda — on Kagitumba Road, Rwimiyaga, offering executive suites, conference halls & spa near Akagera.",
+    "heroBadge": "Best Hotel in Nyagatare • Eastern Province, Rwanda • 4.9 ★",
+    "heroLocationTag": "Kagitumba Road • Rwimiyaga • Nyagatare • Eastern Province",
     "bookSuite": "Book Now",
     "planEvent": "Contact Us",
     "facilities": {
@@ -26,13 +28,13 @@
       "primeLocation": "Prime Location"
     },
     "why": {
-      "label": "About Us • Hollywood in Nyagatare Hotels",
-      "titleLine1": "A Grand Stage for",
-      "titleLine2": "Every Occasion in Nyagatare",
-      "locationLabel": "Prime Location",
+      "label": "About Us • Best Hotel in Nyagatare & Eastern Province",
+      "titleLine1": "The Best Hotel in Nyagatare",
+      "titleLine2": "& Flagship of Eastern Province",
+      "locationLabel": "Prime Nyagatare & Eastern Province Address",
       "location": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
       "locationDirections": "View on Map",
-      "description": "Conveniently located along Kagitumba Road in Rwimiyaga, Hollywood Hotel is Nyagatare's premier destination, blending modern luxury with warm Rwandan hospitality across our premium suites, event venues, dining, and wellness facilities.",
+      "description": "Rising along Kagitumba Road in Rwimiyaga, Nyagatare District, Hollywood Hotel stands as the best hotel in Nyagatare and the premier destination among hotels in Eastern Province, Rwanda — uniting 100+ luxury rooms & VIP suites, executive conference venues, Hollywood Bar, gourmet dining, and wellness facilities with warm Rwandan hospitality.",
       "exploreSuites": "Explore our suites"
     },
     "accommodations": {
@@ -107,6 +109,97 @@
       "title": "Fitness & Wellness",
       "description": "Maintain your wellness routine in our fully-equipped modern gymnasium. Featuring the latest cardiovascular and strength training equipment, alongside dedicated spaces for yoga, stretching, and rejuvenation.",
       "explore": "View Facilities"
+    },
+    "easternProvinceHub": {
+      "badge": "Best Hotel in Nyagatare • Eastern Province Regional Hub",
+      "title": "Why Hollywood Hotel Is the Best Hotel in Nyagatare & Eastern Province, Rwanda",
+      "subtitle": "Whether visiting Nyagatare, tracking wildlife in Akagera National Park, attending summits in Gatsibo or Kayonza, or crossing Kagitumba Border, Hollywood Hotel is the best hotel in Nyagatare and Eastern Province's most complete luxury sanctuary.",
+      "nyagatareHighlights": [
+        "🏆 #1 Best Hotel in Nyagatare",
+        "📍 Rwimiyaga • Kagitumba Road",
+        "🏛️ Nyagatare District & University Hub",
+        "⭐ Top Choice: Hollywood in Nyagatare Hotels"
+      ],
+      "stats": [
+        { "value": "100+", "label": "Luxury Rooms & Suites" },
+        { "value": "500+", "label": "Event & Conference Capacity" },
+        { "value": "24/7", "label": "Concierge & Security" },
+        { "value": "#1", "label": "Rated in Eastern Province" }
+      ],
+      "corridors": [
+        {
+          "tag": "Flagship Location",
+          "metric": "0 min • Direct Highway",
+          "title": "Nyagatare & Rwimiyaga Hub",
+          "description": "Situated right on the paved Kagitumba Road commercial artery in Rwimiyaga, offering effortless entry, secure parking, and instant access to Nyagatare District headquarters."
+        },
+        {
+          "tag": "Wildlife & Tourism",
+          "metric": "Safari Base • North/East",
+          "title": "Akagera National Park Safari Gateway",
+          "description": "The preferred luxury base for northern and eastern Akagera safari travelers seeking executive suites, hot rainfall showers, fine dining, and spa recovery."
+        },
+        {
+          "tag": "Corporate & NGO",
+          "metric": "25–45 min • Highway",
+          "title": "Gatsibo, Gabiro & Kayonza Corridor",
+          "description": "Seamless paved highway access for regional directors, NGO delegations, and government summits moving between Gabiro, Gatsibo, Kayonza, and Nyagatare."
+        },
+        {
+          "tag": "Cross-Border Hub",
+          "metric": "~25 min • Kagitumba",
+          "title": "Kagitumba One-Stop Border Post",
+          "description": "Rwanda's premier cross-border luxury retreat for diplomatic envoys, regional traders, and international travelers arriving via the Uganda–Rwanda corridor."
+        },
+        {
+          "tag": "Capital Link",
+          "metric": "Direct Paved Route",
+          "title": "Rwamagana & Kigali Highway Link",
+          "description": "Smooth tarmac highway connection linking Kigali, Rwamagana, Kayonza, and Eastern Province business centers directly to our 24/7 concierge reception."
+        },
+        {
+          "tag": "Events & Summits",
+          "metric": "150–500+ Guests",
+          "title": "Regional Conferences & Government Retreats",
+          "description": "Eastern Province's trusted address for ministry retreats, institutional workshops, and royal marquee weddings with high-speed Wi-Fi and full catering."
+        }
+      ],
+      "mapBadge": "Verified Google Maps Pin • Eastern Province, Rwanda",
+      "mapTitle": "Find Hollywood Hotel on Kagitumba Road, Rwimiyaga",
+      "mapDescription": "Centrally positioned along Kagitumba Road in Rwimiyaga, Nyagatare District, Eastern Province — minutes from regional business hubs with 24/7 reception & complimentary parking.",
+      "mapAddress": "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda",
+      "directionsButton": "Open Live Google Map Directions",
+      "whatsappButton": "WhatsApp 24/7 Concierge",
+      "instantBookingButton": "Reserve a Room Online",
+      "faqLabel": "Traveler & Corporate Guide",
+      "faqTitle": "Hotels in Eastern Province & Nyagatare FAQ",
+      "faqSubtitle": "Everything guests, safari travelers, and event organizers ask when booking the top hotel in Eastern Province, Rwanda.",
+      "faqs": [
+        {
+          "question": "Why is Hollywood Hotel rated the best hotel in Nyagatare and among hotels in Eastern Province, Rwanda?",
+          "answer": "Hollywood Hotel in Rwimiyaga, Nyagatare District is widely recognized as the best hotel in Nyagatare and the flagship luxury destination among hotels in Eastern Province, Rwanda — combining 100+ modern rooms and VIP suites, executive conference halls, a 500+ guest wedding marquee, Hollywood Bar, fine dining, fitness gym, sauna, and wellness spa."
+        },
+        {
+          "question": "Where is Hollywood Hotel located in Eastern Province, Rwanda?",
+          "answer": "Hollywood Hotel is ideally situated directly along Kagitumba Road in Rwimiyaga, Nyagatare District, Eastern Province, Rwanda — easily reachable from Kigali, Rwamagana, Kayonza, Gatsibo, Nyagatare Town, and the Kagitumba One-Stop Border Post."
+        },
+        {
+          "question": "How far is Hollywood Hotel from Akagera National Park, Nyagatare Town, Gatsibo, Kayonza, and Kagitumba Border?",
+          "answer": "Located in the strategic Eastern Province corridor along the paved Kagitumba highway, Hollywood Hotel offers fast direct driving access to Nyagatare Town, Gabiro & Gatsibo, Kayonza & Rwamagana, Kagitumba Border Post, and the northern/eastern safari routes to Akagera National Park."
+        },
+        {
+          "question": "What room categories and prices does Hollywood Hotel offer in Eastern Province?",
+          "answer": "We offer four luxury room classes with transparent RWF rates: Standard Rooms (from 50,000 RWF/night), Superior Sky-View Rooms (from 80,000 RWF/night), Deluxe Balcony & Office Rooms (from 120,000 RWF/night), and Executive VIP Suites (from 200,000 RWF/night), all including high-speed Wi-Fi and 24/7 concierge care."
+        },
+        {
+          "question": "Does Hollywood Hotel host conferences, government summits, and weddings in Eastern Province?",
+          "answer": "Yes. Hollywood Hotel is a premier Eastern Province event venue featuring an air-conditioned indoor Executive Conference Hall (150+ guests with 4K screens and fiber Wi-Fi) and a Grand Outdoor Garden Wedding & Party Marquee Tent (500+ guests)."
+        },
+        {
+          "question": "How can I book a room or reserve an event at Hollywood Hotel in Eastern Province, Rwanda?",
+          "answer": "You can reserve online 24/7 via hollywoodhotel.rw/en/book or connect instantly with our front desk via phone/WhatsApp on +250 788 876 479 or email hollywoodhotel01@gmail.com."
+        }
+      ]
     }
   },
   "booking": {

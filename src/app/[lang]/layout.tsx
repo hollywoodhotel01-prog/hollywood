@@ -36,18 +36,18 @@ export async function generateMetadata({
   const isKinyarwanda = lang === "rw";
 
   const title = isKinyarwanda
-    ? "Hollywood Hotel Nyagatare | Icumbi ry'Ubwiza i Rwimiyaga, Rwanda"
-    : "Hollywood Hotel Nyagatare | Luxury Hotel in Rwimiyaga, Rwanda";
+    ? "Hollywood Hotel | Hoteli ya Mbere i Nyagatare & Mu Ntara y'Iburasirazuba, Rwanda"
+    : "Hollywood Hotel | Best Hotel in Nyagatare & Hotels in Eastern Province, Rwanda";
 
   const description = isKinyarwanda
-    ? "Gira ibihe byiza muri Hollywood Hotel ku Muhanda wa Kagitumba, Rwimiyaga, Akarere ka Nyagatare, mu Ntara y'Iburasirazuba. Hoteli y'akataraboneka mu zizwi nka Hollywood muri hoteli z'i Nyagatare (Hollywood in Nyagatare hotels) ifite ibyumba byiza, salle z'inama, Hollywood Bar, pisine, spa na resitora ihebuje."
-    : "Experience premier luxury at Hollywood Hotel on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda. The #1 destination for Hollywood in Nyagatare hotels offering luxury suites, conference halls, Hollywood Bar, swimming pool, wellness spa, and exquisite dining.";
+    ? "Hitamo Hollywood Hotel — hoteli ya mbere i Nyagatare (best hotel in Nyagatare, Hollywood in Nyagatare hotels) no mu Ntara y'Iburasirazuba (hotels in Eastern Province, Rwanda) ku Muhanda wa Kagitumba, Rwimiyaga hafi ya Pariki y'Akagera."
+    : "Rated the best hotel in Nyagatare & premier choice among hotels in Eastern Province, Rwanda. Located on Kagitumba Road, Rwimiyaga, Nyagatare District — Hollywood in Nyagatare hotels leader offering luxury suites, conference halls, wedding marquee, Hollywood Bar, pool & spa.";
 
   return {
     metadataBase: new URL("https://hollywoodhotel.rw"),
     title: {
       default: title,
-      template: "%s | Hollywood Hotel",
+      template: "%s | Hollywood Hotel — Best Hotel in Nyagatare & Eastern Province",
     },
     description,
     applicationName: "Hollywood Hotel",
@@ -56,10 +56,20 @@ export async function generateMetadata({
     publisher: "Hollywood Hotel",
     category: "travel",
     keywords: [
+      "hotels in eastern province",
+      "hotels in eastern province rwanda",
+      "best hotels in eastern province rwanda",
+      "eastern province rwanda hotels",
+      "luxury hotel eastern province rwanda",
+      "hoteli mu ntara y'iburasirazuba",
+      "hotels near akagera national park",
+      "gatsibo kayonza nyagatare hotels",
+      "rwamagana kayonza nyagatare hotel",
       "hollywood in nyagatare hotels",
       "hollywood hotel nyagatare",
       "hollywood in nyagatare",
       "Hollywood Hotel",
+      "Hollywood Hotel Eastern Province",
       "Hollywood Hotel Rwanda",
       "Hollywood Hotel Rwimiyaga",
       "Rwimiyaga hotel",
@@ -163,12 +173,19 @@ export default async function RootLayout({
         "@id": "https://hollywoodhotel.rw/#hotel",
         "name": "Hollywood Hotel",
         "alternateName": [
+          "Best Hotel in Nyagatare",
+          "Hotels in Nyagatare Rwanda",
+          "Best Hotel in Rwimiyaga Nyagatare",
+          "Hollywood Hotel Eastern Province",
+          "Premier Hotel in Eastern Province Rwanda",
+          "Hotels in Eastern Province Rwanda",
           "Hollywood in Nyagatare Hotels",
           "Hollywood Hotel Nyagatare",
           "Hollywood Hotel Rwimiyaga"
         ],
         "url": "https://hollywoodhotel.rw",
         "logo": "https://hollywoodhotel.rw/logo.png",
+        "hasMap": "https://www.google.com/maps?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Eastern+Province+Rwanda",
         "image": [
           "https://hollywoodhotel.rw/hero.webp",
           "https://hollywoodhotel.rw/night.webp",
@@ -180,7 +197,7 @@ export default async function RootLayout({
           "https://hollywoodhotel.rw/front.webp"
         ],
         "description":
-          "Premier luxury hotel on Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda. Top destination among Hollywood in Nyagatare hotels offering luxury accommodations, conference halls, Hollywood Bar, wellness spa, and exquisite dining.",
+          "Flagship luxury hotel among hotels in Eastern Province, Rwanda, located on Kagitumba Road, Rwimiyaga, Nyagatare District. Offering 100+ luxury rooms & suites, conference & event halls, wedding marquee, Hollywood Bar, wellness spa, sauna, swimming pool, and seamless access to Akagera National Park, Gatsibo, Kayonza, and Kagitumba Border.",
         "telephone": "+250788876479",
         "email": "hollywoodhotel01@gmail.com",
         "priceRange": "$$",
@@ -188,17 +205,100 @@ export default async function RootLayout({
         "paymentAccepted": "Cash, Credit Card, Mobile Money",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Kagitumba Road",
-          "addressLocality": "Rwimiyaga",
-          "addressRegion": "Nyagatare District, Eastern Province",
+          "streetAddress": "Kagitumba Road, Rwimiyaga",
+          "addressLocality": "Nyagatare District",
+          "addressRegion": "Eastern Province",
+          "postalCode": "00000",
           "addressCountry": "RW"
         },
-        "keywords": "hollywood in nyagatare hotels, hollywood hotel nyagatare, nyagatare hotels, hotels in nyagatare rwanda, kagitumba road hotel",
+        "containedInPlace": {
+          "@type": "AdministrativeArea",
+          "name": "Eastern Province, Rwanda"
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Eastern Province, Rwanda" },
+          { "@type": "AdministrativeArea", "name": "Nyagatare District" },
+          { "@type": "Place", "name": "Rwimiyaga" },
+          { "@type": "AdministrativeArea", "name": "Gatsibo District" },
+          { "@type": "AdministrativeArea", "name": "Kayonza District" },
+          { "@type": "AdministrativeArea", "name": "Rwamagana District" },
+          { "@type": "Place", "name": "Akagera National Park Northern Corridor" },
+          { "@type": "Place", "name": "Kagitumba Border Post" }
+        ],
+        "keywords": "best hotel in nyagatare, hotels in nyagatare rwanda, best hotel in rwimiyaga nyagatare, hotels in eastern province, hotels in eastern province rwanda, best hotels in eastern province rwanda, eastern province rwanda hotels, hollywood in nyagatare hotels, hollywood hotel nyagatare, nyagatare hotels, kagitumba road hotel, hotels near akagera national park",
         "geo": {
           "@type": "GeoCoordinates",
           "latitude": -1.45,
           "longitude": 30.43,
         },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "148",
+          "reviewCount": "148"
+        },
+        "containsPlace": [
+          {
+            "@type": "HotelRoom",
+            "name": "Standard Room",
+            "description": "Offered with high-speed Wi-Fi, clean modern bathroom, and spacious wardrobe.",
+            "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }
+          },
+          {
+            "@type": "HotelRoom",
+            "name": "Superior Room",
+            "description": "Features panoramic sky view, high-speed Wi-Fi, modern bathroom, and elegant wardrobe.",
+            "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }
+          },
+          {
+            "@type": "HotelRoom",
+            "name": "Deluxe Room",
+            "description": "Modern room with private balcony, high-speed Wi-Fi, sky-view working office, smart TV, and modern bathroom.",
+            "occupancy": { "@type": "QuantitativeValue", "maxValue": 3 }
+          },
+          {
+            "@type": "HotelRoom",
+            "name": "Executive Suite",
+            "description": "Big balcony, spacious wardrobe, luxury bathroom, 360 sky view, and VIP saloon lounge.",
+            "occupancy": { "@type": "QuantitativeValue", "maxValue": 4 }
+          }
+        ],
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "name": "Standard Room Stay",
+            "price": "50000",
+            "priceCurrency": "RWF",
+            "availability": "https://schema.org/InStock",
+            "url": "https://hollywoodhotel.rw/en/book?room=Standard"
+          },
+          {
+            "@type": "Offer",
+            "name": "Superior Room Stay",
+            "price": "80000",
+            "priceCurrency": "RWF",
+            "availability": "https://schema.org/InStock",
+            "url": "https://hollywoodhotel.rw/en/book?room=Superior"
+          },
+          {
+            "@type": "Offer",
+            "name": "Deluxe Room Stay",
+            "price": "120000",
+            "priceCurrency": "RWF",
+            "availability": "https://schema.org/InStock",
+            "url": "https://hollywoodhotel.rw/en/book?room=Deluxe"
+          },
+          {
+            "@type": "Offer",
+            "name": "Executive Suite Stay",
+            "price": "200000",
+            "priceCurrency": "RWF",
+            "availability": "https://schema.org/InStock",
+            "url": "https://hollywoodhotel.rw/en/book?room=Executive%20Suite"
+          }
+        ],
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",

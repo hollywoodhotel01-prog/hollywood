@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Star, Quote, Sparkles, Users, Dumbbell, Wifi, Droplets, Shirt, Sun, Tv, Eye, Crown, Check, Tent, Heart, MapPin, Navigation } from "lucide-react";
+import { ArrowRight, Star, Quote, Sparkles, Users, Dumbbell, Wifi, Droplets, Shirt, Sun, Tv, Eye, Crown, Check, Tent, Heart, MapPin, Navigation, Compass, ShieldCheck, ChevronDown, ExternalLink, Clock, Building2, Trees } from "lucide-react";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import { useHotel } from "@/context/HotelContext";
 import { ROOM_CATEGORIES, getCategoryPrice } from "@/lib/roomCategories";
@@ -22,6 +22,7 @@ const staggerContainer = {
 export default function HomePageClient({ lang, dict }: { lang: string, dict: any }) {
   const { roomsData } = useHotel();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const heroImages = [
     "/night.webp",
     "/evening.webp",
@@ -37,6 +38,13 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
   }, [heroImages.length]);
 
   const testimonials = dict.reviews?.testimonials || [];
+  const easternHub = dict.easternProvinceHub || {};
+  const hubStats = easternHub.stats || [];
+  const nyagatareHighlights: string[] = easternHub.nyagatareHighlights || [];
+  const hubCorridors = easternHub.corridors || [];
+  const hubFaqs = easternHub.faqs || [];
+
+  const corridorIcons = [MapPin, Trees, Building2, Compass, Navigation, Users];
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -52,7 +60,11 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
         </div>
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="text-gold uppercase tracking-[0.2em] text-sm font-bold mb-4 block">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/55 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-bold tracking-wide mb-5 shadow-lg">
+              <Star size={14} className="fill-amber-400 text-amber-400 shrink-0" />
+              <span>{dict.heroBadge || "Eastern Province, Rwanda • 4.9 ★ Premier 5-Star Hospitality"}</span>
+            </div>
+            <span className="text-gold uppercase tracking-[0.2em] text-xs sm:text-sm font-bold mb-3 block">
               {dict.welcome}
             </span>
             <h1 className="text-5xl md:text-7xl font-heading font-black text-white mb-6 leading-tight whitespace-pre-line">
@@ -77,6 +89,10 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               >
                 {dict.planEvent}
               </Link>
+            </div>
+            <div className="mt-8 inline-flex items-center gap-2 text-xs sm:text-sm text-white/85 font-semibold bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/15">
+              <MapPin size={14} className="text-amber-400 shrink-0" />
+              <span>{dict.heroLocationTag || "Kagitumba Road • Rwimiyaga • Nyagatare • Eastern Province"}</span>
             </div>
           </motion.div>
         </div>
@@ -292,6 +308,165 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
               <span>Compare All 4 Room Categories & Full Amenities</span>
               <ArrowRight size={16} />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* === EASTERN PROVINCE DESTINATION & REGIONAL HUB === */}
+      <section className="py-24 bg-neutral-950 text-white relative overflow-hidden border-t border-neutral-800" id="eastern-province-hub">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[48rem] h-[24rem] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeIn}
+            className="text-center max-w-4xl mx-auto mb-14"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest mb-5">
+              <Compass size={14} className="text-amber-400" />
+              <span>{easternHub.badge || "Eastern Province Destination & Regional Hub"}</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-heading font-black text-white mb-5 leading-tight">
+              {easternHub.title || "The Flagship Destination Among Hotels in Eastern Province, Rwanda"}
+            </h2>
+            <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto">
+              {easternHub.subtitle}
+            </p>
+            {nyagatareHighlights.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-2.5 mt-7">
+                {nyagatareHighlights.map((highlight: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/5 border border-amber-400/25 text-amber-200 text-xs sm:text-sm font-semibold backdrop-blur-sm"
+                  >
+                    {highlight}
+                  </span>
+                ))}
+              </div>
+            )}
+          </motion.div>
+
+          {/* Regional Stats Bar */}
+          {hubStats.length > 0 && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+              {hubStats.map((stat: { value: string; label: string }, idx: number) => (
+                <div
+                  key={idx}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center backdrop-blur-md hover:border-amber-400/40 transition-colors"
+                >
+                  <div className="text-3xl sm:text-4xl font-heading font-black text-amber-400 mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 6 Strategic Eastern Province Corridor Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {hubCorridors.map((corridor: { tag: string; metric: string; title: string; description: string }, idx: number) => {
+              const IconComponent = corridorIcons[idx % corridorIcons.length];
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.07, duration: 0.5 }}
+                  className="group bg-neutral-900/90 border border-neutral-800 hover:border-amber-400/40 rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-xl"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-5">
+                      <div className="w-11 h-11 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center shrink-0 group-hover:bg-amber-400 group-hover:text-black transition-colors">
+                        <IconComponent size={20} />
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">
+                        <Clock size={11} />
+                        {corridor.metric}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-gray-400 block mb-1.5">
+                      {corridor.tag}
+                    </span>
+                    <h3 className="text-xl font-heading font-black text-white mb-3 group-hover:text-amber-300 transition-colors">
+                      {corridor.title}
+                    </h3>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {corridor.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Interactive Live Google Map & Instant Directions Card */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-4">
+                  <ShieldCheck size={14} />
+                  <span>{easternHub.mapBadge || "Verified Google Maps Pin • Eastern Province, Rwanda"}</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-heading font-black text-white mb-3 leading-snug">
+                  {easternHub.mapTitle || "Find Hollywood Hotel on Kagitumba Road, Rwimiyaga"}
+                </h3>
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-5">
+                  {easternHub.mapDescription}
+                </p>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-black/50 border border-neutral-800">
+                  <MapPin size={18} className="text-amber-400 shrink-0 mt-0.5" />
+                  <span className="text-sm font-semibold text-gray-200">
+                    {easternHub.mapAddress || "Kagitumba Road, Rwimiyaga, Nyagatare District, Eastern Province, Rwanda"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <a
+                  href="https://maps.google.com/?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Eastern+Province+Rwanda"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2.5 bg-gold hover:bg-gold-light text-black px-6 py-3.5 rounded-xl font-black text-sm transition-all shadow-md"
+                >
+                  <Navigation size={16} />
+                  <span>{easternHub.directionsButton || "Open Live Google Map Directions"}</span>
+                  <ExternalLink size={14} />
+                </a>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Link
+                    href={`/${lang}/book`}
+                    className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all border border-white/15"
+                  >
+                    <span>{easternHub.instantBookingButton || "Reserve a Room Online"}</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                  <a
+                    href="https://wa.me/250788876479"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white px-4 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all border border-emerald-500/30"
+                  >
+                    <span>{easternHub.whatsappButton || "WhatsApp 24/7 Concierge"}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 min-h-[320px] sm:min-h-[380px] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950 relative">
+              <iframe
+                title="Hollywood Hotel Rwimiyaga Nyagatare Eastern Province Rwanda Location Map"
+                src="https://maps.google.com/maps?q=Hollywood+Hotel+Rwimiyaga+Nyagatare+Eastern+Province+Rwanda&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full min-h-[320px] sm:min-h-[380px] border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -584,6 +759,71 @@ export default function HomePageClient({ lang, dict }: { lang: string, dict: any
           </div>
         </div>
       </section>
+
+      {/* === EASTERN PROVINCE FAQ SECTION === */}
+      {hubFaqs.length > 0 && (
+        <section className="py-24 bg-white border-t border-gray-100" id="eastern-province-faq">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-14">
+              <div className="inline-block px-4 py-1.5 bg-amber-50 rounded-full mb-4 border border-amber-200">
+                <span className="text-xs font-bold text-amber-800 uppercase tracking-widest">
+                  {easternHub.faqLabel || "Traveler & Corporate Guide"}
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-heading font-black text-black mb-4">
+                {easternHub.faqTitle || "Hotels in Eastern Province & Nyagatare FAQ"}
+              </h2>
+              <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+                {easternHub.faqSubtitle}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {hubFaqs.map((item: { question: string; answer: string }, idx: number) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div
+                    key={idx}
+                    className={`rounded-2xl border transition-all duration-200 ${
+                      isOpen
+                        ? "border-amber-400/70 bg-amber-50/30 shadow-sm"
+                        : "border-gray-200 bg-white hover:border-gray-300"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                      aria-expanded={isOpen}
+                      className="w-full px-6 py-5 text-left flex items-center justify-between gap-4"
+                    >
+                      <h3 className="text-base sm:text-lg font-heading font-bold text-black leading-snug">
+                        {item.question}
+                      </h3>
+                      <ChevronDown
+                        size={20}
+                        className={`shrink-0 text-amber-600 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`grid transition-all duration-200 ease-in-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="px-6 pb-5 text-sm sm:text-base text-gray-700 leading-relaxed">
+                          {item.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="py-24 bg-neutral-900 text-white relative overflow-hidden">
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
